@@ -1,6 +1,16 @@
-@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@200;300;400;600;700;900&display=swap');
 
+
+@import "tailwindcss";
 
 .no-scrollbar::-webkit-scrollbar {
   display: none;
+}
+
+:root {
+  --primary-font: 'Source Sans 3', sans-serif;
+}
+
+body {
+  font-family: var(--primary-font);
 }

@@ -15,7 +15,7 @@ const App: React.FC = () => {
       if (toggle) setToggle(false);
       if (!searchBtn) setSearchBtn(true);
       if(folderToggle) setFolderToggle(false)
-    }} className="flex flex-row bg-[#121212]">
+    }} className="flex flex-row bg-[#121212] text-(--primary-font)">
 
 
       <Sidebar />
