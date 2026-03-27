@@ -1,14 +1,22 @@
-import React, { useContext } from "react";
+import React, { useState } from "react";
 import Sidebar from "./components/Sidebar";
 import Middle from "./components/Middle";
 import Right from "./components/Right";
-import { UserContext } from "./context/UserContext";
+// import { UserContext } from "./context/UserContext";
 
 
 const App: React.FC = () => {
 
-  const { toggle, setToggle, searchBtn, setSearchBtn, folderToggle, setFolderToggle } = useContext(UserContext);
 
+
+  const [toggle, setToggle] = useState<boolean>(false);
+  const [searchBtn, setSearchBtn] = useState<boolean>(true);
+
+  const [folderToggle, setFolderToggle] = useState<boolean>(false);
+
+  const [addNote, setAddNote] = useState<boolean>(false);
+
+  
   
   return (
     <div onClick={() => {
@@ -18,11 +26,11 @@ const App: React.FC = () => {
     }} className="flex flex-row bg-[#121212] text-(--primary-font)">
 
 
-      <Sidebar />
+      <Sidebar searchBtn={searchBtn} setSearchBtn={setSearchBtn} folderToggle={folderToggle} setFolderToggle={setFolderToggle} addNote={addNote} setAddNote={setAddNote}/>
 
-      <Middle />
+      <Middle addNote={addNote} />
 
-      <Right />
+      <Right toggle={toggle} setToggle={setToggle} addNote={addNote} setAddNote={setAddNote}/>
 
     </div>
   );

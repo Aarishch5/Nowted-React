@@ -1,16 +1,13 @@
-import { createContext } from "react";
+import React, { createContext } from "react";
 import { type recentData } from "../components/Recents";
+// import { type folderDataType } from "../components/Folders";
+import { type postNotesDataType } from "../components/Right";
 
 
 export type ContextType = {
-    toggle: boolean;
-    setToggle: React.Dispatch<React.SetStateAction<boolean>>;
 
-    searchBtn: boolean;
-    setSearchBtn: React.Dispatch<React.SetStateAction<boolean>>;
-
-    folderToggle: boolean;
-    setFolderToggle: React.Dispatch<React.SetStateAction<boolean>>;
+    // folderDataName: string | null;
+    // setFolderDataName : React.Dispatch<React.SetStateAction<string | null>>;
 
     selectedFolderId: string | null;
     setSelectedFolderId: React.Dispatch<React.SetStateAction<string | null>>;
@@ -24,6 +21,9 @@ export type ContextType = {
     currentFolderData: recentData[];
     setCurrentFolderData: React.Dispatch<React.SetStateAction<recentData[]>>;
 
+    // folderData: folderDataType[];
+    // setFolderData: React.Dispatch<React.SetStateAction<folderDataType[]>>;
+
     recentFolderId: string | null;
     setRecentFolderId: React.Dispatch<React.SetStateAction<string | null>>;
 
@@ -36,23 +36,33 @@ export type ContextType = {
     currSelectedNotesId: string | null;
     setCurrSelectedNotesId : React.Dispatch<React.SetStateAction<string | null>>
 
-    onChangeInput: string | null;
-    setOnChangeInput : React.Dispatch<React.SetStateAction<string | null>>
+    // folderInput: string | null;
+    // setFolderInput : React.Dispatch<React.SetStateAction<string | null>>
 
-    folderInput: string | null;
-    setFolderInput : React.Dispatch<React.SetStateAction<string | null>>
+    currFolderName : string | null,
+    setCurrentFolderName: React.Dispatch<React.SetStateAction<string | null>>;
+
+    postFolderData: postNotesDataType,
+    setPostFolderData: React.Dispatch<React.SetStateAction<postNotesDataType>>
+
+    refreshNotes: number,
+    setRefreshNotes: React.Dispatch<React.SetStateAction<number>>
+
+    activeView: "folder" | "favorites" | "archived" | "trash";
+    setActiveView: React.Dispatch<React.SetStateAction<"folder" | "favorites" | "archived" | "trash">>;
+
+    updateRecentNotes: (note: recentData) => void;
 };
 
 
 export const UserContext = createContext<ContextType>({
-    toggle: false,
-    setToggle: () => {},
 
-    searchBtn: false,
-    setSearchBtn: () => {},
 
-    folderToggle: false,
-    setFolderToggle: () => {},
+    // folderData: [],
+    // setFolderData: () => {},
+
+    // folderDataName: null,
+    // setFolderDataName: () => {},
 
     selectedFolderId: null,
     setSelectedFolderId: () => {},
@@ -78,9 +88,25 @@ export const UserContext = createContext<ContextType>({
     currSelectedNotesId: null,
     setCurrSelectedNotesId: () => {},
 
-    onChangeInput: null,
-    setOnChangeInput: () => {},
+    // onChangeInput: null,
+    // setOnChangeInput: () => {},
 
-    folderInput: null,
-    setFolderInput: () => {},
+    // folderInput: null,
+    // setFolderInput: () => {},
+
+    currFolderName: null,
+    setCurrentFolderName: () => {},
+
+    postFolderData: {title: "", content: ""},
+    setPostFolderData: () => {},
+
+    refreshNotes: 0,
+    setRefreshNotes: () => {},
+
+    activeView: "folder",
+    setActiveView: () => {},
+
+    updateRecentNotes: () => {},
+
+
 }); 
