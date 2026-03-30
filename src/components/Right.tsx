@@ -4,6 +4,7 @@ import { UserContext } from "../context/UserContext";
 import SelectNote from "./SelectNote";
 import axios from "axios";
 import { type folderDataType } from "../components/Folders";
+import type { recentData } from "./Recents";
 
 export type postNotesDataType = {
   title: string;
@@ -30,12 +31,23 @@ type RightPropType = {
 
   addNote: boolean;
   setAddNote: React.Dispatch<React.SetStateAction<boolean>>;
+
+  currFolderName: string | null;
+
+  currSelectedNotesId: string | null;
+  setCurrSelectedNotesId: React.Dispatch<React.SetStateAction<string | null>>;
+
+  selectedRecentNotesId: string | null;
+
+  setRefreshNotes: React.Dispatch<React.SetStateAction<number>>;
+
+  setCurrentFolderData: React.Dispatch<React.SetStateAction<recentData[]>>;
 };
 
-const Right: React.FC<RightPropType> = ({toggle, setToggle, addNote, setAddNote}) => {
-  const {selectedNoteId,selectedRecentNotesId} = useContext(UserContext);
+const Right: React.FC<RightPropType> = ({toggle, setToggle, addNote, setAddNote, currFolderName, currSelectedNotesId, setCurrSelectedNotesId, selectedRecentNotesId, setRefreshNotes, setCurrentFolderData}) => {
+  const {selectedNoteId} = useContext(UserContext);
   const [currNote, setCurrNote] = useState<noteDataSet | null>(null);
-  const {currSelectedNotesId,setCurrSelectedNotesId,currSelectedFolderId,setCurrentFolderData,currFolderName, setRefreshNotes
+  const {currSelectedFolderId
   } = useContext(UserContext);
 
   const [formText, setFormText] = useState<string | null>(null);
@@ -44,6 +56,7 @@ const Right: React.FC<RightPropType> = ({toggle, setToggle, addNote, setAddNote}
   const prevRecentId = useRef<string | null>(null);
 
   const [title, setTitle] = useState<string>("");
+  
 
   useEffect(() => {
     if (selectedNoteId !== prevNoteId.current && selectedNoteId) {
@@ -84,7 +97,7 @@ const Right: React.FC<RightPropType> = ({toggle, setToggle, addNote, setAddNote}
     e.preventDefault();
 
     if (!title.trim() || !formText?.trim()) {
-      console.warn("Title and content are required");
+      console.error("Title and content are required");
       return;
     }
 
@@ -143,10 +156,7 @@ const Right: React.FC<RightPropType> = ({toggle, setToggle, addNote, setAddNote}
     if (!currNote) return;
 
     try {
-      await axios.delete(
-        `https://nowted-server.remotestate.com/notes/${currNote.id}`,
-      );
-
+      await axios.delete(`https://nowted-server.remotestate.com/notes/${currNote.id}`);
       setCurrentFolderData((prev) =>
         prev.filter((note) => note.id !== currNote.id),
       );
@@ -167,7 +177,7 @@ const Right: React.FC<RightPropType> = ({toggle, setToggle, addNote, setAddNote}
           className={`flex flex-col gap-7.5 p-12.5 text-[#FFFFFF] w-[calc(100%-650px)] h-screen ${addNote ? "hidden" : "block"}`}
         >
           <div className="flex flex-row justify-between items-center">
-            <h1 className="text-[32px]">{currNote.title}</h1>
+            <h1 className="text-[32px]">{currNote?.title}</h1>
             <CircleEllipsis
               onClick={(e) => { e.stopPropagation();
                                 setToggle((prev) => !prev);

@@ -17,14 +17,17 @@ export type recentData = {
   folder: folderDataType;
 };
 
-const Recents: React.FC = () => {
+type recentPropsType = {
+   currSelectedNotesId: string | null;
+
+   selectedRecentNotesId: string | null;
+   setSelectedRecentNotesId: React.Dispatch<React.SetStateAction<string | null>>;
+}
+
+const Recents: React.FC<recentPropsType> = ({currSelectedNotesId, selectedRecentNotesId, setSelectedRecentNotesId}) => {
   const { 
     recentNotes, 
-    setRecentNotes, 
-    selectedRecentNotesId, 
-    setSelectedRecentNotesId, 
-    currSelectedNotesId, 
-    setRecentFolderId 
+    setRecentNotes,  
   } = useContext(UserContext);
 
   const recentDataAPI = "https://nowted-server.remotestate.com/notes/recent";
@@ -47,6 +50,8 @@ const Recents: React.FC = () => {
     dataFetcher();
   }, []);
 
+  
+
   return (
     <div className="flex flex-col gap-2 w-75">
       <div className="flex pl-5">
@@ -60,7 +65,6 @@ const Recents: React.FC = () => {
             onClick={(e) =>{
               e.stopPropagation();
               setSelectedRecentNotesId(elem.id);
-              setRecentFolderId(elem.folderId);
             }}
             className={`hover:bg-[#312EB5] h-10 w-full flex gap-3.75 cursor-pointer items-center px-5 text-base ${
               elem.id === selectedRecentNotesId && elem.id === currSelectedNotesId

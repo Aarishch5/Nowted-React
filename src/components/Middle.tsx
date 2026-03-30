@@ -5,32 +5,34 @@ import axios from "axios";
 
 type middleProps = {
   addNote: boolean;
+
+  currFolderName: string | null;
+
+  currSelectedNotesId: string | null;
+
+  refreshNotes: number;
+
+  currentFolderData: recentData[];
+  setCurrentFolderData: React.Dispatch<React.SetStateAction<recentData[]>>;
+
+  setShowRestore: React.Dispatch<React.SetStateAction<boolean>>;
+  setRestoreNote: React.Dispatch<React.SetStateAction<recentData | null>>;
+
 }
 
-const Middle: React.FC<middleProps> = ({addNote}) => {
-  const { 
-    currSelectedFolderId, 
-    setCurrentFolderData, 
-    currentFolderData, 
-    selectedNoteId, 
-    currSelectedNotesId, 
-    setSelectedNoteId, 
-    refreshNotes, 
-    activeView, 
-    currFolderName,
-    updateRecentNotes
-  } = useContext(UserContext);
+const Middle: React.FC<middleProps> = ({addNote, currFolderName, currSelectedNotesId, refreshNotes, currentFolderData, setCurrentFolderData, setShowRestore, setRestoreNote}) => {
+  const { currSelectedFolderId, selectedNoteId, setSelectedNoteId, activeView, setRecentNotes } = useContext(UserContext);
 
   useEffect(() => {
     const fetchNotes = async () => {
-      let url = "";
+      let url: string = "";
 
       if (activeView === "favorites") {
-        url = `https://nowted-server.remotestate.com/notes?isFavourite=true&limit=300`;
+        url = `https://nowted-server.remotestate.com/notes?isFavourite=true&limit=100`;
       } else if (activeView === "archived") {
-        url = `https://nowted-server.remotestate.com/notes?isArchived=true&limit=300`;
+        url = `https://nowted-server.remotestate.com/notes?isArchived=true&limit=100`;
       } else if (activeView === "trash") {
-        url = `https://nowted-server.remotestate.com/notes?deleted=true&limit=300`;
+        url = `https://nowted-server.remotestate.com/notes?deleted=true&limit=100`;
       } else if (currSelectedFolderId) {
         url = `https://nowted-server.remotestate.com/notes?folderId=${currSelectedFolderId}&limit=300`;
       }
@@ -53,6 +55,23 @@ const Middle: React.FC<middleProps> = ({addNote}) => {
     fetchNotes();
   }, [currSelectedFolderId, activeView, refreshNotes]);
 
+   const updateRecentNotes = (note: recentData) => {
+        if (note.deletedAt) return;
+    
+            setRecentNotes((prev) => {
+                const filtered = prev.filter((n) => n.id !== note.id);
+                const updated = [note, ...filtered];
+                return updated.slice(0, 3);
+                });
+            };
+
+    useEffect(() => {
+      if (activeView !== "trash") {
+        setShowRestore(false);
+        setRestoreNote(null);
+      }
+    }, [activeView]);
+
   return (
     <div className="flex w-87.5 h-screen flex-col px-5 pb-7.5 bg-[#1C1C1C] gap-7.5 overflow-y-auto no-scrollbar scroll-smooth">
       <div className="px-5 pb-5 pt-7.5 bg-[#1C1C1C] sticky top-0 z-10">
@@ -71,8 +90,14 @@ const Middle: React.FC<middleProps> = ({addNote}) => {
           <div
             key={note.id}
             onClick={() => {
-              setSelectedNoteId(note.id);
-              updateRecentNotes(note); // ✅ IMPORTANT
+            if (activeView === "trash"){
+                setRestoreNote(note);
+                setShowRestore(true);
+            } 
+            else {
+                setSelectedNoteId(note.id);
+                updateRecentNotes(note);
+              }
             }}
             className={`flex ${
               (note.id === selectedNoteId || note.id === currSelectedNotesId) && !addNote 

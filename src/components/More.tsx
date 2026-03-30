@@ -10,6 +10,7 @@ const More: React.FC = () => {
     setActiveView(view); 
   };
 
+
   return (
     <div className="flex flex-col gap-2 w-75">
       <div className="flex px-5 justify-between items-center">

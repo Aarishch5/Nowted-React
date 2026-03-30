@@ -17,18 +17,25 @@ type folderProps = {
 
   addNote: boolean;
   setAddNote: React.Dispatch<React.SetStateAction<boolean>>;
+
+  currFolderName: string | null;
+  setCurrentFolderName: React.Dispatch<React.SetStateAction<string | null>>;
+
+  folderSearchInput: string;
 }
 
-const Folders: React.FC<folderProps> = ({folderToggle, setFolderToggle, setAddNote}) => {
+const Folders: React.FC<folderProps> = ({folderToggle, setFolderToggle, setAddNote, setCurrentFolderName, folderSearchInput}) => {
 
+  
+  const { currSelectedFolderId, setCurrSelectedFolderId, setActiveView} = useContext(UserContext);
 
-  const { setSelectedFolderId, setCurrentFolderName, selectedFolderId, currSelectedFolderId, setCurrSelectedFolderId, setActiveView} = useContext(UserContext);
+  const [selectedFolderId, setSelectedFolderId] = useState<string | null>(null);
 
   const [onChangeInput, setOnChangeInput] = useState<string | null>(null);
 
   const [folderData, setFolderData] = useState<folderDataType[]>([]);
 
-  const [folderDataName, setFolderDataName] = useState<string | null>(null);
+  const { setFolderDataName} = useContext(UserContext);
 
   useEffect(() => {
     const dataFetcher = async () => {
@@ -62,8 +69,7 @@ const Folders: React.FC<folderProps> = ({folderToggle, setFolderToggle, setAddNo
     if (!changeInput.trim()) return;
 
     try {
-      const response = await axios.post(
-        "https://nowted-server.remotestate.com/folders",
+      const response = await axios.post("https://nowted-server.remotestate.com/folders",
         { name: changeInput }
       );
 
@@ -80,6 +86,13 @@ const Folders: React.FC<folderProps> = ({folderToggle, setFolderToggle, setAddNo
     if (folder) setCurrentFolderName(folder.name);
   }, [currSelectedFolderId, folderData]);
 
+  const filteredFolders =
+  folderSearchInput.trim() === ""
+    ? folderData
+    : folderData.filter((item) =>
+        item.name?.toLowerCase().includes(folderSearchInput.toLowerCase())
+      );
+ 
   return (
     <div onClick={() => setAddNote(false)} className="flex flex-col gap-2 w-75">
       <div className="flex px-5 justify-between items-center text-[#FFFFFF99]">
@@ -118,7 +131,7 @@ const Folders: React.FC<folderProps> = ({folderToggle, setFolderToggle, setAddNo
           />
         </div>
 
-        {folderData.map((item) => (
+        {filteredFolders.map((item) => (
           <div
             key={item.id}
             onClick={(e) => {

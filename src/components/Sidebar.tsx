@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import logo from "../assets/logo.svg";
 import { Search, Plus, ToggleLeft, ToggleRight } from "lucide-react";
 import Folders from "./Folders";
 import More from "./More";
 import Recents from "./Recents";
+import { UserContext } from "../context/UserContext";
 
 
 type SidebarPropType = {
@@ -15,31 +16,42 @@ type SidebarPropType = {
 
   addNote: boolean;
   setAddNote: React.Dispatch<React.SetStateAction<boolean>>;
+
+  currFolderName: string | null;
+  setCurrentFolderName: React.Dispatch<React.SetStateAction<string | null>>;
+
+  
+  currSelectedNotesId: string | null;
+
+  selectedRecentNotesId: string | null;
+  setSelectedRecentNotesId: React.Dispatch<React.SetStateAction<string | null>>;
 };
 
-const Sidebar: React.FC<SidebarPropType> = ({searchBtn, setSearchBtn, folderToggle, setFolderToggle, addNote, setAddNote}) => {
-  // const { setAddNote, } = useContext(UserContext);
+const Sidebar: React.FC<SidebarPropType> = ({searchBtn, setSearchBtn, folderToggle, setFolderToggle, addNote, setAddNote, currFolderName, setCurrentFolderName, currSelectedNotesId, selectedRecentNotesId, setSelectedRecentNotesId}) => {
 
-  const [mode, setMode] = useState<boolean>(true);
+  const {mode, setMode} = useContext(UserContext);
 
-  const [folderSearchInput, setFolderSearchInput] = useState<string>("");
+  const [inputValue, setInputValue] = useState("");
+  const [folderSearchInput, setFolderSearchInput] = useState("");
 
-
-  const handleFolderSearch = (val : string) => {
-    setTimeout(() => {
-      if(val.trim().length > 0){
-        setFolderSearchInput(val)
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (inputValue.trim() === "") {
+        setFolderSearchInput("");
+      } else {
+        setFolderSearchInput(inputValue);
       }
-    }, 1000)
-  }
+    }, 500);
 
-  console.log(folderSearchInput);
-  
+    return () => clearTimeout(timer);
+  }, [inputValue]);
+
+
   
 
   return (
     <div className="flex flex-col h-screen w-75 bg-[#181818] py-7.5 gap-7.5">
-      {/* Top - Logo and Search */}
+      {/* This isTop - Logo and Search */}
       <div className="w-75 flex px-5">
         <div className="flex flex-row justify-between items-center w-full">
           <img className="h-9.5 w-25.25" src={logo} alt="" />
@@ -71,7 +83,7 @@ const Sidebar: React.FC<SidebarPropType> = ({searchBtn, setSearchBtn, folderTogg
             <Search className="h-5 text-[#FFFFFF99] w-5" />
             <input
               onChange={(e) => {
-                 handleFolderSearch(e.target.value)
+                 setInputValue(e.target.value)
               }}
               id="searchNote"
               className=" font-semibold text-[#FFFFFF99] text-base outline-none"
@@ -82,13 +94,11 @@ const Sidebar: React.FC<SidebarPropType> = ({searchBtn, setSearchBtn, folderTogg
         )}
       </div>
 
-      {/* Recents */}
-      <Recents />
 
-      {/* Folders */}
-      <Folders folderToggle={folderToggle} setFolderToggle={setFolderToggle} addNote={addNote} setAddNote={setAddNote}/>
+      <Recents currSelectedNotesId={currSelectedNotesId} selectedRecentNotesId={selectedRecentNotesId} setSelectedRecentNotesId={setSelectedRecentNotesId}/>
 
-      {/* More */}
+      <Folders folderToggle={folderToggle} setFolderToggle={setFolderToggle} addNote={addNote} setAddNote={setAddNote} currFolderName={currFolderName} setCurrentFolderName={setCurrentFolderName} folderSearchInput={folderSearchInput}/>
+
       <More />
     </div>
   );
