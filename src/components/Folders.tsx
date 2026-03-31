@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { UserContext } from "../context/UserContext";
 import { FolderPlus, FolderOpen, Folder, FolderCheck } from "lucide-react";
 import axios from "axios";
+import { useNavigate, useParams } from "react-router-dom";
 
 export type folderDataType = {
   id: string;
@@ -22,38 +23,32 @@ type folderProps = {
   setCurrentFolderName: React.Dispatch<React.SetStateAction<string | null>>;
 
   folderSearchInput: string;
-}
+};
 
-const Folders: React.FC<folderProps> = ({folderToggle, setFolderToggle, setAddNote, setCurrentFolderName, folderSearchInput}) => {
+const Folders: React.FC<folderProps> = ({ folderToggle, setFolderToggle, setAddNote, setCurrentFolderName, folderSearchInput}) => {
+  const { setCurrSelectedFolderId, setActiveView, mode, setFolderDataName} = useContext(UserContext);
 
-  
-  const { currSelectedFolderId, setCurrSelectedFolderId, setActiveView} = useContext(UserContext);
-
-  const [selectedFolderId, setSelectedFolderId] = useState<string | null>(null);
+  const navigate = useNavigate();
+  const { folderId } = useParams();
 
   const [onChangeInput, setOnChangeInput] = useState<string | null>(null);
-
   const [folderData, setFolderData] = useState<folderDataType[]>([]);
-
-  const { setFolderDataName} = useContext(UserContext);
 
   useEffect(() => {
     const dataFetcher = async () => {
       try {
-        const response = await axios.get(
-          "https://nowted-server.remotestate.com/folders"
-        );
+        const response = await axios.get("https://nowted-server.remotestate.com/folders");
 
-        if (response.data && response.data.folders) {
+        if (response.data?.folders) {
           const folders = response.data.folders;
           setFolderData(folders);
 
-          if (folders.length > 0) {
+          if (folders.length > 0 && !folderId) {
             const firstFolder = folders[0];
-            setSelectedFolderId(firstFolder.id);
             setCurrSelectedFolderId(firstFolder.id);
             setCurrentFolderName(firstFolder.name);
-            setActiveView("folder"); 
+            setActiveView("folder");
+            navigate(`/folder/${firstFolder.id}`, { replace: true });
           }
         }
       } catch (error) {
@@ -64,14 +59,11 @@ const Folders: React.FC<folderProps> = ({folderToggle, setFolderToggle, setAddNo
     dataFetcher();
   }, []);
 
-  // new Folder Createing
   const createFolder = async (changeInput: string) => {
     if (!changeInput.trim()) return;
 
     try {
-      const response = await axios.post("https://nowted-server.remotestate.com/folders",
-        { name: changeInput }
-      );
+      const response = await axios.post("https://nowted-server.remotestate.com/folders",{ name: changeInput });
 
       const newFolder = response.data;
       setFolderData((prev) => [...prev, newFolder]);
@@ -82,53 +74,32 @@ const Folders: React.FC<folderProps> = ({folderToggle, setFolderToggle, setAddNo
   };
 
   useEffect(() => {
-    const folder = folderData.find((item) => item.id === currSelectedFolderId);
-    if (folder) setCurrentFolderName(folder.name);
-  }, [currSelectedFolderId, folderData]);
+    const folder = folderData.find((item) => item.id === folderId);
+    if (folder) {
+      setCurrentFolderName(folder.name);
+      setCurrSelectedFolderId(folder.id);
+      setActiveView("folder");
+    }
+  }, [folderId, folderData]);
 
   const filteredFolders =
-  folderSearchInput.trim() === ""
-    ? folderData
-    : folderData.filter((item) =>
-        item.name?.toLowerCase().includes(folderSearchInput.toLowerCase())
-      );
- 
+    folderSearchInput.trim() === "" ? folderData : folderData.filter((item) => item.name?.toLowerCase().includes(folderSearchInput.toLowerCase()));
+    
   return (
     <div onClick={() => setAddNote(false)} className="flex flex-col gap-2 w-75">
-      <div className="flex px-5 justify-between items-center text-[#FFFFFF99]">
+      <div className={`flex px-5 justify-between items-center ${ mode ? "text-[#FFFFFF99]" : "text-black"}`}>
         <h5 className=" text-sm">Folders</h5>
-        <FolderPlus
-          onClick={(e) => {
-            e.stopPropagation();
-            setFolderToggle((prev) => !prev);
-          }}
-          className="h-5 w-5 hover:text-white cursor-pointer"
-        />
+        <FolderPlus onClick={(e) => { e.stopPropagation(); setFolderToggle((prev) => !prev);}} className="h-5 w-5 cursor-pointer"/>
       </div>
 
       <div className="flex flex-col gap-2 w-full max-h-32.5 overflow-y-auto no-scrollbar scroll-smooth">
-        {/* Input for new folder */}
-        <div
-          onClick={(e) => e.stopPropagation()}
-          className={`hover:bg-[#FFFFFF08] h-10 shrink-0 w-full flex flex-row gap-3.75 items-center px-5 text-[#FFFFFF99] hover:text-white ${
-            folderToggle ? "flex" : "hidden"
-          }`}
-        >
+        <div onClick={(e) => e.stopPropagation()} className={` ${mode ? "hover:bg-[#FFFFFF08] text-[#FFFFFF99] hover:text-white" 
+          : "hover:bg-gray-100 text-black hover:text-zinc-700" } h-10 shrink-0 w-full flex flex-row gap-3.75 items-center px-5 
+          ${ folderToggle ? "flex" : "hidden"}`}>
           <FolderOpen className="h-5 w-5 shrink-0" />
-          <input
-            onChange={(e) => setOnChangeInput(e.target.value)}
-            className="bg-transparent outline-none text-sm h-5 w-full font-semibold text-white"
-            type="text"
-            id="newFolderInput"
-            placeholder="My New Folder"
-          />
-          <FolderCheck
-            onClick={() => {
-              if (!onChangeInput) return;
-              createFolder(onChangeInput);
-            }}
-            className="h-5 w-5 shrink-0"
-          />
+          <input onChange={(e) => setOnChangeInput(e.target.value)} className={`bg-transparent outline-none text-sm h-5 w-full font-semibold
+             ${ mode ? "text-white" : "text-black"}`} type="text" id="newFolderInput" placeholder="My New Folder"/>
+          <FolderCheck onClick={() => { if (!onChangeInput) return; createFolder(onChangeInput); }} className="h-5 w-5 shrink-0"/>
         </div>
 
         {filteredFolders.map((item) => (
@@ -136,14 +107,15 @@ const Folders: React.FC<folderProps> = ({folderToggle, setFolderToggle, setAddNo
             key={item.id}
             onClick={(e) => {
               e.stopPropagation();
-              setSelectedFolderId(item.id);
               setCurrSelectedFolderId(item.id);
-              setCurrentFolderName(item.name); 
+              setCurrentFolderName(item.name);
               setActiveView("folder");
+              navigate(`/folder/${item.id}`);
             }}
-            className={`hover:bg-[#FFFFFF08] ${item.id === selectedFolderId && item.id === currSelectedFolderId ? "bg-[#FFFFFF08] text-white" : ""}
-             h-10 shrink-0 w-full flex flex-row gap-3.75 items-center px-5 text-base text-[#FFFFFF99] hover:text-white cursor-pointer`}>
-            {item.id === selectedFolderId ? (
+            className={`h-10 shrink-0 w-full flex flex-row gap-3.75 items-center px-5 text-base cursor-pointer
+            ${item.id === (folderId) ? mode ? "bg-[#b0414108] text-white" : "bg-gray-200 text-black" : mode ? "text-[#FFFFFF99]" 
+            : "text-black"} ${mode ? "hover:bg-[#FFFFFF08] hover:text-white" : "hover:bg-gray-200 hover:text-black"}`}>
+            {item.id === folderId ? (
               <FolderOpen className="h-5 w-5 shrink-0" />
             ) : (
               <Folder className="h-5 w-5 shrink-0" />

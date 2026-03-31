@@ -11,7 +11,6 @@ export const UserProvider: React.FC<Props> = ({ children }) => {
     const [folderDataName, setFolderDataName] = useState<string | null>(null);
 
     const [recentNotes, setRecentNotes] = useState<recentData[]>([]);
-    const [selectedNoteId, setSelectedNoteId] = useState<string | null>(null);
 
     const [currSelectedFolderId, setCurrSelectedFolderId] = useState<string | null>(null);
 
@@ -28,8 +27,6 @@ export const UserProvider: React.FC<Props> = ({ children }) => {
             setFolderDataName,
             recentNotes,
             setRecentNotes,
-            selectedNoteId,
-            setSelectedNoteId,
             currSelectedFolderId,
             setCurrSelectedFolderId,
             activeView,

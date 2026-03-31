@@ -1,6 +1,5 @@
 import React, { createContext } from "react";
 import { type recentData } from "../components/Recents";
-// import { type postNotesDataType } from "../components/Right";
 
 
 export type ContextType = {
@@ -10,9 +9,6 @@ export type ContextType = {
 
     recentNotes: recentData[];
     setRecentNotes: React.Dispatch<React.SetStateAction<recentData[]>>;
-
-    selectedNoteId: string | null;
-    setSelectedNoteId: React.Dispatch<React.SetStateAction<string | null>>;
 
     currSelectedFolderId: string | null;
     setCurrSelectedFolderId: React.Dispatch<React.SetStateAction<string | null>>;
@@ -33,9 +29,6 @@ export const UserContext = createContext<ContextType>({
     recentNotes: [],
     setRecentNotes: () => {},
 
-    selectedNoteId: null,
-    setSelectedNoteId: () => {},
-
     currSelectedFolderId: null,
     setCurrSelectedFolderId: () => {},
 
@@ -44,5 +37,4 @@ export const UserContext = createContext<ContextType>({
 
     mode: true,
     setMode: () => {},
-
 }); 
