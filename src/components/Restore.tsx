@@ -16,6 +16,8 @@ const Restore: React.FC<recentProps> = ({note, setRefreshNotes,setShowRestore}) 
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
 
+
+  // Restire functionality if the Trash is Opened
   const handleRestore = async () => {
     if (!note || loading) return;
 

@@ -27,6 +27,8 @@ const Sidebar: React.FC<SidebarPropType> = ({ searchBtn, setSearchBtn, folderTog
   const [inputValue, setInputValue] = useState("");
   const [folderSearchInput, setFolderSearchInput] = useState("");
 
+
+  // Debuncing on the Searching input
   useEffect(() => {
     const timer = setTimeout(() => {
       if (inputValue.trim() === "") {
@@ -53,9 +55,7 @@ const Sidebar: React.FC<SidebarPropType> = ({ searchBtn, setSearchBtn, folderTog
             <Search onClick={(e) => {
                 e.stopPropagation();
                 setSearchBtn((prev) => !prev);
-              }}
-              className={`h-5 w-5 cursor-pointer ${ mode ? "text-[#FFFFFF]" : "text-black"}`}
-            />
+              }} className={`h-5 w-5 cursor-pointer ${ mode ? "text-[#FFFFFF]" : "text-black"}`}/>
           </div>
         </div>
       </div>
@@ -72,8 +72,7 @@ const Sidebar: React.FC<SidebarPropType> = ({ searchBtn, setSearchBtn, folderTog
             className={`flex flex-row gap-2 p-2.5 justify-start items-center ${ mode ? "bg-[#FFFFFF0D]" : "bg-white"} w-65 h-10 cursor-pointer`}>
             <Search className={`h-5 ${mode ? "text-white" : "text-black"} w-5`}/>
             <input onChange={(e) => { setInputValue(e.target.value);}} id="searchNote"
-              className={`font-semibold ${ mode ? "text-white" : "text-black"} text-base outline-none`} type="text"
-              placeholder="Search note"/>
+              className={`font-semibold ${ mode ? "text-white" : "text-black"} text-base outline-none`} type="text" placeholder="Search note"/>
           </div>
         )}
       </div>

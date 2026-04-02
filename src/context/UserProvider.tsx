@@ -8,8 +8,6 @@ type Props = {
 
 export const UserProvider: React.FC<Props> = ({ children }) => {
 
-    const [folderDataName, setFolderDataName] = useState<string | null>(null);
-
     const [recentNotes, setRecentNotes] = useState<recentData[]>([]);
 
     const [currSelectedFolderId, setCurrSelectedFolderId] = useState<string | null>(null);
@@ -22,11 +20,9 @@ export const UserProvider: React.FC<Props> = ({ children }) => {
 
 
     
-    
+
     return (
         <UserContext.Provider value={{ 
-            folderDataName,
-            setFolderDataName,
             recentNotes,
             setRecentNotes,
             currSelectedFolderId,

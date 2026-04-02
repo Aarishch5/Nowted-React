@@ -10,7 +10,7 @@ import { useParams, useNavigate, useLocation } from "react-router-dom";
 export type postNotesDataType = {
   title: string;
   content: string;
-};
+}
 
 type noteDataSet = {
   id: string;
@@ -50,6 +50,9 @@ const Right: React.FC<RightPropType> = ({ toggle, setToggle, addNote, setAddNote
   const [formText, setFormText] = useState<string>("");
   const [title, setTitle] = useState<string>("");
 
+
+  // Fetching the notes
+
   useEffect(() => {
   const fetchNote = async () => {
     if (!noteId || noteId === "undefined") {
@@ -58,10 +61,7 @@ const Right: React.FC<RightPropType> = ({ toggle, setToggle, addNote, setAddNote
     }
 
     try {
-      const response = await axios.get(
-        `https://nowted-server.remotestate.com/notes/${noteId}`
-      );
-
+      const response = await axios.get(`https://nowted-server.remotestate.com/notes/${noteId}`);
       if (response.data?.note) {
         setCurrNote(response.data.note);
       } else {
@@ -72,10 +72,10 @@ const Right: React.FC<RightPropType> = ({ toggle, setToggle, addNote, setAddNote
       setCurrNote(null);
     }
   };
-
   fetchNote();
 }, [noteId]);
 
+  // Handling the user form submission
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -86,9 +86,7 @@ const Right: React.FC<RightPropType> = ({ toggle, setToggle, addNote, setAddNote
 
     try {
       const response = await axios.post("https://nowted-server.remotestate.com/notes",{title: title.trim(), content: formText.trim(), folderId: folderId});
-
       const newNote = {...response.data.note, folder: { name: currFolderName}};
-
       if (folderId) {
         setCurrentFolderData((prev) => [...prev, newNote]);
       }
@@ -103,53 +101,47 @@ const Right: React.FC<RightPropType> = ({ toggle, setToggle, addNote, setAddNote
     }
   };
 
- const handleFavouriteNote = async () => {
-  if (!currNote) return;
+  // Favourite notes handler
 
-  try {
-    const updatedValue = !currNote.isFavorite;
+  const handleFavouriteNote = async () => {
+    if (!currNote) return;
 
-    await axios.patch( `https://nowted-server.remotestate.com/notes/${currNote.id}`,{ isFavorite: updatedValue });
-
-    setCurrNote((prev) =>prev ? { ...prev, isFavorite: updatedValue } : prev);
-
-    setRefreshNotes((prev) => prev + 1);
-    setToggle(false);
-  } catch(error) {
-      console.log(error);
-
-
-  }
-};
-
-const handleArchiveNote = async () => {
-  if (!currNote) return;
-
-  try {
-    const updatedValue = !currNote.isArchived;
-
-    await axios.patch(`https://nowted-server.remotestate.com/notes/${currNote.id}`,{folderId: currNote.folderId, title: currNote.title,
-        content: currNote.content, isFavorite: currNote.isFavorite, isArchived: updatedValue});
-
-    const verifyResponse = await axios.get(`https://nowted-server.remotestate.com/notes/${currNote.id}`);
-
-    const updatedNote = verifyResponse.data?.note;
-
-    if (!updatedNote) return;
-
-    setCurrNote(updatedNote);
-    setToggle(false);
-    setRefreshNotes((prev) => prev + 1);
-
-    if (updatedNote.isArchived) {
-      navigate("/archived");
+    try {
+      const updatedValue = !currNote.isFavorite;
+      await axios.patch( `https://nowted-server.remotestate.com/notes/${currNote.id}`,{ isFavorite: updatedValue });
+      setCurrNote((prev) =>prev ? { ...prev, isFavorite: updatedValue } : prev);
+      setRefreshNotes((prev) => prev + 1);
+      setToggle(false);
+    } catch(error) {
+        console.log(error);
     }
-  } catch (error) {
-    console.error("Error archiving note:", error);
-  }
-};
+  };
 
 
+  // Archive notes handler
+  const handleArchiveNote = async () => {
+    if (!currNote) return;
+
+    try {
+      const updatedValue = !currNote.isArchived;
+      await axios.patch(`https://nowted-server.remotestate.com/notes/${currNote.id}`,{folderId: currNote.folderId, title: currNote.title,
+          content: currNote.content, isFavorite: currNote.isFavorite, isArchived: updatedValue});
+      const finalResponse = await axios.get(`https://nowted-server.remotestate.com/notes/${currNote.id}`);
+      const updatedNote = finalResponse.data?.note;
+      if (!updatedNote) return;
+
+      setCurrNote(updatedNote);
+      setToggle(false);
+      setRefreshNotes((prev) => prev + 1);
+      if (updatedNote.isArchived) {
+        navigate("/archived");
+      }
+    } catch (error) {
+      console.error("Error archiving note:", error);
+    }
+  };
+
+    // Handling the Trashing of the Notes
     const handleDeleteNote = async () => {
     if (!currNote) return;
 
@@ -158,10 +150,7 @@ const handleArchiveNote = async () => {
       const deletedFolderId = currNote.folderId;
 
       await axios.delete(`https://nowted-server.remotestate.com/notes/${deletedNoteId}`);
-
-      setCurrentFolderData((prev) =>
-        prev.filter((note) => note.id !== deletedNoteId)
-      );
+      setCurrentFolderData((prev) => prev.filter((note) => note.id !== deletedNoteId));
 
       setCurrNote(null);
       setToggle(false);
@@ -195,9 +184,7 @@ const handleArchiveNote = async () => {
                   </div>
                   <div onClick={handleArchiveNote} className={`${mode ? "text-white hover:bg-[#FFFFFF1A]" : "text-black hover:bg-[#5e4c4c]"} flex flex-row gap-3.75 items-center cursor-pointer p-0.75`}>
                     {!currNote?.isArchived ? (<Archive className="w-5 h-5" />) : (<ArchiveRestore className="w-5 h-5"/>)}
-                    <h3  className="font-normal font-base text-base"> 
-                      {!currNote?.isArchived ? "Archived" : "UnArchived" }
-                    </h3>
+                    <h3  className="font-normal font-base text-base">   {!currNote?.isArchived ? "Archived" : "UnArchived" } </h3>
                   </div>
                 </div>
 

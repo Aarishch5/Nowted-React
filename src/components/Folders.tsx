@@ -26,13 +26,14 @@ type folderProps = {
 };
 
 const Folders: React.FC<folderProps> = ({ folderToggle, setFolderToggle, setAddNote, setCurrentFolderName, folderSearchInput}) => {
-  const { setCurrSelectedFolderId, setActiveView, mode, setFolderDataName} = useContext(UserContext);
+  const { setCurrSelectedFolderId, setActiveView, mode} = useContext(UserContext);
 
   const navigate = useNavigate();
   const { folderId } = useParams();
 
   const [onChangeInput, setOnChangeInput] = useState<string | null>(null);
   const [folderData, setFolderData] = useState<folderDataType[]>([]);
+
 
 
 useEffect(() => {
@@ -45,9 +46,7 @@ useEffect(() => {
         setFolderData(folders);
 
         if (folders.length === 0) return;
-
         const isFolderPage = location.pathname.startsWith("/folder");
-
         if (!isFolderPage) return;
 
         const matchedFolder = folders.find((item: folderDataType) => item.id === folderId);
@@ -79,7 +78,6 @@ useEffect(() => {
 
       const newFolder = response.data;
       setFolderData((prev) => [...prev, newFolder]);
-      setFolderDataName("");
     } catch (err) {
       console.log(err);
     }
