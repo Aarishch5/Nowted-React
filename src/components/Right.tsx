@@ -1,4 +1,4 @@
-import { Trash, CalendarDays, CircleEllipsis, Folder, Star, Archive, StarOff} from "lucide-react";
+import { Trash, CalendarDays, CircleEllipsis, Folder, Star, Archive, StarOff, ArchiveRestore} from "lucide-react";
 import React, { useContext, useEffect, useState } from "react";
 import { UserContext } from "../context/UserContext";
 import SelectNote from "./SelectNote";
@@ -117,7 +117,8 @@ const Right: React.FC<RightPropType> = ({ toggle, setToggle, addNote, setAddNote
     setToggle(false);
   } catch(error) {
       console.log(error);
-      
+
+
   }
 };
 
@@ -193,8 +194,10 @@ const handleArchiveNote = async () => {
                         </h3>
                   </div>
                   <div onClick={handleArchiveNote} className={`${mode ? "text-white hover:bg-[#FFFFFF1A]" : "text-black hover:bg-[#5e4c4c]"} flex flex-row gap-3.75 items-center cursor-pointer p-0.75`}>
-                    <Archive className="w-5 h-5" />
-                    <h3  className="font-normal font-base text-base"> Archived</h3>
+                    {!currNote?.isArchived ? (<Archive className="w-5 h-5" />) : (<ArchiveRestore className="w-5 h-5"/>)}
+                    <h3  className="font-normal font-base text-base"> 
+                      {!currNote?.isArchived ? "Archived" : "UnArchived" }
+                    </h3>
                   </div>
                 </div>
 
