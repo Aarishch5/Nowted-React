@@ -11,11 +11,7 @@ type recentProps = {
   setRefreshNotes: React.Dispatch<React.SetStateAction<number>>;
 };
 
-const Restore: React.FC<recentProps> = ({
-  note,
-  setRefreshNotes,
-  setShowRestore,
-}) => {
+const Restore: React.FC<recentProps> = ({note, setRefreshNotes,setShowRestore}) => {
   const { mode } = useContext(UserContext);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
@@ -40,7 +36,7 @@ const Restore: React.FC<recentProps> = ({
   };
 
   return (
-    <div className={`flex flex-col p-12.5 ${ mode ? "text-white" : "text-black"} w-[calc(100%-650px)] h-screen items-center justify-center`}>
+    <div className={`flex flex-col p-12.5 ${ mode ? "text-white" : "text-[#ffffff]"} w-[calc(100%-650px)] h-screen items-center justify-center`}>
       <div className="flex flex-col gap-2.5 items-center justify-center">
         <History className="h-10 w-10 stroke-1" />
 
@@ -53,7 +49,6 @@ const Restore: React.FC<recentProps> = ({
               'Restore' button and it will be added back to your list.
             </h5>
           </div>
-
           <button onClick={handleRestore} disabled={loading} className={`w-27.75 h-10.5 rounded-md text-base font-normal cursor-pointer ${loading ? "bg-gray-400 cursor-not-allowed" : "bg-[#312EB5] hover:opacity-90"}`}>
             {loading ? "Restoring..." : "Restore"}
           </button>

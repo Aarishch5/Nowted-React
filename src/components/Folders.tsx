@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+  import React, { useContext, useEffect, useState } from "react";
 import { UserContext } from "../context/UserContext";
 import { FolderPlus, FolderOpen, Folder, FolderCheck } from "lucide-react";
 import axios from "axios";
@@ -34,30 +34,42 @@ const Folders: React.FC<folderProps> = ({ folderToggle, setFolderToggle, setAddN
   const [onChangeInput, setOnChangeInput] = useState<string | null>(null);
   const [folderData, setFolderData] = useState<folderDataType[]>([]);
 
-  useEffect(() => {
-    const dataFetcher = async () => {
-      try {
-        const response = await axios.get("https://nowted-server.remotestate.com/folders");
 
-        if (response.data?.folders) {
-          const folders = response.data.folders;
-          setFolderData(folders);
+useEffect(() => {
+  const dataFetcher = async () => {
+    try {
+      const response = await axios.get("https://nowted-server.remotestate.com/folders");
 
-          if (folders.length > 0 && !folderId) {
-            const firstFolder = folders[0];
-            setCurrSelectedFolderId(firstFolder.id);
-            setCurrentFolderName(firstFolder.name);
-            setActiveView("folder");
-            navigate(`/folder/${firstFolder.id}`, { replace: true });
-          }
+      if (response.data?.folders) {
+        const folders = response.data.folders;
+        setFolderData(folders);
+
+        if (folders.length === 0) return;
+
+        const isFolderPage = location.pathname.startsWith("/folder");
+
+        if (!isFolderPage) return;
+
+        const matchedFolder = folders.find((item: folderDataType) => item.id === folderId);
+        const folderToSelect = matchedFolder || folders[0];
+
+        setCurrSelectedFolderId(folderToSelect.id);
+        setCurrentFolderName(folderToSelect.name);
+        setActiveView("folder");
+
+        if (!matchedFolder) {
+          navigate(`/folder/${folderToSelect.id}`, { replace: true });
         }
-      } catch (error) {
-        console.error("Error fetching folders", error);
       }
-    };
+    } catch (error) {
+      console.error("Error fetching folders", error);
+    }
+  };
 
-    dataFetcher();
-  }, []);
+  dataFetcher();
+}, [folderId, location.pathname, navigate, setCurrSelectedFolderId, setCurrentFolderName, setActiveView]);
+
+  
 
   const createFolder = async (changeInput: string) => {
     if (!changeInput.trim()) return;
@@ -82,7 +94,7 @@ const Folders: React.FC<folderProps> = ({ folderToggle, setFolderToggle, setAddN
     }
   }, [folderId, folderData]);
 
-  const filteredFolders =
+  const finalDataToShow =
     folderSearchInput.trim() === "" ? folderData : folderData.filter((item) => item.name?.toLowerCase().includes(folderSearchInput.toLowerCase()));
     
   return (
@@ -102,7 +114,7 @@ const Folders: React.FC<folderProps> = ({ folderToggle, setFolderToggle, setAddN
           <FolderCheck onClick={() => { if (!onChangeInput) return; createFolder(onChangeInput); }} className="h-5 w-5 shrink-0"/>
         </div>
 
-        {filteredFolders.map((item) => (
+        {finalDataToShow.map((item) => (
           <div
             key={item.id}
             onClick={(e) => {
@@ -113,7 +125,7 @@ const Folders: React.FC<folderProps> = ({ folderToggle, setFolderToggle, setAddN
               navigate(`/folder/${item.id}`);
             }}
             className={`h-10 shrink-0 w-full flex flex-row gap-3.75 items-center px-5 text-base cursor-pointer
-            ${item.id === (folderId) ? mode ? "bg-[#b0414108] text-white" : "bg-gray-200 text-black" : mode ? "text-[#FFFFFF99]" 
+            ${item.id === (folderId) ? mode ? "bg-[#FFFFFF1A] text-white" : "bg-gray-200 text-black" : mode ? "text-[#FFFFFF99]" 
             : "text-black"} ${mode ? "hover:bg-[#FFFFFF08] hover:text-white" : "hover:bg-gray-200 hover:text-black"}`}>
             {item.id === folderId ? (
               <FolderOpen className="h-5 w-5 shrink-0" />
@@ -129,3 +141,6 @@ const Folders: React.FC<folderProps> = ({ folderToggle, setFolderToggle, setAddN
 };
 
 export default Folders;
+  
+
+

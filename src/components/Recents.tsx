@@ -9,7 +9,7 @@ export type recentData = {
   id: string;
   folderId: string;
   title: string;
-  isFavourite: boolean;
+  isFavorite: boolean;
   isArchived: boolean;
   createdAt: string;
   updatedAt: string;

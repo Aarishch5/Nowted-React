@@ -18,9 +18,11 @@ export const UserProvider: React.FC<Props> = ({ children }) => {
 
     const [mode, setMode] = useState<boolean>(true);
 
-   
 
 
+
+    
+    
     return (
         <UserContext.Provider value={{ 
             folderDataName,

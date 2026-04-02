@@ -1,4 +1,4 @@
-import { Trash, CalendarDays, CircleEllipsis, Folder, Star, Archive} from "lucide-react";
+import { Trash, CalendarDays, CircleEllipsis, Folder, Star, Archive, StarOff} from "lucide-react";
 import React, { useContext, useEffect, useState } from "react";
 import { UserContext } from "../context/UserContext";
 import SelectNote from "./SelectNote";
@@ -17,7 +17,7 @@ type noteDataSet = {
   folderId: string;
   title: string;
   content: string;
-  isFavourite: boolean;
+  isFavorite: boolean;
   isArchived: boolean;
   createdAt: string;
   updatedAt: string;
@@ -51,25 +51,30 @@ const Right: React.FC<RightPropType> = ({ toggle, setToggle, addNote, setAddNote
   const [title, setTitle] = useState<string>("");
 
   useEffect(() => {
-    const fetchNote = async () => {
-      if (!noteId) {
-        setCurrNote(null);
-        return;
-      }
+  const fetchNote = async () => {
+    if (!noteId || noteId === "undefined") {
+      setCurrNote(null);
+      return;
+    }
 
-      try {
-        const response = await axios.get(`https://nowted-server.remotestate.com/notes/${noteId}`);
-        if (response.data?.note) {
-          setCurrNote(response.data.note);
-        }
-      } 
-      catch (error) {
-        console.error("Error is this : ", error);
+    try {
+      const response = await axios.get(
+        `https://nowted-server.remotestate.com/notes/${noteId}`
+      );
+
+      if (response.data?.note) {
+        setCurrNote(response.data.note);
+      } else {
         setCurrNote(null);
       }
-    };
-    fetchNote();
-  }, [noteId]);
+    } catch (error) {
+      console.error("Error is this :", error);
+      setCurrNote(null);
+    }
+  };
+
+  fetchNote();
+}, [noteId]);
 
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -102,23 +107,17 @@ const Right: React.FC<RightPropType> = ({ toggle, setToggle, addNote, setAddNote
   if (!currNote) return;
 
   try {
-    const updatedValue = !currNote.isFavourite;
+    const updatedValue = !currNote.isFavorite;
 
-    await axios.patch(
-      `https://nowted-server.remotestate.com/notes/${currNote.id}`,
-      {
-        isFavourite: updatedValue,
-      }
-    );
+    await axios.patch( `https://nowted-server.remotestate.com/notes/${currNote.id}`,{ isFavorite: updatedValue });
 
-    setCurrNote((prev) =>
-      prev ? { ...prev, isFavourite: updatedValue } : prev
-    );
+    setCurrNote((prev) =>prev ? { ...prev, isFavorite: updatedValue } : prev);
 
     setRefreshNotes((prev) => prev + 1);
     setToggle(false);
-  } catch (error) {
-    console.error("Error updating favourite:", error);
+  } catch(error) {
+      console.log(error);
+      
   }
 };
 
@@ -126,38 +125,50 @@ const handleArchiveNote = async () => {
   if (!currNote) return;
 
   try {
-    await axios.patch(
-      `https://nowted-server.remotestate.com/notes/${currNote.id}`,
-      {
-        isArchived: true,
-      }
-    );
+    const updatedValue = !currNote.isArchived;
 
-    setCurrNote(null);
+    await axios.patch(`https://nowted-server.remotestate.com/notes/${currNote.id}`,{folderId: currNote.folderId, title: currNote.title,
+        content: currNote.content, isFavorite: currNote.isFavorite, isArchived: updatedValue});
+
+    const verifyResponse = await axios.get(`https://nowted-server.remotestate.com/notes/${currNote.id}`);
+
+    const updatedNote = verifyResponse.data?.note;
+
+    if (!updatedNote) return;
+
+    setCurrNote(updatedNote);
     setToggle(false);
     setRefreshNotes((prev) => prev + 1);
 
-    navigate("/archived");
+    if (updatedNote.isArchived) {
+      navigate("/archived");
+    }
   } catch (error) {
     console.error("Error archiving note:", error);
   }
 };
 
-  const handleDeleteNote = async () => {
+
+    const handleDeleteNote = async () => {
     if (!currNote) return;
 
     try {
-      await axios.delete(`https://nowted-server.remotestate.com/notes/${currNote.id}`);
+      const deletedNoteId = currNote.id;
+      const deletedFolderId = currNote.folderId;
+
+      await axios.delete(`https://nowted-server.remotestate.com/notes/${deletedNoteId}`);
 
       setCurrentFolderData((prev) =>
-        prev.filter((note) => note.id !== currNote.id)
+        prev.filter((note) => note.id !== deletedNoteId)
       );
 
       setCurrNote(null);
       setToggle(false);
       setRefreshNotes((prev) => prev + 1);
-    } catch (error) {
-      console.error("Error in  deleting note:", error);
+
+    navigate(`/folder/${deletedFolderId}`);
+     } catch (error) {
+    console.error("Error in delet:", error);
     }
   };
 
@@ -165,10 +176,8 @@ const handleArchiveNote = async () => {
     <>
       {currNote ? (
         <div
-          className={`flex flex-col gap-7.5 p-12.5 ${
-            mode ? "text-[#FFFFFF]" : "text-black"
-          }  w-[calc(100%-650px)] h-screen ${addNote ? "hidden" : "block"}`}
-        >
+          className={`flex flex-col gap-7.5 p-12.5 ${ mode ? "text-[#FFFFFF]" : "text-black"
+          }  w-[calc(100%-650px)] h-screen ${addNote ? "hidden" : "block"}`}>
           <div className="flex flex-row justify-between items-center">
             <h1 className="text-[32px]">{currNote?.title}</h1>
             <CircleEllipsis onClick={(e) => { e.stopPropagation();setToggle((prev) => !prev);}}
@@ -176,13 +185,13 @@ const handleArchiveNote = async () => {
             <div onClick={(e) => e.stopPropagation()} className={`absolute top-25.25 right-12.75 rounded-md z-50 ${ toggle ? "block" : "hidden"}`}>
               <div className={`flex flex-col w-50.5 gap-5 p-5 overflow-hidden rounded-md shadow-lg border ${mode ? "bg-[#333333] border-white/10" : "bg-white border-black" }`}>
                 <div className="flex flex-col gap-3.75">
-                  <div onClick={handleFavouriteNote} className={`${ mode ? "text-white hover:bg-[#FFFFFF1A]" : "text-black hover:bg-[#8b73731a]" } flex flex-row gap-3.75 rounded items-center cursor-pointer p-0.75`} >
-                    <Star className="w-5 h-5" />
-                    <h3 className="font-normal font-base text-base">
-                      Add to favorite
-                    </h3>
+                  <div onClick={handleFavouriteNote} className={`${mode ? "text-white hover:bg-[#FFFFFF1A]"
+                     : "text-black hover:bg-[#8b73731a]"} flex flex-row gap-3.75 rounded items-center cursor-pointer p-0.75`}>
+                      {currNote?.isFavorite ? ( <StarOff className="w-5 h-5" />) : (  <Star className="w-5 h-5" />)}
+                        <h3 className="font-normal text-base">
+                          {currNote?.isFavorite ? "Remove from favorite" : "Add to favorite"}
+                        </h3>
                   </div>
-
                   <div onClick={handleArchiveNote} className={`${mode ? "text-white hover:bg-[#FFFFFF1A]" : "text-black hover:bg-[#5e4c4c]"} flex flex-row gap-3.75 items-center cursor-pointer p-0.75`}>
                     <Archive className="w-5 h-5" />
                     <h3  className="font-normal font-base text-base"> Archived</h3>
@@ -205,9 +214,7 @@ const handleArchiveNote = async () => {
                 <CalendarDays className={`w-4.5 h-4.5 ${ mode ? "text-[#FFFFFF99]" : "text-[#493d3d]" }`}/>
               </div>
               <div className="w-25">
-                <h3 className={`text-sm font-semibold ${ mode ? "text-[#FFFFFF99]" : "text-[#493d3d]" }`}>
-                  Date
-                </h3>
+                <h3 className={`text-sm font-semibold ${ mode ? "text-[#FFFFFF99]" : "text-[#493d3d]" }`}> Date</h3>
               </div>
               <div>
                 <h3 className={`text-sm ${ mode ? "text-white" : "text-black"} font-semibold underline`}>
@@ -226,9 +233,7 @@ const handleArchiveNote = async () => {
                 <h3 className={`text-sm ${mode ? "text-[#FFFFFF99]" : "text-[#28242499]"} font-semibold`}> Folder</h3>
               </div>
               <div>
-                <h3 className={`text-sm ${ mode ? "text-white" : "text-black"} font-semibold underline`}>
-                  {currNote.folder.name}
-                </h3>
+                <h3 className={`text-sm ${ mode ? "text-white" : "text-black"} font-semibold underline`}> {currNote.folder.name} </h3>
               </div>
             </div>
           </div>
@@ -237,9 +242,7 @@ const handleArchiveNote = async () => {
             <p className={`text-justify text-base font-normal ${ mode ? "text-white" : "text-black"}`} > {currNote.content}</p>
           </div>
         </div>
-      ) : (
-        !addNote && location.pathname !== "/trash" && <SelectNote />
-      )}
+      ) : ( !addNote && location.pathname !== "/trash" && <SelectNote />)}
 
       <div className={`flex flex-col gap-7.5 p-12.5 ${ mode ? "text-white" : "text-black"} w-[calc(100%-650px)] h-screen ${addNote ? "block" : "hidden"}`}>
         <div className="flex flex-row justify-between items-center">
