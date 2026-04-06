@@ -130,10 +130,9 @@ const Middle: React.FC<middleProps> = ({addNote, currFolderName, refreshNotes, c
     });
   };
 
-  const startIndex = currentPage * PAGE_SIZE;
-  const endIndex = startIndex + PAGE_SIZE;
-  const visibleNotes = currentFolderData.slice(startIndex, endIndex);
-  const hasNextPage = endIndex < currentFolderData.length;
+ const endIndex = (currentPage + 1) * PAGE_SIZE;
+const visibleNotes = currentFolderData.slice(0, endIndex);
+const hasNextPage = endIndex < currentFolderData.length;
 
   const lastElementRef = useCallback(
     (node: HTMLDivElement | null) => {

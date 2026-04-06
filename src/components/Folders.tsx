@@ -109,7 +109,6 @@ const Folders: React.FC<folderProps> = ({ folderToggle, setFolderToggle, setAddN
     }
   };
 
-
   
 
   useEffect(() => {
