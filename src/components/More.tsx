@@ -8,14 +8,13 @@ type viewType =  "favorites" | "archived" | "trash";
 
 
 const More: React.FC = () => {
-  const { setCurrSelectedFolderId, setActiveView, mode } =
-    useContext(UserContext);
+  const { setCurrSelectedFolderId, setActiveView, mode } = useContext(UserContext);
 
   const navigate = useNavigate();
-  const location = useLocation();
+  const location = useLocation(); 
 
   const handleClick = (view: viewType) => {
-    setCurrSelectedFolderId(null);
+    setCurrSelectedFolderId(null);   
     setActiveView(view);
     navigate(`/${view}`);
   };

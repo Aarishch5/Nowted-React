@@ -33,42 +33,47 @@ const Folders: React.FC<folderProps> = ({ folderToggle, setFolderToggle, setAddN
 
   const [onChangeInput, setOnChangeInput] = useState<string | null>(null);
   const [folderData, setFolderData] = useState<folderDataType[]>([]);
-
-
-
-useEffect(() => {
-  const dataFetcher = async () => {
-    try {
-      const response = await axios.get("https://nowted-server.remotestate.com/folders");
-
-      if (response.data?.folders) {
-        const folders = response.data.folders;
-        setFolderData(folders);
-
-        if (folders.length === 0) return;
-        const isFolderPage = location.pathname.startsWith("/folder");
-        if (!isFolderPage) return;
-
-        const matchedFolder = folders.find((item: folderDataType) => item.id === folderId);
-        const folderToSelect = matchedFolder || folders[0];
-
-        setCurrSelectedFolderId(folderToSelect.id);
-        setCurrentFolderName(folderToSelect.name);
-        setActiveView("folder");
-
-        if (!matchedFolder) {
-          navigate(`/folder/${folderToSelect.id}`, { replace: true });
-        }
-      }
-    } catch (error) {
-      console.error("Error fetching folders", error);
-    }
-  };
-
-  dataFetcher();
-}, [folderId, location.pathname, navigate, setCurrSelectedFolderId, setCurrentFolderName, setActiveView]);
-
   
+
+  // Fetch folder's daata
+  useEffect(() => {
+    const dataFetcher = async () => {
+      try {
+        const response = await axios.get("https://nowted-server.remotestate.com/folders");
+
+        if (response.data?.folders) {
+          setFolderData(response.data.folders);
+        }
+      } catch (error) {
+        console.error("Error fetching folders", error);
+      }
+    };
+
+    dataFetcher();
+  }, []);
+
+
+
+  // Handling folder selection
+  useEffect(() => {
+    if (folderData.length === 0) return;
+
+    const isFolderPage = location.pathname.startsWith("/folder");
+    if (!isFolderPage) return;
+
+    const matchedFolder = folderData.find((item) => item.id === folderId);
+    const folderToSelect = matchedFolder || folderData[0];
+
+    if (!folderToSelect) return;
+
+    setCurrSelectedFolderId(folderToSelect.id);
+    setCurrentFolderName(folderToSelect.name);
+    setActiveView("folder");
+
+    if (!matchedFolder) {
+      navigate(`/folder/${folderToSelect.id}`, { replace: true });
+    }
+  }, [ folderId, folderData, location.pathname, navigate, setCurrSelectedFolderId, setCurrentFolderName, setActiveView]);
 
   const createFolder = async (changeInput: string) => {
     if (!changeInput.trim()) return;

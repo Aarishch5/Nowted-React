@@ -19,7 +19,7 @@ export type recentData = {
 };
 
 const Recents: React.FC = () => {
-  const { recentNotes, setRecentNotes, mode } = useContext(UserContext);
+  const { recentNotes, setRecentNotes, mode} = useContext(UserContext);
   const navigate = useNavigate();
   const { noteId } = useParams();
 
