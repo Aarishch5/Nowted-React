@@ -1,4 +1,4 @@
-  import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { UserContext } from "../context/UserContext";
 import { FolderPlus, FolderOpen, Folder, FolderCheck } from "lucide-react";
 import axios from "axios";
@@ -48,7 +48,6 @@ const Folders: React.FC<folderProps> = ({ folderToggle, setFolderToggle, setAddN
         console.error("Error fetching folders", error);
       }
     };
-
     dataFetcher();
   }, []);
 
@@ -64,8 +63,6 @@ const Folders: React.FC<folderProps> = ({ folderToggle, setFolderToggle, setAddN
     const matchedFolder = folderData.find((item) => item.id === folderId);
     const folderToSelect = matchedFolder || folderData[0];
 
-    if (!folderToSelect) return;
-
     setCurrSelectedFolderId(folderToSelect.id);
     setCurrentFolderName(folderToSelect.name);
     setActiveView("folder");
@@ -74,6 +71,8 @@ const Folders: React.FC<folderProps> = ({ folderToggle, setFolderToggle, setAddN
       navigate(`/folder/${folderToSelect.id}`, { replace: true });
     }
   }, [ folderId, folderData, location.pathname, navigate, setCurrSelectedFolderId, setCurrentFolderName, setActiveView]);
+
+  
 
   const createFolder = async (changeInput: string) => {
     if (!changeInput.trim()) return;
@@ -118,9 +117,8 @@ const Folders: React.FC<folderProps> = ({ folderToggle, setFolderToggle, setAddN
         </div>
 
         {finalDataToShow.map((item) => (
-          <div
-            key={item.id}
-            onClick={(e) => {
+          <div key={item.id}
+               onClick={(e) => {
               e.stopPropagation();
               setCurrSelectedFolderId(item.id);
               setCurrentFolderName(item.name);
@@ -130,9 +128,7 @@ const Folders: React.FC<folderProps> = ({ folderToggle, setFolderToggle, setAddN
             className={`h-10 shrink-0 w-full flex flex-row gap-3.75 items-center px-5 text-base cursor-pointer
             ${item.id === (folderId) ? mode ? "bg-[#FFFFFF1A] text-white" : "bg-gray-200 text-black" : mode ? "text-[#FFFFFF99]" 
             : "text-black"} ${mode ? "hover:bg-[#FFFFFF08] hover:text-white" : "hover:bg-gray-200 hover:text-black"}`}>
-            {item.id === folderId ? (
-              <FolderOpen className="h-5 w-5 shrink-0" />
-            ) : (
+            {item.id === folderId ? ( <FolderOpen className="h-5 w-5 shrink-0" />) : (
               <Folder className="h-5 w-5 shrink-0" />
             )}
             <h3>{item.name}</h3>

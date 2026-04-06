@@ -41,6 +41,7 @@ const Sidebar: React.FC<SidebarPropType> = ({ searchBtn, setSearchBtn, folderTog
     return () => clearTimeout(timer);
   }, [inputValue]);
 
+
   return (
     <div className={`flex flex-col h-screen w-75 ${ mode ? "bg-[#181818]" : "bg-white"} py-7.5 gap-7.5`}>
       <div className="w-75 flex px-5">

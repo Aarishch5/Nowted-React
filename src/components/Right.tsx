@@ -12,7 +12,7 @@ export type postNotesDataType = {
   content: string;
 }
 
-type noteDataSet = {
+type noteDataSet = { 
   id: string;
   folderId: string;
   title: string;
@@ -55,7 +55,7 @@ const Right: React.FC<RightPropType> = ({ toggle, setToggle, addNote, setAddNote
 
   useEffect(() => {
   const fetchNote = async () => {
-    if (!noteId || noteId === "undefined") {
+    if (!noteId || noteId === undefined) {
       setCurrNote(null);
       return;
     }
@@ -124,8 +124,7 @@ const Right: React.FC<RightPropType> = ({ toggle, setToggle, addNote, setAddNote
 
     try {
       const updatedValue = !currNote.isArchived;
-      await axios.patch(`https://nowted-server.remotestate.com/notes/${currNote.id}`,{folderId: currNote.folderId, title: currNote.title,
-          content: currNote.content, isFavorite: currNote.isFavorite, isArchived: updatedValue});
+      await axios.patch(`https://nowted-server.remotestate.com/notes/${currNote.id}`,{isArchived: updatedValue});
       const finalResponse = await axios.get(`https://nowted-server.remotestate.com/notes/${currNote.id}`);
       const updatedNote = finalResponse.data?.note;
       if (!updatedNote) return;

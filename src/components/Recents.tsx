@@ -31,7 +31,7 @@ const Recents: React.FC = () => {
         const response = await axios.get(recentDataAPI);
 
         if (response.data?.recentNotes) {
-          setRecentNotes((prev) => prev.length === 0 ? response.data.recentNotes : prev);
+          setRecentNotes(response.data.recentNotes)
         }
       } catch (error) {
         console.error(error);

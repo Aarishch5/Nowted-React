@@ -47,9 +47,7 @@ const App: React.FC = () => {
         if (toggle) setToggle(false);
         if (!searchBtn) setSearchBtn(true);
         if (folderToggle) setFolderToggle(false);
-      }}
-      className={`flex flex-row text-(--primary-font) ${mode ? "bg-[#121212]" : "bg-white"}`}
-    >
+      }}  className={`flex flex-row text-(--primary-font) ${mode ? "bg-[#121212]" : "bg-white"}`}>
       <Routes>
         <Route path="/" element={<Navigate to="/folder/default" replace />} />
 
