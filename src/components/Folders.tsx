@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { UserContext } from "../context/UserContext";
-import { FolderPlus, FolderOpen, Folder, FolderCheck } from "lucide-react";
+import { FolderPlus, FolderOpen, Folder, FolderCheck, Trash } from "lucide-react";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -26,7 +26,7 @@ type folderProps = {
 };
 
 const Folders: React.FC<folderProps> = ({ folderToggle, setFolderToggle, setAddNote, setCurrentFolderName, folderSearchInput}) => {
-  const { setCurrSelectedFolderId, setActiveView, mode} = useContext(UserContext);
+  const { setCurrSelectedFolderId, setActiveView, mode, currSelectedFolderId} = useContext(UserContext);
 
   const navigate = useNavigate();
   const { folderId } = useParams();
@@ -72,7 +72,6 @@ const Folders: React.FC<folderProps> = ({ folderToggle, setFolderToggle, setAddN
     }
   }, [ folderId, folderData, location.pathname, navigate, setCurrSelectedFolderId, setCurrentFolderName, setActiveView]);
 
-  
 
   const createFolder = async (changeInput: string) => {
     if (!changeInput.trim()) return;
@@ -86,6 +85,32 @@ const Folders: React.FC<folderProps> = ({ folderToggle, setFolderToggle, setAddN
       console.log(err);
     }
   };
+
+
+  // Handling selected folder deletion
+  // console.log(currSelectedFolderId);
+  
+  const handleFolderDeletion = async () => {
+    if (!currSelectedFolderId) return;
+
+    try {
+      await axios.delete(
+        `https://nowted-server.remotestate.com/folders/${currSelectedFolderId}`
+      );
+
+      setFolderData((prev: folderDataType[]) =>
+        prev.filter((folder) => folder.id !== currSelectedFolderId)
+      );
+   
+      setCurrSelectedFolderId(null);
+
+    } catch (error) {
+      console.error("Error deleting folder:", error);
+    }
+  };
+
+
+  
 
   useEffect(() => {
     const folder = folderData.find((item) => item.id === folderId);
@@ -131,7 +156,10 @@ const Folders: React.FC<folderProps> = ({ folderToggle, setFolderToggle, setAddN
             {item.id === folderId ? ( <FolderOpen className="h-5 w-5 shrink-0" />) : (
               <Folder className="h-5 w-5 shrink-0" />
             )}
-            <h3>{item.name}</h3>
+            <div className="flex flex-row justify-between items-center w-65 h-15">
+              <h3>{item.name}</h3>
+            <Trash onClick={handleFolderDeletion}  className="w-5 h-5"/>  
+            </div>
           </div>
         ))}
       </div>
