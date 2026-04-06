@@ -49,50 +49,61 @@ const Middle: React.FC<middleProps> = ({addNote, currFolderName, refreshNotes, c
   const currentPage = pagination.scope === paginationScope ? pagination.page : 0;
   const paginationBtn = pagination.scope === paginationScope ? pagination.paginationBtn : false;
 
-  useEffect(() => {
-  const fetchNotes = async () => {
-    let url = "";
+    useEffect(() => {
+    let isActive = true;
 
-    if (isTrashPage) {
-      url = "https://nowted-server.remotestate.com/notes?deleted=true&limit=100";
-    } else if (isFavoritesPage) {
-      url = "https://nowted-server.remotestate.com/notes?favorite=true&limit=100";
-    } else if (isArchivedPage) {
-      url = "https://nowted-server.remotestate.com/notes?archived=true&limit=100";
-    } else if (isFolderPage && folderId && folderId !== "undefined") {
-      url = `https://nowted-server.remotestate.com/notes?folderId=${folderId}&limit=100`;
-    }
+    const fetchNotes = async () => {
+      let url = "";
 
-    if (!url) {
-      setCurrentFolderData([]);
-      return;
-    }
+      if (isTrashPage) {
+        url = "https://nowted-server.remotestate.com/notes?deleted=true&limit=100";
+      } else if (isFavoritesPage) {
+        url = "https://nowted-server.remotestate.com/notes?favorite=true&limit=100";
+      } else if (isArchivedPage) {
+        url = "https://nowted-server.remotestate.com/notes?archived=true&limit=100";
+      } else if (isFolderPage && folderId && folderId !== "undefined") {
+        url = `https://nowted-server.remotestate.com/notes?folderId=${folderId}&limit=100`;
+      }
 
-    try {
-      const response = await axios.get(url);
-      let notes: recentData[] = response.data.notes || [];
+      if (!url) {
+        if (isActive) setCurrentFolderData([]);
+        return;
+      }
 
-      if (isFavoritesPage) {
-        notes = notes.filter(
+      try {
+        const response = await axios.get(url);
+        let notes: recentData[] = response.data.notes || [];
+
+        if (isFavoritesPage) {
+          notes = notes.filter(
           (note) => note.isFavorite === true && note.deletedAt === null
         );
       } else if (isArchivedPage) {
-        notes = notes.filter(
+          notes = notes.filter(
           (note) => note.isArchived === true && note.deletedAt === null
         );
       } else if (isTrashPage) {
-        notes = notes.filter((note) => note.deletedAt !== null);
+          notes = notes.filter((note) => note.deletedAt !== null);
       }
 
-      setCurrentFolderData(notes);
+      if (isActive) {
+        setCurrentFolderData(notes);
+      }
     } catch (error) {
       console.error("Error is this :", error);
-      setCurrentFolderData([]);
+      if (isActive) {
+        setCurrentFolderData([]);
+      }
     }
   };
 
   fetchNotes();
-}, [ folderId, isFavoritesPage, isArchivedPage, isTrashPage,isFolderPage,refreshNotes, setCurrentFolderData]);
+
+  return () => {
+    isActive = false;
+  };
+}, [folderId, isFavoritesPage, isArchivedPage, isTrashPage, isFolderPage, refreshNotes,setCurrentFolderData]);
+
 
   useEffect(() => {
     if (!isTrashPage) {

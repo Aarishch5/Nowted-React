@@ -12,7 +12,7 @@ const More: React.FC = () => {
 
   const navigate = useNavigate();
   const location = useLocation(); 
-
+  
   const handleClick = (view: viewType) => {
     setCurrSelectedFolderId(null);   
     setActiveView(view);

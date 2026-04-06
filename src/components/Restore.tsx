@@ -12,30 +12,36 @@ type recentProps = {
 };
 
 const Restore: React.FC<recentProps> = ({note, setRefreshNotes,setShowRestore}) => {
-  const { mode } = useContext(UserContext);
+  const { mode, setActiveView, setCurrSelectedFolderId } = useContext(UserContext);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
 
 
   // Restire functionality if the Trash is Opened
+
   const handleRestore = async () => {
-    if (!note || loading) return;
+  if (!note || loading) return;
 
-    try {
-      setLoading(true);
+  try {
+    setLoading(true);
 
-      await axios.post(`https://nowted-server.remotestate.com/notes/${note.id}/restore`,{ deletedAt: null, });
+    await axios.post(
+      `https://nowted-server.remotestate.com/notes/${note.id}/restore`,
+      { deletedAt: null }
+    );
 
-      setShowRestore(false);
-      setRefreshNotes((prev) => prev + 1);
-      navigate(`/note/${note.id}`);
+    setShowRestore(false);
+    setCurrSelectedFolderId(note.folderId);
+    setActiveView("folder");
+    setRefreshNotes((prev) => prev + 1);
 
-    } catch (error) {
-      console.error("Restore failed", error);
-    } finally {
-      setLoading(false);
-    }
-  };
+    navigate(`/folder/${note.folderId}/note/${note.id}`);
+  } catch (error) {
+    console.error("Restore failed", error);
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <div className={`flex flex-col p-12.5 ${ mode ? "text-white" : "text-[#ffffff]"} w-[calc(100%-650px)] h-screen items-center justify-center`}>
