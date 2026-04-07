@@ -32,7 +32,6 @@ const Folders: React.FC<folderProps> = ({ folderToggle, setFolderToggle, setAddN
   const { folderId } = useParams();
 
   const [onChangeInput, setOnChangeInput] = useState<string | null>(null);
-  // const [folderData, setFolderData] = useState<folderDataType[]>([]);
   const {folderData, setFolderData} = useContext(UserContext);
   
 
@@ -134,10 +133,10 @@ const Folders: React.FC<folderProps> = ({ folderToggle, setFolderToggle, setAddN
     <div onClick={() => setAddNote(false)} className="flex flex-col gap-2 w-75">
       <div className={`flex px-5 justify-between items-center ${ mode ? "text-[#FFFFFF99]" : "text-black"}`}>
         <h5 className=" text-sm">Folders</h5>
-        <FolderPlus onClick={(e) => { e.stopPropagation(); setFolderToggle((prev) => !prev);}} className="h-5 w-5 cursor-pointer hover:text-white"/>
+        <FolderPlus onClick={(e) => { e.stopPropagation(); setFolderToggle((prev) => !prev);}} className={`h-5 w-5 cursor-pointer ${mode ? "hover:text-white" : ""}`}/>
       </div>
 
-      <div className="flex flex-col gap-2 w-full max-h-32.5 overflow-y-auto no-scrollbar scroll-smooth">
+      <div className="flex flex-col gap-1.5 w-full max-h-35 overflow-y-auto no-scrollbar scroll-smooth">
         <div onClick={(e) => e.stopPropagation()} className={` ${mode ? "hover:bg-[#FFFFFF08] text-[#FFFFFF99] hover:text-white" 
           : "hover:bg-gray-100 text-black hover:text-zinc-700" } h-10 shrink-0 w-full flex flex-row gap-3.75 items-center px-5 
           ${ folderToggle ? "flex" : "hidden"}`}>

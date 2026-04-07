@@ -75,6 +75,8 @@ const Right: React.FC<RightPropType> = ({ toggle, setToggle, addNote, setAddNote
   fetchNote();
 }, [noteId]);
 
+
+
   // Handling the user form submission
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -90,7 +92,6 @@ const Right: React.FC<RightPropType> = ({ toggle, setToggle, addNote, setAddNote
       if (folderId) {
         setCurrentFolderData((prev) => [...prev, newNote]);
       }
-
       setTitle("");
       setFormText("");
       setAddNote(false);
@@ -101,8 +102,8 @@ const Right: React.FC<RightPropType> = ({ toggle, setToggle, addNote, setAddNote
     }
   };
 
-  // Favourite notes handleing
 
+  // Favourite notes handleing
   const handleFavouriteNote = async () => {
     if (!currNote)
     {
@@ -119,7 +120,6 @@ const Right: React.FC<RightPropType> = ({ toggle, setToggle, addNote, setAddNote
         console.log(error);
     }
   };
-
 
   // Archive notes handler
   const handleArchiveNote = async () => {
@@ -140,7 +140,7 @@ const Right: React.FC<RightPropType> = ({ toggle, setToggle, addNote, setAddNote
       setCurrNote(updatedNote);
       setToggle(false);
       setRefreshNotes((prev) => prev + 1);
-      if (updatedNote.isArchived) {
+      if (updatedNote.isArchived) { 
         navigate("/archived");
       }
     } catch (error) {

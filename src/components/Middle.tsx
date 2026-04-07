@@ -76,7 +76,7 @@ const Middle: React.FC<middleProps> = ({addNote, currFolderName, refreshNotes, c
 
         if (isFavoritesPage) {
           notes = notes.filter(
-          (note) => note.isFavorite === true && note.deletedAt === null
+          (note) => (note.isFavorite === true) || (note.isFavorite && !note.isArchived) && note.deletedAt === null
         );
       } else if (isArchivedPage) {
           notes = notes.filter(

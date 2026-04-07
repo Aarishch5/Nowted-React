@@ -18,7 +18,6 @@ const Restore: React.FC<recentProps> = ({note, setRefreshNotes,setShowRestore}) 
 
 
   // Restire functionality if the Trash is Opened
-
   const handleRestore = async () => {
   if (!note || loading){
     return;
@@ -27,7 +26,6 @@ const Restore: React.FC<recentProps> = ({note, setRefreshNotes,setShowRestore}) 
   try {
     setLoading(true);
     await axios.post(`https://nowted-server.remotestate.com/notes/${note.id}/restore`,{ deletedAt: null });
-
     const response = await axios.get("https://nowted-server.remotestate.com/folders");
     setFolderData(response.data.folders)
     
@@ -35,7 +33,6 @@ const Restore: React.FC<recentProps> = ({note, setRefreshNotes,setShowRestore}) 
     setCurrSelectedFolderId(note.folderId);
     setActiveView("folder");
     setRefreshNotes((prev) => prev + 1);
-
     navigate(`/folder/${note.folderId}/note/${note.id}`);
   } 
   catch (error) {

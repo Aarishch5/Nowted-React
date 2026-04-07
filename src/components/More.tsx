@@ -36,8 +36,9 @@ const More: React.FC = () => {
         </div>
 
         <div onClick={() => handleClick("trash")}
-          className={`cursor-pointer group h-10 w-full flex flex-row gap-3.75 items-center px-5 ${ isActive("/trash") ? mode ? "bg-[#FFFFFF1A] text-white"
-                : "bg-gray-200 text-black" : mode ? "text-[#FFFFFF99] hover:text-white hover:bg-[#FFFFFF08]" : "text-black hover:bg-gray-200"
+          className={`cursor-pointer group h-10 w-full flex flex-row gap-3.75 items-center px-5 ${ isActive("/trash") ? mode ? 
+            "bg-[#FFFFFF1A] text-white" : "bg-gray-200 text-black" : mode ? "text-[#FFFFFF99] hover:text-white hover:bg-[#FFFFFF08]" :
+           "text-black hover:bg-gray-200"
           } text-base`}>
           <Trash className="h-5 w-5" />
           <h3>Trash</h3>
