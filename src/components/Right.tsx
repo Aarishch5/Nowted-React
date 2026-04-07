@@ -241,7 +241,7 @@ const Right: React.FC<RightPropType> = ({ toggle, setToggle, addNote, setAddNote
         </div>
       ) : ( !addNote && location.pathname !== "/trash" && <SelectNote />)}
 
-      <div className={`flex flex-col gap-7.5 p-12.5 ${ mode ? "text-white" : "text-black"} w-[calc(100%-650px)] h-screen ${addNote ? "block" : "hidden"}`}>
+      <div onClick={(e) => e.stopPropagation()} className={`flex flex-col gap-7.5 p-12.5 ${ mode ? "text-white" : "text-black"} w-[calc(100%-650px)] h-screen ${addNote ? "block" : "hidden"}`}>
         <div className="flex flex-row justify-between items-center">
           <input id="noteTitle" type="text" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Enter the title"
             className={`text-[32px] w-full placeholder:text-[32px] bg-transparent outline-none ${ mode ? "placeholder:text-[#FFFFFF66]" : "placeholder:text-[#3a383866]"}`} />
@@ -264,7 +264,7 @@ const Right: React.FC<RightPropType> = ({ toggle, setToggle, addNote, setAddNote
 
           <hr className={`h-px ${ mode ? "bg-[#FFFFFF1A]" : "bg-[#9188881a]"} border-0`}/>
 
-          <div className="flex flex-row gap-2 items-start">
+          <div onClick={(e) => e.stopPropagation()} className="flex flex-row gap-2 items-start">
             <div className="w-7.5 flex items-start">
               <Folder className={`w-4.5 h-4.5 ${ mode ? "text-[#FFFFFF99]" : "text-black"} stroke-2`}/>
             </div>
@@ -280,7 +280,7 @@ const Right: React.FC<RightPropType> = ({ toggle, setToggle, addNote, setAddNote
         </div>
 
         <div>
-          <form className="flex flex-col gap-4 items-start" onSubmit={handleFormSubmit}>
+          <form onClick={(e) => e.stopPropagation()} className="flex flex-col gap-4 items-start" onSubmit={handleFormSubmit}>
             <textarea id="contentTextarea" value={formText}onChange={(e) => setFormText(e.target.value)}
               className="h-100 w-full resize-none p-3 align-top focus:outline-none focus:ring-2 focus:ring-[#312EB5] focus:border-[#312EB5]"
               placeholder="Enter text"/>

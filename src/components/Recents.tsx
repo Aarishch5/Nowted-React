@@ -28,7 +28,7 @@ const Recents: React.FC = () => {
     const dataFetcher = async () => {
       try {
         const response = await axios.get(recentDataAPI);
-        if (response.data?.recentNotes) {
+        if (response.data?.recentNotes) { 
           setRecentNotes(response.data.recentNotes)
         }
       } catch (error) {
