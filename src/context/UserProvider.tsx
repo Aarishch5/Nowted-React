@@ -9,17 +9,9 @@ type Props = {
 export const UserProvider: React.FC<Props> = ({ children }) => {
 
     const [recentNotes, setRecentNotes] = useState<recentData[]>([]);
-
     const [currSelectedFolderId, setCurrSelectedFolderId] = useState<string | null>(null);
-
     const [activeView, setActiveView] = useState<"folder" | "favorites" | "archived" | "trash">("folder");
-
     const [mode, setMode] = useState<boolean>(true);
-
-
-
-
-    
 
     return (
         <UserContext.Provider value={{ 
@@ -29,7 +21,8 @@ export const UserProvider: React.FC<Props> = ({ children }) => {
             setCurrSelectedFolderId,
             activeView,
             setActiveView,
-            mode, setMode,
+            mode,
+             setMode
             }}>{children}
         </UserContext.Provider>
     );

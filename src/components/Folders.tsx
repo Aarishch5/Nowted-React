@@ -58,7 +58,9 @@ const Folders: React.FC<folderProps> = ({ folderToggle, setFolderToggle, setAddN
     if (folderData.length === 0) return;
 
     const isFolderPage = location.pathname.startsWith("/folder");
-    if (!isFolderPage) return;
+    if (!isFolderPage) {
+      return;
+    }
 
     const matchedFolder = folderData.find((item) => item.id === folderId);
     const folderToSelect = matchedFolder || folderData[0];
@@ -74,13 +76,22 @@ const Folders: React.FC<folderProps> = ({ folderToggle, setFolderToggle, setAddN
 
 
   const createFolder = async (changeInput: string) => {
-    if (!changeInput.trim()) return;
+    if (!changeInput.trim()){
+      return;
+    }
 
     try {
-      const response = await axios.post("https://nowted-server.remotestate.com/folders",{ name: changeInput });
+      await axios.post("https://nowted-server.remotestate.com/folders",{ name: changeInput });
+      const response = await axios.get("https://nowted-server.remotestate.com/folders")
 
-      const newFolder = response.data;
-      setFolderData((prev) => [...prev, newFolder]);
+
+      if(response.data){
+        setFolderData(response.data.folders);
+      }
+
+      setOnChangeInput("");
+      setFolderToggle(false);
+      
     } catch (err) {
       console.log(err);
     }
@@ -88,28 +99,26 @@ const Folders: React.FC<folderProps> = ({ folderToggle, setFolderToggle, setAddN
 
 
   // Handling selected folder deletion
-  // console.log(currSelectedFolderId);
   
   const handleFolderDeletion = async () => {
-    if (!currSelectedFolderId) return;
+    if (!currSelectedFolderId){
+      return;
+    }
 
     try {
       await axios.delete(
         `https://nowted-server.remotestate.com/folders/${currSelectedFolderId}`
       );
-
       setFolderData((prev: folderDataType[]) =>
         prev.filter((folder) => folder.id !== currSelectedFolderId)
       );
-   
       setCurrSelectedFolderId(null);
-
     } catch (error) {
       console.error("Error deleting folder:", error);
     }
   };
 
-  
+
 
   useEffect(() => {
     const folder = folderData.find((item) => item.id === folderId);
@@ -127,7 +136,7 @@ const Folders: React.FC<folderProps> = ({ folderToggle, setFolderToggle, setAddN
     <div onClick={() => setAddNote(false)} className="flex flex-col gap-2 w-75">
       <div className={`flex px-5 justify-between items-center ${ mode ? "text-[#FFFFFF99]" : "text-black"}`}>
         <h5 className=" text-sm">Folders</h5>
-        <FolderPlus onClick={(e) => { e.stopPropagation(); setFolderToggle((prev) => !prev);}} className="h-5 w-5 cursor-pointer"/>
+        <FolderPlus onClick={(e) => { e.stopPropagation(); setFolderToggle((prev) => !prev);}} className="h-5 w-5 cursor-pointer hover:text-white"/>
       </div>
 
       <div className="flex flex-col gap-2 w-full max-h-32.5 overflow-y-auto no-scrollbar scroll-smooth">

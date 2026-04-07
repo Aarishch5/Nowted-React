@@ -101,10 +101,12 @@ const Right: React.FC<RightPropType> = ({ toggle, setToggle, addNote, setAddNote
     }
   };
 
-  // Favourite notes handler
+  // Favourite notes handleing
 
   const handleFavouriteNote = async () => {
-    if (!currNote) return;
+    if (!currNote){
+       return;
+    }
 
     try {
       const updatedValue = !currNote.isFavorite;
@@ -120,14 +122,18 @@ const Right: React.FC<RightPropType> = ({ toggle, setToggle, addNote, setAddNote
 
   // Archive notes handler
   const handleArchiveNote = async () => {
-    if (!currNote) return;
+    if (!currNote){
+      return;
+    }
 
     try {
       const updatedValue = !currNote.isArchived;
       await axios.patch(`https://nowted-server.remotestate.com/notes/${currNote.id}`,{isArchived: updatedValue});
       const finalResponse = await axios.get(`https://nowted-server.remotestate.com/notes/${currNote.id}`);
       const updatedNote = finalResponse.data?.note;
-      if (!updatedNote) return;
+      if (!updatedNote) {
+        return;
+      }
 
       setCurrNote(updatedNote);
       setToggle(false);
@@ -142,7 +148,9 @@ const Right: React.FC<RightPropType> = ({ toggle, setToggle, addNote, setAddNote
 
     // Handling the Trashing of the Notes
     const handleDeleteNote = async () => {
-    if (!currNote) return;
+    if (!currNote) {
+      return;
+    }
 
     try {
       const deletedNoteId = currNote.id;

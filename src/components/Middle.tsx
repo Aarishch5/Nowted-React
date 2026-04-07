@@ -140,7 +140,9 @@ const hasNextPage = endIndex < currentFolderData.length;
         observerRef.current.disconnect();
       }
 
-      if (!node || !hasNextPage) return;
+      if (!node || !hasNextPage){
+        return;
+      }
 
       observerRef.current = new IntersectionObserver(
         (entries) => {
@@ -163,7 +165,9 @@ const hasNextPage = endIndex < currentFolderData.length;
   );
 
   const handleNextPage = () => {
-    if (!hasNextPage) return;
+    if (!hasNextPage){
+      return;
+    }
 
     setPagination((prev) => {
       const safePage = prev.scope === paginationScope ? prev.page : 0;

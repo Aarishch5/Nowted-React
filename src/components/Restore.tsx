@@ -20,7 +20,9 @@ const Restore: React.FC<recentProps> = ({note, setRefreshNotes,setShowRestore}) 
   // Restire functionality if the Trash is Opened
 
   const handleRestore = async () => {
-  if (!note || loading) return;
+  if (!note || loading){
+    return;
+  }
 
   try {
     setLoading(true);

@@ -28,7 +28,7 @@ const Sidebar: React.FC<SidebarPropType> = ({ searchBtn, setSearchBtn, folderTog
   const [folderSearchInput, setFolderSearchInput] = useState("");
 
 
-  // Debuncing on the Searching input
+    
   useEffect(() => {
     const timer = setTimeout(() => {
       if (inputValue.trim() === "") {
