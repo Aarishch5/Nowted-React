@@ -12,7 +12,7 @@ type recentProps = {
 };
 
 const Restore: React.FC<recentProps> = ({note, setRefreshNotes,setShowRestore}) => {
-  const { mode, setActiveView, setCurrSelectedFolderId } = useContext(UserContext);
+  const { mode, setActiveView, setCurrSelectedFolderId, setFolderData } = useContext(UserContext);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
 
@@ -26,21 +26,22 @@ const Restore: React.FC<recentProps> = ({note, setRefreshNotes,setShowRestore}) 
 
   try {
     setLoading(true);
+    await axios.post(`https://nowted-server.remotestate.com/notes/${note.id}/restore`,{ deletedAt: null });
 
-    await axios.post(
-      `https://nowted-server.remotestate.com/notes/${note.id}/restore`,
-      { deletedAt: null }
-    );
-
+    const response = await axios.get("https://nowted-server.remotestate.com/folders");
+    setFolderData(response.data.folders)
+    
     setShowRestore(false);
     setCurrSelectedFolderId(note.folderId);
     setActiveView("folder");
     setRefreshNotes((prev) => prev + 1);
 
     navigate(`/folder/${note.folderId}/note/${note.id}`);
-  } catch (error) {
+  } 
+  catch (error) {
     console.error("Restore failed", error);
-  } finally {
+  }
+  finally {
     setLoading(false);
   }
 };

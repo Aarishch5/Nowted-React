@@ -32,7 +32,8 @@ const Folders: React.FC<folderProps> = ({ folderToggle, setFolderToggle, setAddN
   const { folderId } = useParams();
 
   const [onChangeInput, setOnChangeInput] = useState<string | null>(null);
-  const [folderData, setFolderData] = useState<folderDataType[]>([]);
+  // const [folderData, setFolderData] = useState<folderDataType[]>([]);
+  const {folderData, setFolderData} = useContext(UserContext);
   
 
   // Fetch folder's daata
@@ -84,7 +85,6 @@ const Folders: React.FC<folderProps> = ({ folderToggle, setFolderToggle, setAddN
       await axios.post("https://nowted-server.remotestate.com/folders",{ name: changeInput });
       const response = await axios.get("https://nowted-server.remotestate.com/folders")
 
-
       if(response.data){
         setFolderData(response.data.folders);
       }
@@ -99,16 +99,14 @@ const Folders: React.FC<folderProps> = ({ folderToggle, setFolderToggle, setAddN
 
 
   // Handling selected folder deletion
-  
+
   const handleFolderDeletion = async () => {
     if (!currSelectedFolderId){
       return;
     }
 
     try {
-      await axios.delete(
-        `https://nowted-server.remotestate.com/folders/${currSelectedFolderId}`
-      );
+      await axios.delete(`https://nowted-server.remotestate.com/folders/${currSelectedFolderId}`);
       setFolderData((prev: folderDataType[]) =>
         prev.filter((folder) => folder.id !== currSelectedFolderId)
       );

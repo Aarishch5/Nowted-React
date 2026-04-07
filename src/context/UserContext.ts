@@ -1,5 +1,6 @@
 import React, { createContext } from "react";
 import { type recentData } from "../components/Recents";
+import type { folderDataType } from "../components/Folders";
 
 
 export type ContextType = {
@@ -15,6 +16,9 @@ export type ContextType = {
 
     mode: boolean;
     setMode: React.Dispatch<React.SetStateAction<boolean>>;
+
+    folderData: folderDataType[];
+    setFolderData: React.Dispatch<React.SetStateAction<folderDataType[]>>;
 };
 
 
@@ -31,4 +35,7 @@ export const UserContext = createContext<ContextType>({
 
     mode: true,
     setMode: () => {},
+
+    folderData: [],
+    setFolderData: () => {},
 }); 

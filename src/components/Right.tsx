@@ -104,7 +104,8 @@ const Right: React.FC<RightPropType> = ({ toggle, setToggle, addNote, setAddNote
   // Favourite notes handleing
 
   const handleFavouriteNote = async () => {
-    if (!currNote){
+    if (!currNote)
+    {
        return;
     }
 
@@ -122,7 +123,8 @@ const Right: React.FC<RightPropType> = ({ toggle, setToggle, addNote, setAddNote
 
   // Archive notes handler
   const handleArchiveNote = async () => {
-    if (!currNote){
+    if (!currNote)
+    {
       return;
     }
 
