@@ -72,19 +72,7 @@ const Middle: React.FC<middleProps> = ({addNote, currFolderName, refreshNotes, c
 
       try {
         const response = await axios.get(url);
-        let notes: recentData[] = response.data.notes || [];
-
-        if (isFavoritesPage) {
-          notes = notes.filter(
-          (note) => (note.isFavorite === true) || (note.isFavorite && !note.isArchived) && note.deletedAt === null
-        );
-      } else if (isArchivedPage) {
-          notes = notes.filter(
-          (note) => note.isArchived === true && note.deletedAt === null
-        );
-      } else if (isTrashPage) {
-          notes = notes.filter((note) => note.deletedAt !== null);
-      }
+        const notes: recentData[] = response.data.notes || [];
 
       if (isActive) {
         setCurrentFolderData(notes);
@@ -147,11 +135,7 @@ const hasNextPage = endIndex < currentFolderData.length;
       observerRef.current = new IntersectionObserver(
         (entries) => {
           if (entries[0].isIntersecting) {
-            setPagination((prev) => ({
-              scope: paginationScope,
-              page: prev.scope === paginationScope ? prev.page : 0,
-              paginationBtn: true,
-            }));
+            setPagination((prev) => ({ scope: paginationScope, page: prev.scope === paginationScope ? prev.page : 0, paginationBtn: true}));
           }
         },
         {
@@ -175,14 +159,14 @@ const hasNextPage = endIndex < currentFolderData.length;
       return {
         scope: paginationScope,
         page: safePage + 1,
-        paginationBtn: false,
+        paginationBtn: false
       };
     });
 
     if (containerRef.current) {
       containerRef.current.scrollTo({
         top: 0,
-        behavior: "smooth",
+        behavior: "smooth"
       });
     }
   };

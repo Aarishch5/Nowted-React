@@ -98,7 +98,7 @@ const Right: React.FC<RightPropType> = ({ toggle, setToggle, addNote, setAddNote
 
       navigate(`/folder/${newNote.folderId}/note/${newNote.id}`);
     } catch (error) {
-      console.error("Error creating note:", error);
+      console.error("Error in creating note:", error);
     }
   };
 
@@ -106,14 +106,12 @@ const Right: React.FC<RightPropType> = ({ toggle, setToggle, addNote, setAddNote
   // Favourite notes handleing
   const handleFavouriteNote = async () => {
     if (!currNote)
-    {
-       return;
-    }
+    { return;}
 
     try {
       const updatedValue = !currNote.isFavorite;
       await axios.patch( `https://nowted-server.remotestate.com/notes/${currNote.id}`,{ isFavorite: updatedValue });
-      setCurrNote((prev) =>prev ? { ...prev, isFavorite: updatedValue } : prev);
+      // setCurrNote((prev) =>prev ? { ...prev, isFavorite: updatedValue } : prev);
       setRefreshNotes((prev) => prev + 1);
       setToggle(false);
     } catch(error) {
@@ -123,8 +121,7 @@ const Right: React.FC<RightPropType> = ({ toggle, setToggle, addNote, setAddNote
 
   // Archive notes handler
   const handleArchiveNote = async () => {
-    if (!currNote)
-    {
+    if (!currNote){
       return;
     }
 
