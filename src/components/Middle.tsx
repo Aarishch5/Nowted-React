@@ -86,7 +86,6 @@ const Middle: React.FC<middleProps> = ({addNote, currFolderName, refreshNotes, c
   };
 
   fetchNotes();
-
   return () => {
     isActive = false;
   };
@@ -118,9 +117,10 @@ const Middle: React.FC<middleProps> = ({addNote, currFolderName, refreshNotes, c
     });
   };
 
- const endIndex = (currentPage + 1) * PAGE_SIZE;
-const visibleNotes = currentFolderData.slice(0, endIndex);
-const hasNextPage = endIndex < currentFolderData.length;
+
+  const endIndex = (currentPage + 1) * PAGE_SIZE;
+  const visibleNotes = currentFolderData.slice(0, endIndex);
+  const hasNextPage = endIndex < currentFolderData.length;
 
   const lastElementRef = useCallback(
     (node: HTMLDivElement | null) => {
@@ -140,13 +140,13 @@ const hasNextPage = endIndex < currentFolderData.length;
         },
         {
           root: containerRef.current,
-          threshold: 1,
+          threshold: 1
         }
       );
       observerRef.current.observe(node);
     },
     [hasNextPage, paginationScope]
-  );
+  );  
 
   const handleNextPage = () => {
     if (!hasNextPage){
@@ -203,8 +203,8 @@ const hasNextPage = endIndex < currentFolderData.length;
                 }
               }}
               className={`flex ${ note.id === noteId && !addNote ? mode ? "bg-[#FFFFFF1A]" : "bg-gray-200" : mode ? "bg-[#FFFFFF08]" : "bg-gray-50"
-              } cursor-pointer p-5 min-h-24.5 max-h-24.5 flex-col ${
-                mode ? "hover:bg-[#FFFFFF1A]" : "hover:bg-gray-200"} overflow-hidden`} >
+              } cursor-pointer p-5 min-h-24.5 max-h-24.5 flex-col 
+               ${ mode ? "hover:bg-[#FFFFFF1A]" : "hover:bg-gray-200"} overflow-hidden`} >
               <h3 className={`text-lg font-semibold ${mode ? "text-white" : "text-black"}`}>
                 {note.title}
               </h3>
@@ -220,8 +220,7 @@ const hasNextPage = endIndex < currentFolderData.length;
         {paginationBtn && hasNextPage && (
           <button onClick={handleNextPage}
             className="w-fit self-center px-5 py-2.5 rounded-lg font-semibold bg-[#312EB5] text-white hover:bg-[#27239a] transition">
-             Load More
-          </button>
+             Load More</button>
         )}
       </div>
     </div>
