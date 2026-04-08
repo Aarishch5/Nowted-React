@@ -37,7 +37,7 @@ const Folders: React.FC<folderProps> = ({ folderToggle, setFolderToggle, setAddN
 
   // Fetch folder's daata
   useEffect(() => {
-    const dataFetcher = async () => {
+    const folderFetcher = async () => {
       try {
         const response = await axios.get("https://nowted-server.remotestate.com/folders");
 
@@ -48,7 +48,7 @@ const Folders: React.FC<folderProps> = ({ folderToggle, setFolderToggle, setAddN
         console.error("Error fetching folders", error);
       }
     };
-    dataFetcher();
+    folderFetcher();
   }, []);
 
 
@@ -75,6 +75,7 @@ const Folders: React.FC<folderProps> = ({ folderToggle, setFolderToggle, setAddN
   }, [ folderId, folderData, location.pathname, navigate, setCurrSelectedFolderId, setCurrentFolderName, setActiveView]);
 
 
+  // Folder Create
   const createFolder = async (changeInput: string) => {
     if (!changeInput.trim()){
       return;
@@ -117,17 +118,18 @@ const Folders: React.FC<folderProps> = ({ folderToggle, setFolderToggle, setAddN
 
 
 
-  useEffect(() => {
-    const folder = folderData.find((item) => item.id === folderId);
-    if (folder) {
-      setCurrentFolderName(folder.name);
-      setCurrSelectedFolderId(folder.id);
-      setActiveView("folder");
-    }
-  }, [folderId, folderData]);
+    useEffect(() => {
+      const folder = folderData.find((item) => item.id === folderId);
+      if (folder) {
+        setCurrentFolderName(folder.name);
+        setCurrSelectedFolderId(folder.id);
+        setActiveView("folder");
+      }
+    }, [folderId, folderData]);
 
   const finalDataToShow =
-    folderSearchInput.trim() === "" ? folderData : folderData.filter((item) => item.name?.toLowerCase().includes(folderSearchInput.toLowerCase()));
+    folderSearchInput.trim() === "" ? folderData :
+     folderData.filter((item) => item.name?.toLowerCase().includes(folderSearchInput.toLowerCase()));
     
   return (
     <div onClick={() => setAddNote(false)} className="flex flex-col gap-2 w-75">

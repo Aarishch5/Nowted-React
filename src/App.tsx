@@ -42,8 +42,7 @@ const App: React.FC = () => {
   );
 
   return (
-    <div
-      onClick={() => {
+    <div onClick={() => {
         if (toggle) setToggle(false);
         if (!searchBtn) setSearchBtn(true);
         if (folderToggle) setFolderToggle(false);

@@ -22,12 +22,12 @@ const Recents: React.FC = () => {
   const { recentNotes, setRecentNotes, mode} = useContext(UserContext);
   const navigate = useNavigate();
   const { noteId } = useParams();
-  const recentDataAPI = "https://nowted-server.remotestate.com/notes/recent";
+  
 
   useEffect(() => {
     const dataFetcher = async () => {
       try {
-        const response = await axios.get(recentDataAPI);
+        const response = await axios.get("https://nowted-server.remotestate.com/notes/recent");
         if (response.data?.recentNotes) { 
           setRecentNotes(response.data.recentNotes)
         }

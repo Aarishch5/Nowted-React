@@ -13,7 +13,7 @@ type middleProps = {
   setShowRestore: React.Dispatch<React.SetStateAction<boolean>>;
   setRestoreNote: React.Dispatch<React.SetStateAction<recentData | null>>;
 };
-
+ 
 const PAGE_SIZE = 5;
 
 type PaginationType = {
@@ -106,8 +106,8 @@ const Middle: React.FC<middleProps> = ({addNote, currFolderName, refreshNotes, c
 
 
   useEffect(() => {
-    if (!isTrashPage) {
-      setShowRestore(false);
+    if (!isTrashPage) { 
+      setShowRestore(false);    
       setRestoreNote(null);
     }
   }, [isTrashPage, setShowRestore, setRestoreNote]);
