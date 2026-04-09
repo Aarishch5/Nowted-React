@@ -71,8 +71,8 @@ const Right: React.FC<RightPropType> = ({ toggle, setToggle, addNote, setAddNote
       console.error("Error is this :", error);
       setCurrNote(null);
     }
-  };
-  fetchNote();
+  }
+  fetchNote()
 }, [noteId]);
 
 

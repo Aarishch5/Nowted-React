@@ -109,13 +109,12 @@ const Folders: React.FC<folderProps> = ({ folderToggle, setFolderToggle, setAddN
 
     try {
       await axios.delete(`https://nowted-server.remotestate.com/folders/${currSelectedFolderId}`);
-     
 
+      // Fetching folders again
       const response = await axios.get("https://nowted-server.remotestate.com/folders")
       if(response.data){
         setFolderData(response.data.folders);
       }
-
 
       setCurrSelectedFolderId(null);
     } catch (error) {
