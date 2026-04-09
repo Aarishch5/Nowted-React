@@ -45,9 +45,9 @@ const Folders: React.FC<folderProps> = ({ folderToggle, setFolderToggle, setAddN
           setFolderData(response.data.folders);
         }
       } catch (error) {
-        console.error("Error fetching folders", error);
+        console.error("Error in fetching folders", error);
       }
-    };
+    }
     folderFetcher();
   }, []);
 
@@ -83,6 +83,8 @@ const Folders: React.FC<folderProps> = ({ folderToggle, setFolderToggle, setAddN
 
     try {
       await axios.post("https://nowted-server.remotestate.com/folders",{ name: changeInput });
+
+      // For avoiding the delay/refresh of the window
       const response = await axios.get("https://nowted-server.remotestate.com/folders")
 
       if(response.data){
@@ -107,9 +109,14 @@ const Folders: React.FC<folderProps> = ({ folderToggle, setFolderToggle, setAddN
 
     try {
       await axios.delete(`https://nowted-server.remotestate.com/folders/${currSelectedFolderId}`);
-      setFolderData((prev: folderDataType[]) =>
-        prev.filter((folder) => folder.id !== currSelectedFolderId)
-      );
+     
+
+      const response = await axios.get("https://nowted-server.remotestate.com/folders")
+      if(response.data){
+        setFolderData(response.data.folders);
+      }
+
+
       setCurrSelectedFolderId(null);
     } catch (error) {
       console.error("Error deleting folder:", error);
