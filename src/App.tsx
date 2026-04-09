@@ -49,7 +49,7 @@ const App: React.FC = () => {
         if(addNote) setAddNote(false);
       }}  className={`flex flex-row text-(--primary-font) ${mode ? "bg-[#121212]" : "bg-white"}`}>
       <Routes>
-        <Route path="/" element={<Navigate to="/folder/default" replace />} />
+        <Route path="/" element={<Navigate to="/folder/default" replace />} /> 
 
         <Route path="/folder/:folderId" element={renderScreen()} />
         <Route path="/folder/:folderId/note/:noteId" element={renderScreen()} />

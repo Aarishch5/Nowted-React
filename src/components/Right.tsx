@@ -188,7 +188,7 @@ const Right: React.FC<RightPropType> = ({ toggle, setToggle, addNote, setAddNote
                           {currNote?.isFavorite ? "Remove from favorite" : "Add to favorite"}
                         </h3>
                   </div>
-                  <div onClick={handleArchiveNote} className={`${mode ? "text-white hover:bg-[#FFFFFF1A]" : "text-black hover:bg-[#5e4c4c]"} flex flex-row gap-3.75 items-center cursor-pointer p-0.75`}>
+                  <div onClick={handleArchiveNote} className={`${mode ? "text-white hover:bg-[#FFFFFF1A]" : "text-black hover:bg-[#8b73731a]"} flex flex-row gap-3.75 items-center cursor-pointer p-0.75`}>
                     {!currNote?.isArchived ? (<Archive className="w-5 h-5" />) : (<ArchiveRestore className="w-5 h-5"/>)}
                     <h3  className="font-normal font-base text-base">   {!currNote?.isArchived ? "Archived" : "UnArchived" } </h3>
                   </div>
@@ -196,7 +196,7 @@ const Right: React.FC<RightPropType> = ({ toggle, setToggle, addNote, setAddNote
 
                 <hr className="h-px bg-[#FFFFFF1A] border-0" />
 
-                <div onClick={handleDeleteNote} className={`${ mode ? "text-white" : "text-black" } hover:bg-[#FFFFFF1A] flex flex-row gap-3.75 items-center cursor-pointer p-0.75`}>
+                <div onClick={handleDeleteNote} className={`${mode ? "text-white hover:bg-[#FFFFFF1A]" : "text-black hover:bg-[#8b73731a]"} flex flex-row gap-3.75 items-center cursor-pointer p-0.75`}>
                     <Trash className="w-5 h-5" />
                     <h3 className="font-normal font-base text-base">Delete</h3>
                 </div>
