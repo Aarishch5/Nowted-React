@@ -27,13 +27,15 @@ const App: React.FC = () => {
 
   const { mode } = useContext(UserContext);
 
+  const [noteSearchInput, setNoteSearchInput] = useState("");
+
   const renderScreen = (rightSide?: React.ReactNode) => (
     <>
       <Sidebar searchBtn={searchBtn} setSearchBtn={setSearchBtn} folderToggle={folderToggle} setFolderToggle={setFolderToggle}
-        addNote={addNote} setAddNote={setAddNote} currFolderName={currFolderName} setCurrentFolderName={setCurrentFolderName}/>
+        addNote={addNote} setAddNote={setAddNote} currFolderName={currFolderName} setCurrentFolderName={setCurrentFolderName} setNoteSearchInput={setNoteSearchInput}/>
 
       <Middle addNote={addNote} currFolderName={currFolderName} refreshNotes={refreshNotes} currentFolderData={currentFolderData}
-        setCurrentFolderData={setCurrentFolderData} setShowRestore={setShowRestore} setRestoreNote={setRestoreNote}/>
+        setCurrentFolderData={setCurrentFolderData} setShowRestore={setShowRestore} setRestoreNote={setRestoreNote} noteSearchInput={noteSearchInput}/>
 
       {rightSide ?? (
         <Right toggle={toggle} setToggle={setToggle} addNote={addNote} setAddNote={setAddNote} currFolderName={currFolderName}

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import logo from "../assets/logo.svg";
 import { Search, Plus, ToggleLeft, ToggleRight } from "lucide-react";
 
@@ -19,13 +19,15 @@ type SidebarPropType = {
 
   currFolderName: string | null;
   setCurrentFolderName: React.Dispatch<React.SetStateAction<string | null>>;
+
+  setNoteSearchInput: React.Dispatch<React.SetStateAction<string>>;
 };
 
-const Sidebar: React.FC<SidebarPropType> = ({ searchBtn, setSearchBtn, folderToggle, setFolderToggle, addNote, setAddNote, currFolderName, setCurrentFolderName,}) => {
+const Sidebar: React.FC<SidebarPropType> = ({ searchBtn, setSearchBtn, folderToggle, setFolderToggle, addNote, setAddNote, currFolderName, setCurrentFolderName,setNoteSearchInput}) => {
   const { mode, setMode } = useContext(UserContext);
 
   const [inputValue, setInputValue] = useState("");
-  const [folderSearchInput, setFolderSearchInput] = useState("");
+  
 
 
   // Debouncing on the Searching fnality
@@ -33,9 +35,9 @@ const Sidebar: React.FC<SidebarPropType> = ({ searchBtn, setSearchBtn, folderTog
   useEffect(() => {
     const timer = setTimeout(() => {
       if (inputValue.trim() === "") {
-        setFolderSearchInput("");
+        setNoteSearchInput("");
       } else {
-        setFolderSearchInput(inputValue);
+        setNoteSearchInput(inputValue);
       }
     }, 500);
 
@@ -74,6 +76,8 @@ const Sidebar: React.FC<SidebarPropType> = ({ searchBtn, setSearchBtn, folderTog
             className={`flex flex-row gap-2 p-2.5 justify-start items-center ${ mode ? "bg-[#FFFFFF0D]" : "bg-white"} w-65 h-10 cursor-pointer`}>
             <Search className={`h-5 ${mode ? "text-white" : "text-black"} w-5`}/>
             <input onChange={(e) => { setInputValue(e.target.value);}} id="searchNote"
+            // <input id="searchNote"
+
               className={`font-semibold ${ mode ? "text-white" : "text-black"} text-base outline-none`} type="text" placeholder="Search note"/>
           </div>
         )}
@@ -81,7 +85,7 @@ const Sidebar: React.FC<SidebarPropType> = ({ searchBtn, setSearchBtn, folderTog
 
       <Recents />
 
-      <Folders folderToggle={folderToggle} setFolderToggle={setFolderToggle} addNote={addNote} setAddNote={setAddNote} currFolderName={currFolderName} setCurrentFolderName={setCurrentFolderName} folderSearchInput={folderSearchInput}/>
+      <Folders folderToggle={folderToggle} setFolderToggle={setFolderToggle} addNote={addNote} setAddNote={setAddNote} currFolderName={currFolderName} setCurrentFolderName={setCurrentFolderName}/>
 
       <More />
     </div>

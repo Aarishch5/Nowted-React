@@ -22,10 +22,9 @@ type folderProps = {
   currFolderName: string | null;
   setCurrentFolderName: React.Dispatch<React.SetStateAction<string | null>>;
 
-  folderSearchInput: string;
 };
 
-const Folders: React.FC<folderProps> = ({ folderToggle, setFolderToggle, setAddNote, setCurrentFolderName, folderSearchInput}) => {
+const Folders: React.FC<folderProps> = ({ folderToggle, setFolderToggle, setAddNote, setCurrentFolderName}) => {
   const { setCurrSelectedFolderId, setActiveView, mode, currSelectedFolderId} = useContext(UserContext);
 
   const navigate = useNavigate();
@@ -133,9 +132,9 @@ const Folders: React.FC<folderProps> = ({ folderToggle, setFolderToggle, setAddN
       }
     }, [folderId, folderData]);
 
-  const finalDataToShow =
-    folderSearchInput.trim() === "" ? folderData :
-     folderData.filter((item) => item.name?.toLowerCase().includes(folderSearchInput.toLowerCase()));
+  // const finalDataToShow =
+  //   folderSearchInput.trim() === "" ? folderData :
+  //    folderData.filter((item) => item.name?.toLowerCase().includes(folderSearchInput.toLowerCase()));
     
   return (
     <div onClick={() => setAddNote(false)} className="flex flex-col gap-2 w-75">
@@ -154,7 +153,7 @@ const Folders: React.FC<folderProps> = ({ folderToggle, setFolderToggle, setAddN
           <FolderCheck onClick={() => { if (!onChangeInput) return; createFolder(onChangeInput); }} className="h-5 w-5 shrink-0"/>
         </div>
 
-        {finalDataToShow.map((item) => (
+        {folderData.map((item) => (
           <div key={item.id}
                onClick={(e) => {
               e.stopPropagation();

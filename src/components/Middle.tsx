@@ -4,6 +4,7 @@ import { type recentData } from "./Recents";
 import axios from "axios";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 
+
 type middleProps = {
   addNote: boolean;
   currFolderName: string | null;
@@ -12,6 +13,7 @@ type middleProps = {
   setCurrentFolderData: React.Dispatch<React.SetStateAction<recentData[]>>;
   setShowRestore: React.Dispatch<React.SetStateAction<boolean>>;
   setRestoreNote: React.Dispatch<React.SetStateAction<recentData | null>>;
+  noteSearchInput: string;
 };
  
 const PAGE_SIZE = 5;
@@ -22,7 +24,7 @@ type PaginationType = {
 };
 
 const Middle: React.FC<middleProps> = ({addNote, currFolderName, refreshNotes, currentFolderData, setCurrentFolderData, setShowRestore,
- setRestoreNote}) => {
+ setRestoreNote, noteSearchInput}) => {
   const { setRecentNotes, mode } = useContext(UserContext);
 
   const navigate = useNavigate();
@@ -39,7 +41,6 @@ const Middle: React.FC<middleProps> = ({addNote, currFolderName, refreshNotes, c
   const [pagination, setPagination] = useState<PaginationType>({
     scope: paginationScope,
     page: 0,
-    // paginationBtn: false
   });
 
   const observerRef = useRef<IntersectionObserver | null>(null);
@@ -92,12 +93,11 @@ const Middle: React.FC<middleProps> = ({addNote, currFolderName, refreshNotes, c
   };
 }, [folderId, isFavoritesPage, isArchivedPage, isTrashPage, isFolderPage, refreshNotes,setCurrentFolderData]);
 
-
   useEffect(() => {
     if (!isTrashPage) { 
       setShowRestore(false);    
       setRestoreNote(null);
-    }
+    } 
   }, [isTrashPage, setShowRestore, setRestoreNote]);
 
   // Disconnecting the pagination when the compoonent got unMount
@@ -120,8 +120,14 @@ const Middle: React.FC<middleProps> = ({addNote, currFolderName, refreshNotes, c
   };
 
 
+   const finalNotesToShow  = 
+      noteSearchInput.trim() === "" ? currentFolderData :
+      currentFolderData.filter((item: recentData) => item.title?.toLowerCase().includes(noteSearchInput.toLowerCase()))
+
+
+
   const endIndex = (currentPage + 1) * PAGE_SIZE;
-  const visibleNotes = currentFolderData.slice(0, endIndex);
+  const visibleNotes = finalNotesToShow.slice(0, endIndex);
   const hasNextPage = endIndex < currentFolderData.length;
 
   useEffect(() => {
@@ -155,7 +161,6 @@ const Middle: React.FC<middleProps> = ({addNote, currFolderName, refreshNotes, c
               });
               setIsLoadingMore(false);
             }, 500)
-
           }
         },
         {
@@ -168,7 +173,8 @@ const Middle: React.FC<middleProps> = ({addNote, currFolderName, refreshNotes, c
     [hasNextPage, paginationScope]
   );  
 
-
+  // console.log(currentFolderData);
+  
 
 
   return (
