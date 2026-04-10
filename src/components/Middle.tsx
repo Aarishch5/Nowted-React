@@ -173,7 +173,7 @@ const Middle: React.FC<middleProps> = ({addNote, currFolderName, refreshNotes, c
     [hasNextPage, paginationScope]
   );  
 
-  // console.log(currentFolderData);
+  
   
 
 

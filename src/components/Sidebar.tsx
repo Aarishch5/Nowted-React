@@ -1,7 +1,6 @@
 import React, { useContext, useState, useEffect } from "react";
 import logo from "../assets/logo.svg";
-import { Search, Plus, ToggleLeft, ToggleRight } from "lucide-react";
-
+import { Search, Plus, ToggleLeft, ToggleRight } from "lucide-react"
 import Folders from "./Folders";
 import More from "./More";
 import Recents from "./Recents";

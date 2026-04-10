@@ -1,9 +1,10 @@
 import React, { useContext, useEffect } from "react";
 import { FileText } from "lucide-react";
 import { type folderDataType } from "../components/Folders";
-import axios from "axios";
+// import axios from "axios";
 import { UserContext } from "../context/UserContext";
 import { useNavigate, useParams } from "react-router-dom";
+import api from "../api/axios";
 
 export type recentData = {
   id: string;
@@ -24,10 +25,11 @@ const Recents: React.FC = () => {
   const { noteId } = useParams();
   
 
+  
   useEffect(() => {
     const dataFetcher = async () => {
       try {
-        const response = await axios.get("https://nowted-server.remotestate.com/notes/recent");
+        const response = await api.get("/notes/recent");
         if (response.data?.recentNotes) { 
           setRecentNotes(response.data.recentNotes)
         }

@@ -1,9 +1,9 @@
 import { History } from "lucide-react";
 import React, { useContext, useState } from "react";
 import type { recentData } from "./Recents";
-import axios from "axios";
 import { UserContext } from "../context/UserContext";
 import { useNavigate } from "react-router-dom";
+import api from "../api/axios"
 
 type recentProps = {
   note: recentData | null;
@@ -17,7 +17,7 @@ const Restore: React.FC<recentProps> = ({note, setRefreshNotes,setShowRestore}) 
   const [loading, setLoading] = useState(false);
 
 
-  // Restire functionality if the Trash is Opened
+  // Restore functionality if the Trash is Opened
   const handleRestore = async () => {
   if (!note || loading){
     return;
@@ -25,8 +25,8 @@ const Restore: React.FC<recentProps> = ({note, setRefreshNotes,setShowRestore}) 
 
   try {
     setLoading(true);
-    await axios.post(`https://nowted-server.remotestate.com/notes/${note.id}/restore`,{ deletedAt: null });
-    const response = await axios.get("https://nowted-server.remotestate.com/folders");
+    await api.post(`/notes/${note.id}/restore`,{ deletedAt: null });
+    const response = await api.get("/folders");
     setFolderData(response.data.folders)
     
     setShowRestore(false);

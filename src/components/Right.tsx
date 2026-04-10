@@ -2,10 +2,11 @@ import { Trash, CalendarDays, CircleEllipsis, Folder, Star, Archive, StarOff, Ar
 import React, { useContext, useEffect, useState } from "react";
 import { UserContext } from "../context/UserContext";
 import SelectNote from "./SelectNote";
-import axios from "axios";
+// import axios from "axios";
 import { type folderDataType } from "../components/Folders";
 import type { recentData } from "./Recents";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
+import api from "../api/axios"
 
 export type postNotesDataType = {
   title: string;
@@ -37,9 +38,12 @@ type RightPropType = {
 
   setRefreshNotes: React.Dispatch<React.SetStateAction<number>>;
   setCurrentFolderData: React.Dispatch<React.SetStateAction<recentData[]>>;
+
+  setShowRestore: React.Dispatch<React.SetStateAction<boolean>>;
+
 };
 
-const Right: React.FC<RightPropType> = ({ toggle, setToggle, addNote, setAddNote, currFolderName, setRefreshNotes, setCurrentFolderData,}) => {
+const Right: React.FC<RightPropType> = ({ toggle, setToggle, addNote, setAddNote, currFolderName, setRefreshNotes, setCurrentFolderData,setShowRestore}) => {
   const { mode } = useContext(UserContext);
 
   const { noteId, folderId } = useParams();
@@ -61,7 +65,7 @@ const Right: React.FC<RightPropType> = ({ toggle, setToggle, addNote, setAddNote
     }
 
     try {
-      const response = await axios.get(`https://nowted-server.remotestate.com/notes/${noteId}`);
+      const response = await api.get(`/notes/${noteId}`);
       if (response.data?.note) {
         setCurrNote(response.data.note);
       } else {
@@ -87,7 +91,7 @@ const Right: React.FC<RightPropType> = ({ toggle, setToggle, addNote, setAddNote
     }
 
     try {
-      const response = await axios.post("https://nowted-server.remotestate.com/notes",{title: title.trim(), content: formText.trim(), folderId: folderId});
+      const response = await api.post("/notes",{title: title.trim(), content: formText.trim(), folderId: folderId});
       const newNote = {...response.data.note, folder: { name: currFolderName}};
       if (folderId) {
         setCurrentFolderData((prev) => [...prev, newNote]);
@@ -110,8 +114,7 @@ const Right: React.FC<RightPropType> = ({ toggle, setToggle, addNote, setAddNote
 
     try {
       const updatedValue = !currNote.isFavorite;
-      await axios.patch( `https://nowted-server.remotestate.com/notes/${currNote.id}`,{ isFavorite: updatedValue });
-      // setCurrNote((prev) =>prev ? { ...prev, isFavorite: updatedValue } : prev);
+      await api.patch( `/notes/${currNote.id}`,{ isFavorite: updatedValue });
       setRefreshNotes((prev) => prev + 1);
       setToggle(false);
     } catch(error) {
@@ -127,8 +130,8 @@ const Right: React.FC<RightPropType> = ({ toggle, setToggle, addNote, setAddNote
 
     try {
       const updatedValue = !currNote.isArchived;
-      await axios.patch(`https://nowted-server.remotestate.com/notes/${currNote.id}`,{isArchived: updatedValue});
-      const finalResponse = await axios.get(`https://nowted-server.remotestate.com/notes/${currNote.id}`);
+      await api.patch(`/notes/${currNote.id}`,{isArchived: updatedValue});
+      const finalResponse = await api.get(`/notes/${currNote.id}`);
       const updatedNote = finalResponse.data?.note;
       if (!updatedNote) {
         return;
@@ -155,8 +158,10 @@ const Right: React.FC<RightPropType> = ({ toggle, setToggle, addNote, setAddNote
       const deletedNoteId = currNote.id;
       const deletedFolderId = currNote.folderId;
 
-      await axios.delete(`https://nowted-server.remotestate.com/notes/${deletedNoteId}`);
+      await api.delete(`/notes/${deletedNoteId}`);
       setCurrentFolderData((prev) => prev.filter((note) => note.id !== deletedNoteId));
+
+      setShowRestore(true);
 
       setCurrNote(null);
       setToggle(false);
@@ -235,7 +240,8 @@ const Right: React.FC<RightPropType> = ({ toggle, setToggle, addNote, setAddNote
             </div>
           </div>
 
-          <div>
+          
+          <div className="w-full max-h-110 overflow-y-auto no-scrollbar scroll-smooth ">
             <p className={`text-justify text-base font-normal ${ mode ? "text-white" : "text-black"}`} > {currNote.content}</p>
           </div>
         </div>

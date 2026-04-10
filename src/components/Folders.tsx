@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { UserContext } from "../context/UserContext";
-import { FolderPlus, FolderOpen, Folder, FolderCheck, Trash } from "lucide-react";
-import axios from "axios";
+import { FolderPlus, FolderOpen, Folder, FolderCheck, Trash, Pencil } from "lucide-react";
+import api from "../api/axios"
 import { useNavigate, useParams } from "react-router-dom";
 
 export type folderDataType = {
@@ -38,7 +38,7 @@ const Folders: React.FC<folderProps> = ({ folderToggle, setFolderToggle, setAddN
   useEffect(() => {
     const folderFetcher = async () => {
       try {
-        const response = await axios.get("https://nowted-server.remotestate.com/folders");
+        const response = await api.get("/folders");
 
         if (response.data?.folders) {
           setFolderData(response.data.folders);
@@ -82,10 +82,10 @@ const Folders: React.FC<folderProps> = ({ folderToggle, setFolderToggle, setAddN
     }
 
     try {
-      await axios.post("https://nowted-server.remotestate.com/folders",{ name: changeInput });
+      await api.post("/folders",{ name: changeInput });
 
       // For avoiding the delay/refresh of the window
-      const response = await axios.get("https://nowted-server.remotestate.com/folders")
+      const response = await api.get("/folders")
 
       if(response.data){
         setFolderData(response.data.folders);
@@ -100,10 +100,7 @@ const Folders: React.FC<folderProps> = ({ folderToggle, setFolderToggle, setAddN
   };
 
 
-
-
   // Handling selected folder deletion
-
   const handleFolderDeletion = async (e: React.MouseEvent, folderIdToDelete: string) => {
     e.stopPropagation();
     if (!folderId){
@@ -111,10 +108,10 @@ const Folders: React.FC<folderProps> = ({ folderToggle, setFolderToggle, setAddN
     }
 
     try {
-      await axios.delete(`https://nowted-server.remotestate.com/folders/${folderIdToDelete}`);
+      await api.delete(`/folders/${folderIdToDelete}`);
 
       // Fetching folders again
-      const response = await axios.get("https://nowted-server.remotestate.com/folders")
+      const response = await api.get("/folders")
       if(response.data?.folders){
         setFolderData(response.data.folders);
       }
@@ -174,7 +171,9 @@ const Folders: React.FC<folderProps> = ({ folderToggle, setFolderToggle, setAddN
             )}
             <div className="flex flex-row justify-between items-center w-65 h-15">
               <h3>{item.name}</h3>
-            <Trash onClick={(e) => handleFolderDeletion(e, item.id)}  className="w-5 h-5"/>  
+            <div className="flex flex-row gap-4">
+              <Pencil className="w-5 h-5"/>
+            <Trash onClick={(e) => handleFolderDeletion(e, item.id)}  className="w-5 h-5"/> </div> 
             </div>
           </div>
         ))}

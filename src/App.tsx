@@ -39,7 +39,7 @@ const App: React.FC = () => {
 
       {rightSide ?? (
         <Right toggle={toggle} setToggle={setToggle} addNote={addNote} setAddNote={setAddNote} currFolderName={currFolderName}
-          setRefreshNotes={setRefreshNotes} setCurrentFolderData={setCurrentFolderData}/>)}
+          setRefreshNotes={setRefreshNotes} setCurrentFolderData={setCurrentFolderData} setShowRestore={setShowRestore}/>)}
     </>
   );
 
@@ -66,7 +66,7 @@ const App: React.FC = () => {
               <Restore note={restoreNote} setShowRestore={setShowRestore} setRefreshNotes={setRefreshNotes} />
             ) : (
               <Right toggle={toggle} setToggle={setToggle} addNote={addNote} setAddNote={setAddNote} currFolderName={currFolderName}
-               setRefreshNotes={setRefreshNotes} setCurrentFolderData={setCurrentFolderData}/>
+               setRefreshNotes={setRefreshNotes} setCurrentFolderData={setCurrentFolderData} setShowRestore={setShowRestore}/>
             )
           )}/>
       </Routes>
