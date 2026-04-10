@@ -50,6 +50,7 @@ const Folders: React.FC<folderProps> = ({ folderToggle, setFolderToggle, setAddN
     folderFetcher();
   }, []);
 
+  
 
 
   // Handling folder selection
@@ -99,28 +100,34 @@ const Folders: React.FC<folderProps> = ({ folderToggle, setFolderToggle, setAddN
   };
 
 
+
+
   // Handling selected folder deletion
 
-  const handleFolderDeletion = async () => {
-    if (!currSelectedFolderId){
+  const handleFolderDeletion = async (e: React.MouseEvent, folderIdToDelete: string) => {
+    e.stopPropagation();
+    if (!folderId){
       return;
     }
 
     try {
-      await axios.delete(`https://nowted-server.remotestate.com/folders/${currSelectedFolderId}`);
+      await axios.delete(`https://nowted-server.remotestate.com/folders/${folderIdToDelete}`);
 
       // Fetching folders again
       const response = await axios.get("https://nowted-server.remotestate.com/folders")
-      if(response.data){
+      if(response.data?.folders){
         setFolderData(response.data.folders);
       }
 
-      setCurrSelectedFolderId(null);
+      if(currSelectedFolderId === folderIdToDelete){
+        setCurrSelectedFolderId(null)
+        setCurrentFolderName(null)
+        navigate("/");
+      }
     } catch (error) {
       console.error("Error deleting folder:", error);
     }
   };
-
 
 
     useEffect(() => {
@@ -132,9 +139,6 @@ const Folders: React.FC<folderProps> = ({ folderToggle, setFolderToggle, setAddN
       }
     }, [folderId, folderData]);
 
-  // const finalDataToShow =
-  //   folderSearchInput.trim() === "" ? folderData :
-  //    folderData.filter((item) => item.name?.toLowerCase().includes(folderSearchInput.toLowerCase()));
     
   return (
     <div onClick={() => setAddNote(false)} className="flex flex-col gap-2 w-75">
@@ -170,7 +174,7 @@ const Folders: React.FC<folderProps> = ({ folderToggle, setFolderToggle, setAddN
             )}
             <div className="flex flex-row justify-between items-center w-65 h-15">
               <h3>{item.name}</h3>
-            <Trash onClick={handleFolderDeletion}  className="w-5 h-5"/>  
+            <Trash onClick={(e) => handleFolderDeletion(e, item.id)}  className="w-5 h-5"/>  
             </div>
           </div>
         ))}
