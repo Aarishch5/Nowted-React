@@ -164,6 +164,7 @@ const Right: React.FC<RightPropType> = ({ toggle, setToggle, addNote, setAddNote
 
     navigate(`/folder/${deletedFolderId}`);
      } catch (error) {
+      //
     console.error("Error in delet:", error);
     }
   };

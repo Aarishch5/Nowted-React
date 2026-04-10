@@ -5,7 +5,7 @@ import axios from "axios";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 
 type middleProps = {
-     addNote: boolean;
+  addNote: boolean;
   currFolderName: string | null;
   refreshNotes: number;
   currentFolderData: recentData[];
@@ -19,7 +19,6 @@ const PAGE_SIZE = 5;
 type PaginationType = {
   scope: string;
   page: number;
-  paginationBtn: boolean;
 };
 
 const Middle: React.FC<middleProps> = ({addNote, currFolderName, refreshNotes, currentFolderData, setCurrentFolderData, setShowRestore,
@@ -40,14 +39,16 @@ const Middle: React.FC<middleProps> = ({addNote, currFolderName, refreshNotes, c
   const [pagination, setPagination] = useState<PaginationType>({
     scope: paginationScope,
     page: 0,
-    paginationBtn: false
+    // paginationBtn: false
   });
 
   const observerRef = useRef<IntersectionObserver | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
+  const isFetchingNextRef = useRef(false);
+
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
 
   const currentPage = pagination.scope === paginationScope ? pagination.page : 0;
-  const paginationBtn = pagination.scope === paginationScope ? pagination.paginationBtn : false;
 
     useEffect(() => {
     let isActive = true;
@@ -99,6 +100,7 @@ const Middle: React.FC<middleProps> = ({addNote, currFolderName, refreshNotes, c
     }
   }, [isTrashPage, setShowRestore, setRestoreNote]);
 
+  // Disconnecting the pagination when the compoonent got unMount
   useEffect(() => {
     return () => {
       if (observerRef.current) {
@@ -122,6 +124,10 @@ const Middle: React.FC<middleProps> = ({addNote, currFolderName, refreshNotes, c
   const visibleNotes = currentFolderData.slice(0, endIndex);
   const hasNextPage = endIndex < currentFolderData.length;
 
+  useEffect(() => {
+  isFetchingNextRef.current = false;
+}, [visibleNotes.length]);
+
   const lastElementRef = useCallback(
     (node: HTMLDivElement | null) => {
       if (observerRef.current) {
@@ -134,13 +140,27 @@ const Middle: React.FC<middleProps> = ({addNote, currFolderName, refreshNotes, c
 
       observerRef.current = new IntersectionObserver(
         (entries) => {
-          if (entries[0].isIntersecting) {
-            setPagination((prev) => ({ scope: paginationScope, page: prev.scope === paginationScope ? prev.page : 0, paginationBtn: true}));
+          if (entries[0].isIntersecting && !isFetchingNextRef.current) {
+            isFetchingNextRef.current = true;
+            setIsLoadingMore(true);
+
+            setTimeout(() => {
+              setPagination((prev) => { 
+                const safePage = prev.scope === paginationScope ? prev.page : 0;
+                
+                return {
+                  scope: paginationScope,
+                  page: safePage + 1,
+                }
+              });
+              setIsLoadingMore(false);
+            }, 500)
+
           }
         },
         {
           root: containerRef.current,
-          threshold: 1
+          threshold: 0.5
         }
       );
       observerRef.current.observe(node);
@@ -148,28 +168,8 @@ const Middle: React.FC<middleProps> = ({addNote, currFolderName, refreshNotes, c
     [hasNextPage, paginationScope]
   );  
 
-  const handleNextPage = () => {
-    if (!hasNextPage){
-      return;
-    }
 
-    setPagination((prev) => {
-      const safePage = prev.scope === paginationScope ? prev.page : 0;
 
-      return {
-        scope: paginationScope,
-        page: safePage + 1,
-        paginationBtn: false
-      };
-    });
-
-    if (containerRef.current) {
-      containerRef.current.scrollTo({
-        top: 0,
-        behavior: "smooth"
-      });
-    }
-  };
 
   return (
     <div className={`flex w-87.5 h-screen flex-col px-5 pb-7.5 ${mode ? "bg-[#1C1C1C]" : "bg-gray-50"} gap-7.5`}>
@@ -217,10 +217,16 @@ const Middle: React.FC<middleProps> = ({addNote, currFolderName, refreshNotes, c
           );
         })}
 
-        {paginationBtn && hasNextPage && (
-          <button onClick={handleNextPage}
-            className="w-fit self-center px-5 py-2.5 rounded-lg font-semibold bg-[#312EB5] text-white hover:bg-[#27239a] transition">
-             Load More</button>
+        {isLoadingMore && hasNextPage && (
+          <div className={`text-center text-sm font-medium py-2 ${ mode ? "text-[#FFFFFF66]" : "text-gray-500"}`}>
+            Loading...
+          </div>
+        )}
+
+        {!hasNextPage && currentFolderData.length > 0 && (
+          <div className={`text-center text-sm font-medium py-2 ${mode ? "text-[#FFFFFF66]" : "text-gray-500"}`}>
+            No more notes available
+          </div>
         )}
       </div>
     </div>
