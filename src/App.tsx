@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react"
+import React, { useContext, useEffect, useState } from "react"
 import { Routes, Route, Navigate } from "react-router-dom";
 import Sidebar from "./components/Sidebar";
 import Middle from "./components/Middle"
@@ -25,14 +25,36 @@ const App: React.FC = () => {
 
   const [restoreNote, setRestoreNote] = useState<recentData | null>(null);
 
-  const { mode } = useContext(UserContext);
+  const { mode, setMode } = useContext(UserContext);
 
   const [noteSearchInput, setNoteSearchInput] = useState("");
+
+   useEffect(() => {
+    const savedTheme = localStorage.getItem("theme");
+
+    if (savedTheme === "dark") {
+      setMode(true);
+    } else {
+      setMode(false);
+    }
+  }, [setMode]);
+
+  
+  useEffect(() => {
+    const theme = mode ? "dark" : "light";
+
+    document.documentElement.classList.remove("dark", "light");
+    document.documentElement.classList.add(theme);
+
+    localStorage.setItem("theme", theme);
+  }, [mode]);
+
+  
 
   const renderScreen = (rightSide?: React.ReactNode) => (
     <>
       <Sidebar searchBtn={searchBtn} setSearchBtn={setSearchBtn} folderToggle={folderToggle} setFolderToggle={setFolderToggle}
-        addNote={addNote} setAddNote={setAddNote} currFolderName={currFolderName} setCurrentFolderName={setCurrentFolderName} setNoteSearchInput={setNoteSearchInput}/>
+        addNote={addNote} setAddNote={setAddNote} currFolderName={currFolderName} setCurrentFolderName={setCurrentFolderName} setNoteSearchInput={setNoteSearchInput} />
 
       <Middle addNote={addNote} currFolderName={currFolderName} refreshNotes={refreshNotes} currentFolderData={currentFolderData}
         setCurrentFolderData={setCurrentFolderData} setShowRestore={setShowRestore} setRestoreNote={setRestoreNote} noteSearchInput={noteSearchInput}/>
@@ -49,7 +71,7 @@ const App: React.FC = () => {
         if (!searchBtn) setSearchBtn(true);
         if (folderToggle) setFolderToggle(false);
         if(addNote) setAddNote(false);
-      }}  className={`flex flex-row text-(--primary-font) ${mode ? "bg-[#121212]" : "bg-white"}`}>
+      }}  className={`flex flex-row bg-(--background)`}>
       <Routes>
         <Route path="/" element={<Navigate to="/folder/default" replace />} /> 
 

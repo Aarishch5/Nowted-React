@@ -12,7 +12,7 @@ type recentProps = {
 };
 
 const Restore: React.FC<recentProps> = ({note, setRefreshNotes,setShowRestore}) => {
-  const { mode, setActiveView, setCurrSelectedFolderId, setFolderData } = useContext(UserContext);
+  const {setActiveView, setCurrSelectedFolderId, setFolderData } = useContext(UserContext);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
 
@@ -44,7 +44,7 @@ const Restore: React.FC<recentProps> = ({note, setRefreshNotes,setShowRestore}) 
 };
 
   return (
-    <div className={`flex flex-col p-12.5 ${ mode ? "text-white" : "text-[#ffffff]"} w-[calc(100%-650px)] h-screen items-center justify-center`}>
+    <div className="flex flex-col p-12.5 text-(--mainText) w-[calc(100%-650px)] h-screen items-center justify-center">
       <div className="flex flex-col gap-2.5 items-center justify-center">
         <History className="h-10 w-10 stroke-1" />
 
@@ -52,7 +52,7 @@ const Restore: React.FC<recentProps> = ({note, setRefreshNotes,setShowRestore}) 
 
         <div className="flex flex-col gap-5 items-center">
           <div className="w-120 h-9.75">
-            <h5 className={`text-base font-normal text-center ${ mode ? "text-[#FFFFFF99]" : "text-black" }`}>
+            <h5 className="text-base font-normal text-center text-(--folderTextColor)">
               Don't want to lose this note? It's not too late! Just click the
               'Restore' button and it will be added back to your list.
             </h5>
