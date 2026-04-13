@@ -8,17 +8,21 @@ import type { recentData } from "./components/Recents";
 type ScreenLayoutProps = {
   searchBtn: boolean;
   setSearchBtn: React.Dispatch<React.SetStateAction<boolean>>;
+
   folderToggle: boolean;
   setFolderToggle: React.Dispatch<React.SetStateAction<boolean>>;
   addNote: boolean;
   setAddNote: React.Dispatch<React.SetStateAction<boolean>>;
+
   currFolderName: string | null;
   setCurrentFolderName: React.Dispatch<React.SetStateAction<string | null>>;
+
   refreshNotes: number;
   setRefreshNotes: React.Dispatch<React.SetStateAction<number>>;
   currentFolderData: recentData[];
   setCurrentFolderData: React.Dispatch<React.SetStateAction<recentData[]>>;
   showRestore: boolean;
+  
   setShowRestore: React.Dispatch<React.SetStateAction<boolean>>;
 
   restoreNote: recentData | null;
@@ -31,9 +35,9 @@ type ScreenLayoutProps = {
   isTrashPage?: boolean;
 };
 
-const ScreenLayout: React.FC<ScreenLayoutProps> = React.memo( ({ searchBtn, setSearchBtn, folderToggle, setFolderToggle, addNote, setAddNote, currFolderName, setCurrentFolderName, refreshNotes,
+const ScreenLayout = React.memo( ({ searchBtn, setSearchBtn, folderToggle, setFolderToggle, addNote, setAddNote, currFolderName, setCurrentFolderName, refreshNotes,
   setRefreshNotes, currentFolderData, setCurrentFolderData, showRestore, setShowRestore, restoreNote, setRestoreNote,
-  toggle, setToggle, noteSearchInput, setNoteSearchInput, isTrashPage = false}) => {
+  toggle, setToggle, noteSearchInput, setNoteSearchInput, isTrashPage = false}: ScreenLayoutProps) => {
   return (
     <>
       <Sidebar searchBtn={searchBtn} setSearchBtn={setSearchBtn} folderToggle={folderToggle} setFolderToggle={setFolderToggle}

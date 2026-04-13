@@ -202,10 +202,7 @@ const Middle: React.FC<middleProps> = ({
     <div className="flex w-87.5 h-screen flex-col px-5 pb-7.5 bg-(--middleBg) gap-7.5">
       <div className="px-5 pb-5 pt-7.5 bg-(--middleBg) sticky top-0 z-10">
         <h2 className="text-[22px] font-semibold text-(--mainText)">
-          {isFavoritesPage ? "Favorites" : isArchivedPage ? "Archived" : isTrashPage ? "Trash"
-                : currentFolderData.length > 0
-                  ? currentFolderData[0].folder?.name || "Folder"
-                  : currFolderName}
+            {isFavoritesPage ? "Favorites" : isArchivedPage ? "Archived" : isTrashPage ? "Trash" : currFolderName || "Folder"}
         </h2>
       </div>
 
