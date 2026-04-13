@@ -1,12 +1,14 @@
 import React, { useContext, useEffect, useState } from "react"
 import { Routes, Route, Navigate } from "react-router-dom";
-import Sidebar from "./components/Sidebar";
-import Middle from "./components/Middle"
+// import Sidebar from "./components/Sidebar";
+// import Middle from "./components/Middle"
 
-import Right from "./components/Right";
-import Restore from "./components/Restore";
+
+// import Right from "./components/Right";
+// import Restore from "./components/Restore";
 import type { recentData } from "./components/Recents"
 import { UserContext } from "./context/UserContext";
+import ScreenLayout from "./ScreenLayout";
 
 const App: React.FC = () => {
   const [toggle, setToggle] = useState<boolean>(false);
@@ -50,20 +52,10 @@ const App: React.FC = () => {
   }, [mode]);
 
   
+  const commonProps = { searchBtn, setSearchBtn, folderToggle, setFolderToggle, addNote, setAddNote, currFolderName, setCurrentFolderName,
+    refreshNotes, setRefreshNotes, currentFolderData, setCurrentFolderData, showRestore, setShowRestore, restoreNote,
+    setRestoreNote, toggle, setToggle, noteSearchInput, setNoteSearchInput};
 
-  const renderScreen = (rightSide?: React.ReactNode) => (
-    <>
-      <Sidebar searchBtn={searchBtn} setSearchBtn={setSearchBtn} folderToggle={folderToggle} setFolderToggle={setFolderToggle}
-        addNote={addNote} setAddNote={setAddNote} currFolderName={currFolderName} setCurrentFolderName={setCurrentFolderName} setNoteSearchInput={setNoteSearchInput} />
-
-      <Middle addNote={addNote} currFolderName={currFolderName} refreshNotes={refreshNotes} currentFolderData={currentFolderData}
-        setCurrentFolderData={setCurrentFolderData} setShowRestore={setShowRestore} setRestoreNote={setRestoreNote} noteSearchInput={noteSearchInput}/>
-
-      {rightSide ?? (
-        <Right toggle={toggle} setToggle={setToggle} addNote={addNote} setAddNote={setAddNote} currFolderName={currFolderName}
-          setRefreshNotes={setRefreshNotes} setCurrentFolderData={setCurrentFolderData} setShowRestore={setShowRestore}/>)}
-    </>
-  );
 
   return (
     <div onClick={() => {
@@ -75,22 +67,24 @@ const App: React.FC = () => {
       <Routes>
         <Route path="/" element={<Navigate to="/folder/default" replace />} /> 
 
-        <Route path="/folder/:folderId" element={renderScreen()} />
-        <Route path="/folder/:folderId/note/:noteId" element={renderScreen()} />
+        <Route path="/folder/:folderId" element={<ScreenLayout {...commonProps}/>} />
+        <Route path="/folder/:folderId/note/:noteId" element={<ScreenLayout {...commonProps}/>} />
 
-        <Route path="/favorites" element={renderScreen()} />
-        <Route path="/favorites/note/:noteId" element={renderScreen()} />
+        <Route path="/favorites" element={<ScreenLayout {...commonProps}/>} />
+        <Route path="/favorites/note/:noteId" element={<ScreenLayout {...commonProps}/>} />
 
-        <Route path="/archived" element={renderScreen()} />
-        <Route path="/archived/note/:noteId" element={renderScreen()} />
+        <Route path="/archived" element={<ScreenLayout {...commonProps}/>} />
+        <Route path="/archived/note/:noteId" element={<ScreenLayout {...commonProps}/>} />
 
-        <Route path="/trash" element={renderScreen(showRestore ? (
+        {/* <Route path="/trash" element={renderScreen(showRestore ? (
               <Restore note={restoreNote} setShowRestore={setShowRestore} setRefreshNotes={setRefreshNotes} />
             ) : (
               <Right toggle={toggle} setToggle={setToggle} addNote={addNote} setAddNote={setAddNote} currFolderName={currFolderName}
                setRefreshNotes={setRefreshNotes} setCurrentFolderData={setCurrentFolderData} setShowRestore={setShowRestore}/>
             )
-          )}/>
+          )}/> */}
+
+          <Route path="/trash" element={<ScreenLayout {...commonProps} isTrashPage={true} />} />
       </Routes>
     </div>
   );
