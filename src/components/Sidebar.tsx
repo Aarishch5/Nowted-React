@@ -7,7 +7,7 @@ import Recents from "./Recents";
 import { UserContext } from "../context/UserContext";
 import { type recentData } from "./Recents";
 import api from "../api/axios";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 type SidebarPropType = {
   searchBtn: boolean;
@@ -50,7 +50,6 @@ const Sidebar: React.FC<SidebarPropType> = ({
   const [inputValue, setInputValue] = useState("");
 
   const navigate = useNavigate();
-  const { folderId } = useParams();
 
   useEffect(() => {
     const timer = setTimeout(async () => {
@@ -93,7 +92,7 @@ const Sidebar: React.FC<SidebarPropType> = ({
     setSearchBtn(true);
 
     if (note.folderId) {
-      navigate(`/folder/${folderId}/note/${note.id}`);
+      navigate(`/folder/${note.folderId}/note/${note.id}`);
     }
   };
 

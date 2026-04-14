@@ -115,7 +115,7 @@ const Middle: React.FC<middleProps> = ({
     isTrashPage,
     isFolderPage,
     refreshNotes,
-    setCurrentFolderData,
+    setCurrentFolderData
   ]);
 
   useEffect(() => {
