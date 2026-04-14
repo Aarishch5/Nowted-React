@@ -43,7 +43,7 @@ const Recents: React.FC = () => {
     };
 
     dataFetcher();
-  }, []);
+  }, [noteId]);
 
   return (
     <div className="flex flex-col gap-2 w-75">
