@@ -76,14 +76,6 @@ const App: React.FC = () => {
         <Route path="/archived" element={<ScreenLayout {...commonProps}/>} />
         <Route path="/archived/note/:noteId" element={<ScreenLayout {...commonProps}/>} />
 
-        {/* <Route path="/trash" element={renderScreen(showRestore ? (
-              <Restore note={restoreNote} setShowRestore={setShowRestore} setRefreshNotes={setRefreshNotes} />
-            ) : (
-              <Right toggle={toggle} setToggle={setToggle} addNote={addNote} setAddNote={setAddNote} currFolderName={currFolderName}
-               setRefreshNotes={setRefreshNotes} setCurrentFolderData={setCurrentFolderData} setShowRestore={setShowRestore}/>
-            )
-          )}/> */}
-
           <Route path="/trash" element={<ScreenLayout {...commonProps} isTrashPage={true} />} />
       </Routes>
     </div>

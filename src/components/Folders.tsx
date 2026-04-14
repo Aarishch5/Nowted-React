@@ -6,7 +6,7 @@ import {
   Folder,
   FolderCheck,
   Trash,
-  Pencil,
+  Pencil
 } from "lucide-react";
 import api from "../api/axios";
 import { useNavigate, useParams } from "react-router-dom";

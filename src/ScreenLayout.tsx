@@ -4,6 +4,8 @@ import Middle from "./components/Middle";
 import Right from "./components/Right";
 import Restore from "./components/Restore";
 import type { recentData } from "./components/Recents";
+import { useParams } from "react-router-dom";
+
 
 type ScreenLayoutProps = {
   searchBtn: boolean;
@@ -38,6 +40,7 @@ type ScreenLayoutProps = {
 const ScreenLayout = React.memo( ({ searchBtn, setSearchBtn, folderToggle, setFolderToggle, addNote, setAddNote, currFolderName, setCurrentFolderName, refreshNotes,
   setRefreshNotes, currentFolderData, setCurrentFolderData, showRestore, setShowRestore, restoreNote, setRestoreNote,
   toggle, setToggle, noteSearchInput, setNoteSearchInput, isTrashPage = false}: ScreenLayoutProps) => {
+    const { noteId } = useParams();
   return (
     <>
       <Sidebar searchBtn={searchBtn} setSearchBtn={setSearchBtn} folderToggle={folderToggle} setFolderToggle={setFolderToggle}
@@ -51,8 +54,8 @@ const ScreenLayout = React.memo( ({ searchBtn, setSearchBtn, folderToggle, setFo
       {isTrashPage && showRestore ? (
         <Restore note={restoreNote} setShowRestore={setShowRestore} setRefreshNotes={setRefreshNotes}/>
       ) : (
-        <Right toggle={toggle} setToggle={setToggle} addNote={addNote} setAddNote={setAddNote} currFolderName={currFolderName} 
-        setRefreshNotes={setRefreshNotes} setCurrentFolderData={setCurrentFolderData} setShowRestore={setShowRestore}/>
+        <Right key={addNote ? "new-note" : noteId ?? "no-note"} toggle={toggle} setToggle={setToggle} addNote={addNote} setAddNote={setAddNote} currFolderName={currFolderName} 
+        setRefreshNotes={setRefreshNotes} setCurrentFolderData={setCurrentFolderData} setShowRestore={setShowRestore} setRestoreNote={setRestoreNote}/>
       )}
     </>
   );

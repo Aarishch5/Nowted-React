@@ -1,19 +1,18 @@
-import { Trash, CalendarDays, CircleEllipsis, Folder, Star, Archive, StarOff, ArchiveRestore} from "lucide-react";
-import React, { useContext, useEffect, useState } from "react";
-import { UserContext } from "../context/UserContext";
+import {Trash,CalendarDays,CircleEllipsis,Folder,Star,Archive,StarOff,ArchiveRestore} from "lucide-react";
+import React, { useEffect, useState, useRef } from "react";
 import SelectNote from "./SelectNote";
-// import axios from "axios";
 import { type folderDataType } from "../components/Folders";
 import type { recentData } from "./Recents";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
-import api from "../api/axios"
+import api from "../api/axios";
+
 
 export type postNotesDataType = {
   title: string;
   content: string;
-}
+};
 
-type noteDataSet = { 
+type noteDataSet = {
   id: string;
   folderId: string;
   title: string;
@@ -40,11 +39,11 @@ type RightPropType = {
   setCurrentFolderData: React.Dispatch<React.SetStateAction<recentData[]>>;
 
   setShowRestore: React.Dispatch<React.SetStateAction<boolean>>;
-
+  setRestoreNote: React.Dispatch<React.SetStateAction<recentData | null>>;
 };
 
-const Right: React.FC<RightPropType> = ({ toggle, setToggle, addNote, setAddNote, currFolderName, setRefreshNotes, setCurrentFolderData,setShowRestore}) => {
-  const { mode } = useContext(UserContext);
+const Right: React.FC<RightPropType> = ({ toggle, setToggle, addNote, setAddNote, currFolderName, setRefreshNotes, setCurrentFolderData,
+ setShowRestore, setRestoreNote}) => {
 
   const { noteId, folderId } = useParams();
   const navigate = useNavigate();
@@ -54,87 +53,156 @@ const Right: React.FC<RightPropType> = ({ toggle, setToggle, addNote, setAddNote
   const [formText, setFormText] = useState<string>("");
   const [title, setTitle] = useState<string>("");
 
-
-  // Fetching the notes
+  const isMounted = useRef(false);
 
   useEffect(() => {
-  const fetchNote = async () => {
-    if (!noteId || noteId === undefined) {
-      setCurrNote(null);
+    isMounted.current = false;
+  }, [noteId]);
+
+
+  // Fetching the notes
+  useEffect(() => {
+    if(addNote){
       return;
     }
-
-    try {
-      const response = await api.get(`/notes/${noteId}`);
-      if (response.data?.note) {
-        setCurrNote(response.data.note);
-      } else {
+    const fetchNote = async () => {
+      if (!noteId || noteId === undefined) {
         setCurrNote(null);
+        setTitle("");
+        setFormText("");
+        return;
       }
-    } catch (error) {
-      console.error("Error is this :", error);
-      setCurrNote(null);
-    }
-  }
-  fetchNote()
-}, [noteId]);
 
+      try {
+        const response = await api.get(`/notes/${noteId}`);
+        if (response.data?.note) {
+          const fetchedNote = response.data.note;
+          setCurrNote(fetchedNote);
+          setTitle(fetchedNote.title || "");
+          setFormText(fetchedNote.content || "");
+        } else {
+          setCurrNote(null);
+          setTitle("");
+          setFormText("");
+        }
+      } catch (error) {
+        console.error("Error is this :", error);
+        setCurrNote(null);
+        setTitle("");
+        setFormText("");
+      }
+    };
+    fetchNote();
+  }, [noteId, addNote]);
 
+  useEffect(() => {
+    if (!currNote || addNote) return;
 
-  // Handling the user form submission
-  const handleFormSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (!title.trim() || !formText.trim()) {
-      console.error("Title or contentt missing");
+    if (!isMounted.current) {
+      isMounted.current = true;
       return;
     }
 
-    try {
-      const response = await api.post("/notes",{title: title.trim(), content: formText.trim(), folderId: folderId});
-      const newNote = {...response.data.note, folder: { name: currFolderName}};
-      if (folderId) {
-        setCurrentFolderData((prev) => [...prev, newNote]);
+    const trimmedTitle = title.trim();
+    const trimmedContent = formText.trim();
+
+    if (!trimmedTitle) return;
+
+    const timer = setTimeout(async () => {
+      try {
+        await api.patch(`/notes/${currNote.id}`, {
+          title: trimmedTitle,
+          content: trimmedContent,
+        });
+      } catch (error) {
+        console.error("Error updating note:", error);
       }
-      setTitle("");
-      setFormText("");
-      setAddNote(false);
+    }, 500);
 
-      navigate(`/folder/${newNote.folderId}/note/${newNote.id}`);
-    } catch (error) {
-      console.error("Error in creating note:", error);
+    return () => clearTimeout(timer);
+  }, [title, formText, currNote?.id, addNote]);
+
+
+ const handleFormSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+
+  if (!title.trim() || !formText.trim()) {
+    console.error("Title or content missing");
+    return;
+  }
+
+  if (!folderId) {
+    console.error("Folder ID is missing. Cannot create note.");
+    return;
+  }
+
+  try {
+    const trimmedTitle = title.trim();
+    const trimmedContent = formText.trim();
+
+    const response = await api.post("/notes", { title: trimmedTitle, content: trimmedContent, folderId});
+    const createdId = response.data.id;
+
+    if (!createdId) {
+      console.error("No ID :", response.data);
+      return;
     }
-  };
 
+    const fullNoteResponse = await api.get(`/notes/${createdId}`);
+    const createdNote = fullNoteResponse.data?.note;
+
+    if (!createdNote) {
+      console.error("Created note not found");
+      return;
+    }
+
+    const safeCreatedNote = {...createdNote, preview: createdNote.preview ?? trimmedContent.slice(0, 20),
+   folder: createdNote.folder ?? { name: currFolderName ?? "Untitled Folder"}};
+
+    setCurrentFolderData((prev) => [safeCreatedNote, ...prev]);
+
+    setTitle("");
+    setFormText("");
+    setCurrNote(safeCreatedNote);
+    setAddNote(false);
+
+    navigate(`/folder/${safeCreatedNote.folderId}/note/${safeCreatedNote.id}`);
+  } catch (error) {
+    console.error("Error in creating note:", error);
+  }
+};
 
   // Favourite notes handleing
   const handleFavouriteNote = async () => {
-    if (!currNote)
-    { return;}
+    if (!currNote) {
+      return;
+    }
 
     try {
       const updatedValue = !currNote.isFavorite;
-      await api.patch( `/notes/${currNote.id}`,{ isFavorite: updatedValue });
-      
+      await api.patch(`/notes/${currNote.id}`, { isFavorite: updatedValue });
+
       // update notes
-      setCurrNote((prev) => prev ? {...prev, isFavorite: updatedValue} : prev)
+      setCurrNote((prev) =>
+        prev ? { ...prev, isFavorite: updatedValue } : prev,
+      );
 
       setRefreshNotes((prev) => prev + 1);
       setToggle(false);
-    } catch(error) {
-        console.log(error);
+    } catch (error) {
+      console.log(error);
     }
   };
 
   // Archive notes handler
   const handleArchiveNote = async () => {
-    if (!currNote){
+    if (!currNote) {
       return;
     }
 
     try {
       const updatedValue = !currNote.isArchived;
-      await api.patch(`/notes/${currNote.id}`,{isArchived: updatedValue});
+      await api.patch(`/notes/${currNote.id}`, { isArchived: updatedValue });
       const finalResponse = await api.get(`/notes/${currNote.id}`);
       const updatedNote = finalResponse.data?.note;
       if (!updatedNote) {
@@ -144,7 +212,7 @@ const Right: React.FC<RightPropType> = ({ toggle, setToggle, addNote, setAddNote
       setCurrNote(updatedNote);
       setToggle(false);
       setRefreshNotes((prev) => prev + 1);
-      if (updatedNote.isArchived) { 
+      if (updatedNote.isArchived) {
         navigate("/archived");
       }
     } catch (error) {
@@ -152,61 +220,105 @@ const Right: React.FC<RightPropType> = ({ toggle, setToggle, addNote, setAddNote
     }
   };
 
-    // Handling the Trashing of the Notes
-    const handleDeleteNote = async () => {
+  // Handling the Trashing of the Notes
+  const handleDeleteNote = async () => {
     if (!currNote) {
       return;
     }
 
     try {
       const deletedNoteId = currNote.id;
-      const deletedFolderId = currNote.folderId;
 
       await api.delete(`/notes/${deletedNoteId}`);
-      setCurrentFolderData((prev) => prev.filter((note) => note.id !== deletedNoteId));
+
+      setRestoreNote(currNote);
 
       setShowRestore(true);
 
       setCurrNote(null);
       setToggle(false);
       setRefreshNotes((prev) => prev + 1);
+      setShowRestore(true)
+      setCurrNote(null);  
 
-    navigate(`/folder/${deletedFolderId}`);
-     } catch (error) {
-    console.error("Error in delet:", error);
+      navigate(`/trash`);
+    } catch (error) {
+      console.error("Error in delet:", error);
     }
   };
+
+
+
+  const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const newTitle = e.target.value;
+  setTitle(newTitle);
+
+  setCurrNote((prev) => (prev ? { ...prev, title: newTitle } : prev));
+
+  setCurrentFolderData((prev) =>
+    prev.map((note) =>
+      note.id === noteId? {  ...note, title: newTitle} : note),
+  );
+};
+
+const handleContentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+  const newContent = e.target.value;
+  setFormText(newContent);
+
+  setCurrNote((prev) => prev ? { ...prev, content: newContent, preview: newContent.slice(0, 20) } : prev);
+
+  setCurrentFolderData((prev) => prev.map((note) => note.id === noteId ? { ...note, content: newContent, preview: newContent.slice(0, 20)} : note), );};
 
   return (
     <>
       {currNote ? (
-        <div
-          className={`flex flex-col gap-7.5 p-12.5 text-(--mainText) w-[calc(100%-650px)] h-screen ${addNote ? "hidden" : "block"}`}>
+        <div className={`flex flex-col gap-7.5 p-12.5 text-(--mainText) w-[calc(100%-650px)] h-screen ${addNote ? "hidden" : "block"}`}>
           <div className="flex flex-row justify-between items-center">
-            <h1 className="text-[32px]">{currNote?.title}</h1>
-            <CircleEllipsis onClick={(e) => { e.stopPropagation();setToggle((prev) => !prev);}}
-                className="h-7.5 w-7.5 text-(--folderTextColor) hover:text-(--rightHoverText) cursor-pointer"/>
-            <div onClick={(e) => e.stopPropagation()} className={`absolute top-25.25 right-12.75 rounded-md z-50 ${ toggle ? "block" : "hidden"}`}>
-              <div className={`flex flex-col w-50.5 gap-5 p-5 overflow-hidden rounded-md shadow-lg border ${mode ? "bg-[#333333] border-white/10" : "bg-white border-black" }`}>
+            <input type="text" value={title}
+              onChange={handleTitleChange} placeholder="Enter the title"
+              className="text-[32px] w-full bg-transparent outline-none placeholder:text-(--rightPlaceHolderText)"/>
+            <CircleEllipsis
+              onClick={(e) => {
+                e.stopPropagation();
+                setToggle((prev) => !prev);
+              }}
+              className="h-7.5 w-7.5 text-(--folderTextColor) hover:text-(--rightHoverText) cursor-pointer"/>
+            <div onClick={(e) => e.stopPropagation()}
+              className={`absolute top-25.25 right-12.75 rounded-md z-50 ${toggle ? "block" : "hidden"}`}>
+              <div className={`flex flex-col w-50.5 gap-5 p-5 overflow-hidden rounded-md border bg-(--rightToggleBg) border-(--boderBg)`}>
                 <div className="flex flex-col gap-3.75">
                   <div onClick={handleFavouriteNote} className="text-(--mainText) hover:bg-(--favoriteNoteHowerBg) 
                      flex flex-row gap-3.75 rounded items-center cursor-pointer p-0.75">
-                      {currNote?.isFavorite ? ( <StarOff className="w-5 h-5" />) : (  <Star className="w-5 h-5" />)}
-                        <h3 className="font-normal text-base">
-                          {currNote?.isFavorite ? "Remove from favorite" : "Add to favorite"}
-                        </h3>
+                    {currNote?.isFavorite ? (
+                      <StarOff className="w-5 h-5" />
+                    ) : (
+                      <Star className="w-5 h-5" />
+                    )}
+                    <h3 className="font-normal text-base">
+                      {currNote?.isFavorite
+                        ? "Remove from favorite"
+                        : "Add to favorite"}
+                    </h3>
                   </div>
-                  <div onClick={handleArchiveNote} className="text-(--mainText) hover:bg-(--favoriteNoteHowerBg)  flex flex-row gap-3.75 items-center cursor-pointer p-0.75">
-                    {!currNote?.isArchived ? (<Archive className="w-5 h-5" />) : (<ArchiveRestore className="w-5 h-5"/>)}
-                    <h3  className="font-normal font-base text-base">   {!currNote?.isArchived ? "Archived" : "UnArchived" } </h3>
+                  <div onClick={handleArchiveNote}
+                    className="text-(--mainText) hover:bg-(--favoriteNoteHowerBg)  flex flex-row gap-3.75 items-center cursor-pointer p-0.75">
+                    {!currNote?.isArchived ? (
+                      <Archive className="w-5 h-5" />
+                    ) : (
+                      <ArchiveRestore className="w-5 h-5" />
+                    )}
+                    <h3 className="font-normal font-base text-base">
+                      {" "}{!currNote?.isArchived ? "Archived" : "UnArchived"}{" "}
+                    </h3>
                   </div>
                 </div>
 
                 <hr className="h-px bg-[#FFFFFF1A] border-0" />
 
-                <div onClick={handleDeleteNote} className="text-(--mainText) hover:bg-(--favoriteNoteHowerBg)  flex flex-row gap-3.75 items-center cursor-pointer p-0.75">
-                    <Trash className="w-5 h-5" />
-                    <h3 className="font-normal font-base text-base">Delete</h3>
+                <div onClick={handleDeleteNote}
+                  className="text-(--mainText) hover:bg-(--favoriteNoteHowerBg)  flex flex-row gap-3.75 items-center cursor-pointer p-0.75">
+                  <Trash className="w-5 h-5" />
+                  <h3 className="font-normal font-base text-base">Delete</h3>
                 </div>
               </div>
             </div>
@@ -215,10 +327,10 @@ const Right: React.FC<RightPropType> = ({ toggle, setToggle, addNote, setAddNote
           <div className="flex flex-col w-full h-16.75 justify-between">
             <div className="flex flex-row gap-2 items-start">
               <div className="w-7.5 flex items-start">
-                <CalendarDays className="w-4.5 h-4.5 text-(--calenderText)"/>
+                <CalendarDays className="w-4.5 h-4.5 text-(--calenderText)" />
               </div>
               <div className="w-25">
-                <h3 className="text-sm font-semibold text-(--calenderText)"> Date</h3>
+                <h3 className="text-sm font-semibold text-(--calenderText)">{" "}Date </h3>
               </div>
               <div>
                 <h3 className="text-sm text-(--mainText) font-semibold underline">
@@ -234,34 +346,40 @@ const Right: React.FC<RightPropType> = ({ toggle, setToggle, addNote, setAddNote
                 <Folder className={`w-4.5 h-4.5 text-(--rightText)`} />
               </div>
               <div className="w-25">
-                <h3 className={`text-sm text-(--rightText) font-semibold`}> Folder</h3>
+                <h3 className={`text-sm text-(--rightText) font-semibold`}> {" "} Folder</h3>
               </div>
               <div>
-                <h3 className="text-sm text-(--mainText) font-semibold underline"> {currNote.folder.name} </h3>
+                <h3 className="text-sm text-(--mainText) font-semibold underline">
+                  {" "}{currNote.folder?.name || currFolderName || "Untitled Folder"}{" "}
+                </h3>
               </div>
             </div>
           </div>
 
-          
-          <div className="w-full max-h-110 overflow-y-auto no-scrollbar scroll-smooth ">
-            <p className="text-justify text-base font-normal text--(--mainText)" > {currNote.content}</p>
+          <div className="w-full h-[400px] overflow-y-auto no-scrollbar scroll-smooth ">
+            <textarea value={formText} onChange={handleContentChange} placeholder="Enter the text"
+              className="w-full h-full resize-none bg-transparent text-justify text-base font-normal outline-none no-scrollbar" />
           </div>
         </div>
-      ) : ( !addNote && location.pathname !== "/trash" && <SelectNote />)}
+      ) : (
+        !addNote && location.pathname !== "/trash" && <SelectNote />
+      )}
 
-      <div onClick={(e) => e.stopPropagation()} className={`flex flex-col gap-7.5 p-12.5 text-(--mainText) w-[calc(100%-650px)] h-screen ${addNote ? "block" : "hidden"}`}>
+      <div onClick={(e) => e.stopPropagation()}
+        className={`flex flex-col gap-7.5 p-12.5 text-(--mainText) w-[calc(100%-650px)] h-screen ${addNote ? "block" : "hidden"}`}>
         <div className="flex flex-row justify-between items-center">
-          <input id="noteTitle" type="text" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Enter the title"
-            className="text-[32px] w-full placeholder:text-[32px] bg-transparent outline-none placeholder:text-(--rightPlaceHolderText)" />
+          <input id="noteTitle" type="text" value={title}
+            onChange={(e) => setTitle(e.target.value)} placeholder="Enter the title"
+            className="text-[32px] w-full placeholder:text-[32px] bg-transparent outline-none placeholder:text-(--rightPlaceHolderText)"/>
         </div>
 
         <div className="flex flex-col w-full h-16.75 justify-between">
           <div className="flex flex-row gap-2 items-start">
             <div className="w-7.5 flex items-start">
-              <CalendarDays className="w-4.5 h-4.5 text-(--folderTextColor) stroke-2"/>
+              <CalendarDays className="w-4.5 h-4.5 text-(--folderTextColor) stroke-2" />
             </div>
             <div className="w-25">
-              <h3 className="text-sm text-(--folderTextColor) font-semibold"> Date</h3>
+              <h3 className="text-sm text-(--folderTextColor) font-semibold"> {" "}Date </h3>
             </div>
             <div>
               <h3 className="text-sm text-(--mainText) font-semibold underline">
@@ -270,29 +388,27 @@ const Right: React.FC<RightPropType> = ({ toggle, setToggle, addNote, setAddNote
             </div>
           </div>
 
-          <hr className="h-px bg-(--rightHRBg) border-0"/>
+          <hr className="h-px bg-(--rightHRBg) border-0" />
 
           <div onClick={(e) => e.stopPropagation()} className="flex flex-row gap-2 items-start">
             <div className="w-7.5 flex items-start">
-              <Folder className="w-4.5 h-4.5 text(--folderTextColor) stroke-2"/>
+              <Folder className="w-4.5 h-4.5 text-(--folderTextColor) stroke-2" />
             </div>
             <div className="w-25">
-              <h3 className="text-sm text-(--folderTextColor) font-semibold"> Folder</h3>
+              <h3 className="text-sm text-(--folderTextColor) font-semibold"> {" "} Folder </h3>
             </div>
-            <div>
-              {currFolderName && (
-                <h3 className="text-sm text-(--mainText) font-semibold underline"> {currFolderName} </h3>
-              )}
+            <div>{currFolderName && ( <h3 className="text-sm text-(--mainText) font-semibold underline"> {" "} {currFolderName}{" "}</h3>)}
             </div>
           </div>
         </div>
 
         <div>
           <form onClick={(e) => e.stopPropagation()} className="flex flex-col gap-4 items-start" onSubmit={handleFormSubmit}>
-            <textarea id="contentTextarea" value={formText}onChange={(e) => setFormText(e.target.value)}
-              className="h-100 w-full resize-none p-3 align-top focus:outline-none focus:ring-2 focus:ring-[#312EB5] focus:border-[#312EB5]"
+            <textarea id="contentTextarea" value={formText} onChange={(e) => setFormText(e.target.value)}
+              className="min-h-110 w-full resize-none p-3 align-top focus:outline-none focus:ring-2 focus:ring-[#312EB5] focus:border-[#312EB5]"
               placeholder="Enter text"/>
-            <input id="formSubmit" className="px-3 py-1 bg-[#312EB5] font-semibold rounded-md text-white cursor-pointer" type="submit" value="Submit"/>
+            <input id="formSubmit" className="px-3 py-1 bg-[#312EB5] font-semibold rounded-md text-white cursor-pointer"
+              type="submit" value="Submit"/>
           </form>
         </div>
       </div>

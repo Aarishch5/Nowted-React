@@ -41,6 +41,9 @@ body {
   --calenderText: #FFFFFF99;
   --rightHRBg: #FFFFFF1A;
   --rightPlaceHolderText: #FFFFFF66;
+
+  --rightToggleBg: #333333;
+  --boderBg: #FFFFFF1A;
 }
 
 .light {
@@ -67,5 +70,8 @@ body {
   --calenderText: #493d3d;
   --rightHRBg: #9188881a;
   --rightPlaceHolderText: #3a383866;
+
+  --rightToggleBg: white;
+  --boderBg: black;
 
 }

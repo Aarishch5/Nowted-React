@@ -1,3 +1,4 @@
+
 import React, { useContext, useState, useEffect } from "react";
 import logo from "../assets/logo.svg";
 import { Search, Plus, ToggleLeft, ToggleRight } from "lucide-react"
@@ -64,7 +65,7 @@ const Sidebar: React.FC<SidebarPropType> = ({ searchBtn, setSearchBtn, folderTog
 
       <div className="flex pl-5 w-75">
         {searchBtn ? (
-          <div onClick={() => setAddNote(true)}
+          <div onClick={() => {setAddNote(true)}}
             className="flex flex-row gap-2 justify-center items-center bg-(--sidebarBtnBg) w-65 h-10 cursor-pointer">
             <Plus className="h-5 w-5 text-(--mainText)"/>
             <h1 className="font-semibold text-(--mainText)  text-base">New Note</h1>

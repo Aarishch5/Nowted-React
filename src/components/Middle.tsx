@@ -1,3 +1,4 @@
+
 import React, {
   useContext,
   useEffect,
@@ -153,7 +154,7 @@ const Middle: React.FC<middleProps> = ({
 
   const endIndex = (currentPage + 1) * PAGE_SIZE;
   const visibleNotes = finalNotesToShow.slice(0, endIndex);
-  const hasNextPage = endIndex < currentFolderData.length;
+  const hasNextPage = endIndex < finalNotesToShow.length;
 
   useEffect(() => {
     isFetchingNextRef.current = false;
@@ -211,7 +212,7 @@ const Middle: React.FC<middleProps> = ({
           const isLastVisible = index === visibleNotes.length - 1;
 
           return (
-            <div key={`${note.id}-${index}`} ref={isLastVisible ? lastElementRef : null}
+            <div key={`${note.id}`} ref={isLastVisible ? lastElementRef : null}
               onClick={() => {
                 if (!note?.id) return;
 
@@ -254,3 +255,4 @@ const Middle: React.FC<middleProps> = ({
 };
 
 export default Middle;
+
