@@ -194,10 +194,6 @@ const Folders: React.FC<folderProps> = ({
   };
 
 
-
-
-  
-
   return (
     <div onClick={() => setAddNote(false)} className="flex flex-col gap-2 w-75">
       <div className="flex px-5 justify-between items-center text-(--folderTextColor)">

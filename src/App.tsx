@@ -31,6 +31,9 @@ const App: React.FC = () => {
 
   const [noteSearchInput, setNoteSearchInput] = useState("");
 
+  const [searchedNotes, setSearchedNotes] = useState<recentData[]>([]);
+  const [showSearchDropdown, setShowSearchDropdown] = useState(false);
+
    useEffect(() => {
     const savedTheme = localStorage.getItem("theme");
 
@@ -54,7 +57,7 @@ const App: React.FC = () => {
   
   const commonProps = { searchBtn, setSearchBtn, folderToggle, setFolderToggle, addNote, setAddNote, currFolderName, setCurrentFolderName,
     refreshNotes, setRefreshNotes, currentFolderData, setCurrentFolderData, showRestore, setShowRestore, restoreNote,
-    setRestoreNote, toggle, setToggle, noteSearchInput, setNoteSearchInput};
+    setRestoreNote, toggle, setToggle, noteSearchInput, setNoteSearchInput, searchedNotes, setSearchedNotes, showSearchDropdown,setShowSearchDropdown };
 
 
   return (

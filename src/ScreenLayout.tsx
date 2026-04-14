@@ -35,17 +35,23 @@ type ScreenLayoutProps = {
   noteSearchInput: string;
   setNoteSearchInput: React.Dispatch<React.SetStateAction<string>>;
   isTrashPage?: boolean;
+
+  searchedNotes: recentData[];
+    setSearchedNotes: React.Dispatch<React.SetStateAction<recentData[]>>;
+    showSearchDropdown: boolean;
+    setShowSearchDropdown: React.Dispatch<React.SetStateAction<boolean>>;
+
 };
 
 const ScreenLayout = React.memo( ({ searchBtn, setSearchBtn, folderToggle, setFolderToggle, addNote, setAddNote, currFolderName, setCurrentFolderName, refreshNotes,
   setRefreshNotes, currentFolderData, setCurrentFolderData, showRestore, setShowRestore, restoreNote, setRestoreNote,
-  toggle, setToggle, noteSearchInput, setNoteSearchInput, isTrashPage = false}: ScreenLayoutProps) => {
+  toggle, setToggle, noteSearchInput, setNoteSearchInput,searchedNotes,setSearchedNotes,showSearchDropdown, setShowSearchDropdown,isTrashPage = false}: ScreenLayoutProps) => {
     const { noteId } = useParams();
   return (
     <>
       <Sidebar searchBtn={searchBtn} setSearchBtn={setSearchBtn} folderToggle={folderToggle} setFolderToggle={setFolderToggle}
         addNote={addNote} setAddNote={setAddNote} currFolderName={currFolderName} setCurrentFolderName={setCurrentFolderName}
-        setNoteSearchInput={setNoteSearchInput}/>
+        setNoteSearchInput={setNoteSearchInput} searchedNotes={searchedNotes} setSearchedNotes={setSearchedNotes} showSearchDropdown={showSearchDropdown} setShowSearchDropdown={setShowSearchDropdown}/>
 
       <Middle addNote={addNote} currFolderName={currFolderName} refreshNotes={refreshNotes} currentFolderData={currentFolderData}
        setCurrentFolderData={setCurrentFolderData} setShowRestore={setShowRestore} setRestoreNote={setRestoreNote}

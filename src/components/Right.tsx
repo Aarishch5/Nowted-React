@@ -232,11 +232,11 @@ const Right: React.FC<RightPropType> = ({ toggle, setToggle, addNote, setAddNote
       await api.delete(`/notes/${deletedNoteId}`);
 
       setRestoreNote(currNote);
-
       setShowRestore(true);
 
       setCurrNote(null);
       setToggle(false);
+      
       setRefreshNotes((prev) => prev + 1);
       setShowRestore(true)
       setCurrNote(null);  
@@ -246,7 +246,6 @@ const Right: React.FC<RightPropType> = ({ toggle, setToggle, addNote, setAddNote
       console.error("Error in delet:", error);
     }
   };
-
 
 
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {

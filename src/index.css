@@ -15,6 +15,14 @@ body {
   font-family: var(--primary-font);
 }
 
+::-webkit-scrollbar {
+  width: 4px;
+}
+::-webkit-scrollbar-thumb {
+  background: #555;
+  border-radius: 10px;
+border-left: 2px solid transparent;
+}
 
 .dark {
   --background: #121212;
@@ -62,7 +70,7 @@ body {
   --middleText: #6b7280;
   --recentsHoverBg: #e5e7eb;
   --recentsHoverText: #3a2e2e;
-  --moreHoverBg: white;
+  --moreHoverBg: black;
   --selectNoteText: #494646;
   --rightHoverText: #a58d8d99;
   --favoriteNoteHowerBg: #8b73731a;

@@ -37,7 +37,7 @@ const Middle: React.FC<middleProps> = ({
   setCurrentFolderData,
   setShowRestore,
   setRestoreNote,
-  noteSearchInput
+  // noteSearchInput
 }) => {
   const { setRecentNotes } = useContext(UserContext);
 
@@ -145,12 +145,7 @@ const Middle: React.FC<middleProps> = ({
     });
   };
 
-  const finalNotesToShow =
-    noteSearchInput.trim() === ""
-      ? currentFolderData
-      : currentFolderData.filter((item: recentData) =>
-          item.title?.toLowerCase().includes(noteSearchInput.toLowerCase()),
-        );
+  const finalNotesToShow = currentFolderData;
 
   const endIndex = (currentPage + 1) * PAGE_SIZE;
   const visibleNotes = finalNotesToShow.slice(0, endIndex);
@@ -207,9 +202,9 @@ const Middle: React.FC<middleProps> = ({
         </h2>
       </div>
 
-      <div ref={containerRef} className="flex flex-col gap-5 overflow-y-auto no-scrollbar scroll-smooth">
+      <div ref={containerRef} className="flex flex-col gap-5 overflow-y-auto">
         {visibleNotes.map((note, index) => {
-          const isLastVisible = index === visibleNotes.length - 1;
+          const isLastVisible = index === visibleNotes.length - 1;  
 
           return (
             <div key={`${note.id}`} ref={isLastVisible ? lastElementRef : null}
