@@ -51,7 +51,7 @@ const ScreenLayout = React.memo( ({ searchBtn, setSearchBtn, folderToggle, setFo
     <>
       <Sidebar searchBtn={searchBtn} setSearchBtn={setSearchBtn} folderToggle={folderToggle} setFolderToggle={setFolderToggle}
         addNote={addNote} setAddNote={setAddNote} currFolderName={currFolderName} setCurrentFolderName={setCurrentFolderName}
-        setNoteSearchInput={setNoteSearchInput} searchedNotes={searchedNotes} setSearchedNotes={setSearchedNotes} showSearchDropdown={showSearchDropdown} setShowSearchDropdown={setShowSearchDropdown}/>
+        setNoteSearchInput={setNoteSearchInput} searchedNotes={searchedNotes} setSearchedNotes={setSearchedNotes} showSearchDropdown={showSearchDropdown} setShowSearchDropdown={setShowSearchDropdown}  />
 
       <Middle addNote={addNote} currFolderName={currFolderName} refreshNotes={refreshNotes} currentFolderData={currentFolderData}
        setCurrentFolderData={setCurrentFolderData} setShowRestore={setShowRestore} setRestoreNote={setRestoreNote}
@@ -61,7 +61,7 @@ const ScreenLayout = React.memo( ({ searchBtn, setSearchBtn, folderToggle, setFo
         <Restore note={restoreNote} setShowRestore={setShowRestore} setRefreshNotes={setRefreshNotes}/>
       ) : (
         <Right key={addNote ? "new-note" : noteId ?? "no-note"} toggle={toggle} setToggle={setToggle} addNote={addNote} setAddNote={setAddNote} currFolderName={currFolderName} 
-        setRefreshNotes={setRefreshNotes} setCurrentFolderData={setCurrentFolderData} setShowRestore={setShowRestore} setRestoreNote={setRestoreNote}/>
+        setRefreshNotes={setRefreshNotes} setCurrentFolderData={setCurrentFolderData} setShowRestore={setShowRestore} setRestoreNote={setRestoreNote} />
       )}
     </>
   );

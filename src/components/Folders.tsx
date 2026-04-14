@@ -147,15 +147,6 @@ const Folders: React.FC<folderProps> = ({
     }
   };
 
-  useEffect(() => {
-    const folder = folderData.find((item) => item.id === folderId);
-    if (folder) {
-      setCurrentFolderName(folder.name);
-      setCurrSelectedFolderId(folder.id);
-      setActiveView("folder");
-    }
-  }, [folderId, folderData]);
-
   //  debouncing on the folder naming inout
 
   useEffect(() => {
@@ -234,8 +225,6 @@ const Folders: React.FC<folderProps> = ({
             key={item.id}
             onClick={(e) => {
               e.stopPropagation();
-              setCurrSelectedFolderId(item.id);
-              setCurrentFolderName(item.name);
               setActiveView("folder");
               navigate(`/folder/${item.id}`);
             }}

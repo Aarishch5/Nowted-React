@@ -28,6 +28,9 @@ type SidebarPropType = {
   setSearchedNotes: React.Dispatch<React.SetStateAction<recentData[]>>;
   showSearchDropdown: boolean;
   setShowSearchDropdown: React.Dispatch<React.SetStateAction<boolean>>;
+
+  
+
 };
 
 const Sidebar: React.FC<SidebarPropType> = ({
@@ -44,6 +47,7 @@ const Sidebar: React.FC<SidebarPropType> = ({
   setSearchedNotes,
   showSearchDropdown,
   setShowSearchDropdown,
+
 }) => {
   const { mode, setMode } = useContext(UserContext);
 
@@ -185,7 +189,7 @@ const Sidebar: React.FC<SidebarPropType> = ({
         )}
       </div>
 
-      <Recents />
+      <Recents/>
 
       <Folders
         folderToggle={folderToggle}

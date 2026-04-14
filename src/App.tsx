@@ -1,11 +1,5 @@
 import React, { useContext, useEffect, useState } from "react"
 import { Routes, Route, Navigate } from "react-router-dom";
-// import Sidebar from "./components/Sidebar";
-// import Middle from "./components/Middle"
-
-
-// import Right from "./components/Right";
-// import Restore from "./components/Restore";
 import type { recentData } from "./components/Recents"
 import { UserContext } from "./context/UserContext";
 import ScreenLayout from "./ScreenLayout";
@@ -33,6 +27,8 @@ const App: React.FC = () => {
 
   const [searchedNotes, setSearchedNotes] = useState<recentData[]>([]);
   const [showSearchDropdown, setShowSearchDropdown] = useState(false);
+
+
 
    useEffect(() => {
     const savedTheme = localStorage.getItem("theme");

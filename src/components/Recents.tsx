@@ -1,8 +1,6 @@
-import React, { useContext, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { FileText } from "lucide-react";
 import { type folderDataType } from "../components/Folders";
-// import axios from "axios";
-import { UserContext } from "../context/UserContext";
 import { useNavigate, useParams } from "react-router-dom";
 import api from "../api/axios";
 
@@ -19,8 +17,13 @@ export type recentData = {
   folder: folderDataType;
 };
 
+
+
+
 const Recents: React.FC = () => {
-  const { recentNotes, setRecentNotes} = useContext(UserContext);
+
+  const [recentNotes, setRecentNotes] = useState<recentData[]>([]);
+  
   const navigate = useNavigate();
   const { noteId } = useParams();
   
@@ -43,7 +46,7 @@ const Recents: React.FC = () => {
     };
 
     dataFetcher();
-  }, [noteId]);
+  }, []);
 
   return (
     <div className="flex flex-col gap-2 w-75">

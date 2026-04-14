@@ -1,11 +1,10 @@
 import React, {
-  // useContext,
   useEffect,
   useRef,
   useState,
   useCallback,
 } from "react";
-// import { UserContext } from "../context/UserContext";
+
 import { type recentData } from "./Recents";
 import axios from "axios";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
@@ -35,10 +34,8 @@ const Middle: React.FC<middleProps> = ({
   currentFolderData,
   setCurrentFolderData,
   setShowRestore,
-  setRestoreNote,
-  // noteSearchInput
+  setRestoreNote
 }) => {
-  // const { setRecentNotes } = useContext(UserContext);
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -70,6 +67,7 @@ const Middle: React.FC<middleProps> = ({
 
     const fetchNotes = async () => {
       let url = "";
+
 
       if (isTrashPage) {
         url =
@@ -115,7 +113,7 @@ const Middle: React.FC<middleProps> = ({
     isTrashPage,
     isFolderPage,
     refreshNotes,
-    setCurrentFolderData
+    setCurrentFolderData,
   ]);
 
   useEffect(() => {
@@ -134,15 +132,6 @@ const Middle: React.FC<middleProps> = ({
     };
   }, []);
 
-  // const updateRecentNotes = (note: recentData) => {
-  //   if (note.deletedAt) return;
-
-  //   setRecentNotes((prev) => {
-  //     const filtered = prev.filter((n) => n.id !== note.id);
-  //     const updated = [note, ...filtered];
-  //     return updated.slice(0, 3);
-  //   });
-  // };
 
   const finalNotesToShow = currentFolderData;
 
@@ -222,13 +211,10 @@ const Middle: React.FC<middleProps> = ({
                   setRestoreNote(note);
                   setShowRestore(true);
                 } else if (isFavoritesPage) {
-                  // updateRecentNotes(note);
                   navigate(`/favorites/note/${note.id}`);
                 } else if (isArchivedPage) {
-                  // updateRecentNotes(note);
                   navigate(`/archived/note/${note.id}`);
                 } else if (note.folderId) {
-                  // updateRecentNotes(note);
                   navigate(`/folder/${note.folderId}/note/${note.id}`);
                 }
               }}
