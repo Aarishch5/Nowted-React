@@ -225,7 +225,7 @@ const Folders: React.FC<folderProps> = ({
               if (!finalFolderNameInput) return;
               createFolder(finalFolderNameInput);
             }}
-            className="h-5 w-5 shrink-0"
+            className="h-5 w-5 shrink-0 cursor-pointer"
           />
         </div>
 
@@ -250,7 +250,7 @@ const Folders: React.FC<folderProps> = ({
             )}
             <div className="flex flex-row justify-between items-center w-65 h-15">
               {editingFolderId === item.id ? (
-                <input
+                <input name={editedFolderName}
                   value={editedFolderName}
                   onChange={(e) => setEditedFolderName(e.target.value)}
                   onClick={(e) => e.stopPropagation()}
@@ -261,7 +261,7 @@ const Folders: React.FC<folderProps> = ({
                     }
                   }}
                   className="bg-transparent outline-none border-b border-[var(--mainText)] text-[var(--mainText)] w-full text-sm font-semibold"
-                  autoFocus
+                  
                 />
               ) : (
                 <h3>{item.name}</h3>
@@ -279,7 +279,7 @@ const Folders: React.FC<folderProps> = ({
                 />
                 <Trash
                   onClick={(e) => handleFolderDeletion(e, item.id)}
-                  className="w-5 h-5"
+                  className="w-5 h-5 cursor-pointer"
                 />{" "}
               </div>
             </div>

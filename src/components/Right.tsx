@@ -236,7 +236,7 @@ const Right: React.FC<RightPropType> = ({ toggle, setToggle, addNote, setAddNote
 
       setCurrNote(null);
       setToggle(false);
-      
+
       setRefreshNotes((prev) => prev + 1);
       setShowRestore(true)
       setCurrNote(null);  
@@ -273,7 +273,7 @@ const handleContentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
       {currNote ? (
         <div className={`flex flex-col gap-7.5 p-12.5 text-(--mainText) w-[calc(100%-650px)] h-screen ${addNote ? "hidden" : "block"}`}>
           <div className="flex flex-row justify-between items-center">
-            <input type="text" value={title}
+            <input type="text" value={title} name={title}
               onChange={handleTitleChange} placeholder="Enter the title"
               className="text-[32px] w-full bg-transparent outline-none placeholder:text-(--rightPlaceHolderText)"/>
             <CircleEllipsis
@@ -356,7 +356,7 @@ const handleContentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
           </div>
 
           <div className="w-full h-[400px] overflow-y-auto no-scrollbar scroll-smooth ">
-            <textarea value={formText} onChange={handleContentChange} placeholder="Enter the text"
+            <textarea name={formText} value={formText} onChange={handleContentChange} placeholder="Enter the text"
               className="w-full h-full resize-none bg-transparent text-justify text-base font-normal outline-none no-scrollbar" />
           </div>
         </div>
