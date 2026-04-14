@@ -6,8 +6,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 type viewType = "favorites" | "archived" | "trash";
 
 const More: React.FC = () => {
-  const { setCurrSelectedFolderId, setActiveView} =
-    useContext(UserContext);
+  const { setCurrSelectedFolderId, setActiveView } = useContext(UserContext);
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -33,7 +32,8 @@ const More: React.FC = () => {
             isActive("/favorites")
               ? "bg-(--folderBg) text-(--mainText)"
               : "text-(--folderTextColor) hover:bg-(--folderHoverBg2) hover:text-(--moreHoverBg)"
-          }`}>
+          }`}
+        >
           <Star className="h-5 w-5" />
           <h3 className="text-base">Favourites</h3>
         </div>
@@ -44,7 +44,8 @@ const More: React.FC = () => {
             isActive("/trash")
               ? "bg-(--folderBg) text-(--mainText)"
               : "text-(--folderTextColor) hover:bg-(--folderHoverBg2) hover:text-(--moreHoverBg)"
-          } text-base`}>
+          } text-base`}
+        >
           <Trash className="h-5 w-5" />
           <h3>Trash</h3>
         </div>
@@ -55,7 +56,8 @@ const More: React.FC = () => {
             isActive("/archived")
               ? "bg-(--folderBg) text-(--mainText)"
               : "text-(--folderTextColor) hover:bg-(--folderHoverBg2) hover:text-(--moreHoverBg)"
-          } text-base`}>
+          } text-base`}
+        >
           <Archive className="h-5 w-5" />
           <h3>Archived</h3>
         </div>

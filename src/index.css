@@ -1,5 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@200;300;400;600;700;900&display=swap');
-
+@import url("https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@200;300;400;600;700;900&display=swap");
 
 @import "tailwindcss";
 
@@ -8,7 +7,7 @@
 }
 
 :root {
-  --primary-font: 'Source Sans 3', sans-serif;
+  --primary-font: "Source Sans 3", sans-serif;
 }
 
 body {
@@ -16,42 +15,42 @@ body {
 }
 
 ::-webkit-scrollbar {
-  width: 4px;
+    width: 4px;
 }
 ::-webkit-scrollbar-thumb {
-  background: #555;
-  border-radius: 10px;
-border-left: 2px solid transparent;
+    background: #555555;
+    border-radius: 10px;
+  border-left: 2px solid transparent;
 }
 
 .dark {
   --background: #121212;
   --sidebarBg: #181818;
   --mainText: white;
-  --sidebarBtnBg: #FFFFFF0D;
-  --searchBtnBg: #FFFFFF0D;
+  --sidebarBtnBg: #ffffff0d;
+  --searchBtnBg: #ffffff0d;
 
-  --folderTextColor: #FFFFFF99;   
-  --folderHoverBg: #FFFFFF08;
+  --folderTextColor: #ffffff99;
+  --folderHoverBg: #ffffff08;
   --hoverTextColor: white;
-  --folderBg: #FFFFFF1A;
-  --folderHoverBg2: #FFFFFF08;
-  --middleBg: #1C1C1C;
-  --middleBg2: #FFFFFF08;
-  --middleText: #FFFFFF66;
-  --recentsHoverBg: #312EB5;
+  --folderBg: #ffffff1a;
+  --folderHoverBg2: #ffffff08;
+  --middleBg: #1c1c1c;
+  --middleBg2: #ffffff08;
+  --middleText: #ffffff66;
+  --recentsHoverBg: #312eb5;
   --recentsHoverText: white;
   --moreHoverBg: white;
-  --selectNoteText: #FFFFFF99;
+  --selectNoteText: #ffffff99;
   --rightHoverText: white;
-  --favoriteNoteHowerBg: #FFFFFF1A;
-  --rightText: #FFFFFF99;
-  --calenderText: #FFFFFF99;
-  --rightHRBg: #FFFFFF1A;
-  --rightPlaceHolderText: #FFFFFF66;
+  --favoriteNoteHowerBg: #ffffff1a;
+  --rightText: #ffffff99;
+  --calenderText: #ffffff99;
+  --rightHRBg: #ffffff1a;
+  --rightPlaceHolderText: #ffffff66;
 
   --rightToggleBg: #333333;
-  --boderBg: #FFFFFF1A;
+  --boderBg: #ffffff1a;
 }
 
 .light {
@@ -62,7 +61,7 @@ border-left: 2px solid transparent;
   --searchBtnBg: white;
   --folderTextColor: black;
   --folderHoverBg: #f3f4f6;
-  --hoverTextColor : #3f3f46;
+  --hoverTextColor: #3f3f46;
   --folderBg: #e5e7eb;
   --folderHoverBg2: #e5e7eb;
   --middleBg: #f9fafb;
@@ -81,5 +80,4 @@ border-left: 2px solid transparent;
 
   --rightToggleBg: white;
   --boderBg: black;
-
 }

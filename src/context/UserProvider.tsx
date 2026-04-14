@@ -24,8 +24,9 @@ export const UserProvider: React.FC<Props> = ({ children }) => {
             activeView,
             setActiveView,
             mode,
-             setMode,
-             folderData, setFolderData
+            setMode,
+            folderData,
+             setFolderData
             }}>{children}
         </UserContext.Provider>
     );

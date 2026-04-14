@@ -20,18 +20,16 @@ export type recentData = {
 };
 
 const Recents: React.FC = () => {
-  const { recentNotes, setRecentNotes} = useContext(UserContext);
+  const { recentNotes, setRecentNotes } = useContext(UserContext);
   const navigate = useNavigate();
   const { noteId } = useParams();
-  
 
-  
   useEffect(() => {
     const dataFetcher = async () => {
       try {
         const response = await api.get("/notes/recent");
-        if (response.data?.recentNotes) { 
-          setRecentNotes(response.data.recentNotes)
+        if (response.data?.recentNotes) {
+          setRecentNotes(response.data.recentNotes);
         }
       } catch (error) {
         console.error(error);
@@ -49,14 +47,18 @@ const Recents: React.FC = () => {
 
       <div className="flex flex-col gap-1.25 w-full">
         {recentNotes.map((elem) => (
-          <div key={elem.id}
+          <div
+            key={elem.id}
             onClick={(e) => {
               e.stopPropagation();
               navigate(`/folder/${elem.folderId}/note/${elem.id}`);
             }}
             className={`hover:bg-(--recentsHoverBg) h-10 w-full flex gap-3.75 cursor-pointer items-center px-5 text-base ${
-              elem.id === noteId ? "bg-(--recentsHoverBg) text-(--mainText)" : "text-(--folderTextColor)"
-            } hover:text-(--recentsHoverText)`}>
+              elem.id === noteId
+                ? "bg-(--recentsHoverBg) text-(--mainText)"
+                : "text-(--folderTextColor)"
+            } hover:text-(--recentsHoverText)`}
+          >
             <FileText className="h-5 w-5" />
             <h3>{elem.title}</h3>
           </div>

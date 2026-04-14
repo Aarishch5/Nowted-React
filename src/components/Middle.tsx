@@ -1,4 +1,3 @@
-
 import React, {
   useContext,
   useEffect,
@@ -198,16 +197,24 @@ const Middle: React.FC<middleProps> = ({
     <div className="flex w-87.5 h-screen flex-col px-5 pb-7.5 bg-(--middleBg) gap-7.5">
       <div className="px-5 pb-5 pt-7.5 bg-(--middleBg) sticky top-0 z-10">
         <h2 className="text-[22px] font-semibold text-(--mainText)">
-            {isFavoritesPage ? "Favorites" : isArchivedPage ? "Archived" : isTrashPage ? "Trash" : currFolderName || "Folder"}
+          {isFavoritesPage
+            ? "Favorites"
+            : isArchivedPage
+              ? "Archived"
+              : isTrashPage
+                ? "Trash"
+                : currFolderName || "Folder"}
         </h2>
       </div>
 
       <div ref={containerRef} className="flex flex-col gap-5 overflow-y-auto">
         {visibleNotes.map((note, index) => {
-          const isLastVisible = index === visibleNotes.length - 1;  
+          const isLastVisible = index === visibleNotes.length - 1;
 
           return (
-            <div key={`${note.id}`} ref={isLastVisible ? lastElementRef : null}
+            <div
+              key={`${note.id}`}
+              ref={isLastVisible ? lastElementRef : null}
               onClick={() => {
                 if (!note?.id) return;
 
@@ -225,9 +232,15 @@ const Middle: React.FC<middleProps> = ({
                   navigate(`/folder/${note.folderId}/note/${note.id}`);
                 }
               }}
-              className={`flex ${ note.id === noteId && !addNote ? `bg-(--folderBg)` : `bg-(--middleBg2)`
-              } cursor-pointer p-5 min-h-24.5 max-h-24.5 flex-col hover:bg-(--folderBg) overflow-hidden`}>
-              <h3 className="text-lg font-semibold text-(--mainText)">{note.title} </h3>
+              className={`flex ${
+                note.id === noteId && !addNote
+                  ? `bg-(--folderBg)`
+                  : `bg-(--middleBg2)`
+              } cursor-pointer p-5 min-h-24.5 max-h-24.5 flex-col hover:bg-(--folderBg) overflow-hidden`}
+            >
+              <h3 className="text-lg font-semibold text-(--mainText)">
+                {note.title}{" "}
+              </h3>
 
               <div className="flex gap-2.5 text-base font-semibold max-h-5 text-(--middleText)">
                 <h3>{new Date(note.createdAt).toLocaleDateString("en-GB")}</h3>
@@ -238,11 +251,17 @@ const Middle: React.FC<middleProps> = ({
         })}
 
         {isLoadingMore && hasNextPage && (
-          <div className="text-center text-sm font-medium py-2 text-(--middleText)"> Loading...</div>
+          <div className="text-center text-sm font-medium py-2 text-(--middleText)">
+            {" "}
+            Loading...
+          </div>
         )}
 
         {!hasNextPage && currentFolderData.length > 0 && (
-          <div className="text-center text-sm font-medium py-2 text-(--middleText)"> No more notes available</div>
+          <div className="text-center text-sm font-medium py-2 text-(--middleText)">
+            {" "}
+            No more notes available
+          </div>
         )}
       </div>
     </div>
@@ -250,4 +269,3 @@ const Middle: React.FC<middleProps> = ({
 };
 
 export default Middle;
-

@@ -6,7 +6,7 @@ import {
   Folder,
   FolderCheck,
   Trash,
-  Pencil
+  Pencil,
 } from "lucide-react";
 import api from "../api/axios";
 import { useNavigate, useParams } from "react-router-dom";
@@ -155,7 +155,6 @@ const Folders: React.FC<folderProps> = ({
       setActiveView("folder");
     }
   }, [folderId, folderData]);
-  
 
   //  debouncing on the folder naming inout
 
@@ -165,7 +164,7 @@ const Folders: React.FC<folderProps> = ({
     }, 500);
 
     return () => clearTimeout(timeOut);
-  }, [onChangeInput])
+  }, [onChangeInput]);
 
   //  Handling the folder renaminng
 
@@ -192,7 +191,6 @@ const Folders: React.FC<folderProps> = ({
       console.error("Error renaming folder:", error);
     }
   };
-
 
   return (
     <div onClick={() => setAddNote(false)} className="flex flex-col gap-2 w-75">
@@ -258,24 +256,27 @@ const Folders: React.FC<folderProps> = ({
                   onClick={(e) => e.stopPropagation()}
                   onBlur={() => handleFolderRename(item.id)}
                   onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    handleFolderRename(item.id);
-                   }
-                }}
+                    if (e.key === "Enter") {
+                      handleFolderRename(item.id);
+                    }
+                  }}
                   className="bg-transparent outline-none border-b border-[var(--mainText)] text-[var(--mainText)] w-full text-sm font-semibold"
-                  autoFocus/>
+                  autoFocus
+                />
               ) : (
                 <h3>{item.name}</h3>
               )}
 
               <div className="flex flex-row gap-4 shrink-0">
                 {/* <Pencil className="w-5 h-5" /> */}
-                <Pencil onClick={(e) => {
+                <Pencil
+                  onClick={(e) => {
                     e.stopPropagation();
                     setEditingFolderId(item.id);
                     setEditedFolderName(item.name ?? "");
                   }}
-                  className="w-5 h-5 cursor-pointer" />
+                  className="w-5 h-5 cursor-pointer"
+                />
                 <Trash
                   onClick={(e) => handleFolderDeletion(e, item.id)}
                   className="w-5 h-5"
