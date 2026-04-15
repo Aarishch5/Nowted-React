@@ -112,6 +112,8 @@ const Folders: React.FC<folderProps> = ({
       }
 
       setOnChangeInput("");
+      setFinalFolderNameInput("");
+      
       setFolderToggle(false);
       toast.success("Folder created successfully!");
     } catch (err) {
@@ -207,6 +209,7 @@ const Folders: React.FC<folderProps> = ({
         >
           <FolderOpen className="h-5 w-5 shrink-0" />
           <input
+            value={onChangeInput}
             onChange={(e) => setOnChangeInput(e.target.value)}
             onKeyDown={(e) => {
               if (e.key === "Enter") {
