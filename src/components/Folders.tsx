@@ -189,24 +189,27 @@ const Folders: React.FC<folderProps> = ({folderToggle,setFolderToggle,setAddNote
           <FolderOpen className="h-5 w-5 shrink-0" />
           <input
             onChange={(e) => setOnChangeInput(e.target.value)}
+            onKeyDown={(e) => {
+            if (e.key === "Enter") {
+                e.preventDefault();
+                if (!finalFolderNameInput.trim()) return;
+                  createFolder(finalFolderNameInput);
+                }
+            }}
             className="bg-transparent outline-none text-sm h-5 w-full font-semibold
              text-(--mainText)"
             type="text"
             id="newFolderInput"
             placeholder="My New Folder"
           />
-          <FolderCheck
-            onClick={() => {
-              if (!finalFolderNameInput) return;
+          <FolderCheck onClick={() => {
+              if (!finalFolderNameInput.trim()) return;
               createFolder(finalFolderNameInput);
-            }}
-            className="h-5 w-5 shrink-0 cursor-pointer"
-          />
+            }} className="h-5 w-5 shrink-0 cursor-pointer"/>
         </div>
 
         {folderData.map((item) => (
-          <div
-            key={item.id}
+          <div key={item.id}
             onClick={(e) => {
               e.stopPropagation();
               setActiveView("folder");

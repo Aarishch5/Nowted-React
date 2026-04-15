@@ -408,10 +408,8 @@ const Right: React.FC<RightPropType> = ({
 
                 <hr className="h-px bg-[#FFFFFF1A] border-0" />
 
-                <div
-                  onClick={handleDeleteNote}
-                  className="text-(--mainText) hover:bg-(--favoriteNoteHowerBg)  flex flex-row gap-3.75 items-center cursor-pointer p-0.75"
-                >
+                <div onClick={handleDeleteNote}
+                  className="text-(--mainText) hover:bg-(--favoriteNoteHowerBg)  flex flex-row gap-3.75 items-center cursor-pointer p-0.75">
                   <Trash className="w-5 h-5" />
                   <h3 className="font-normal font-base text-base">Delete</h3>
                 </div>
@@ -425,10 +423,7 @@ const Right: React.FC<RightPropType> = ({
                 <CalendarDays className="w-4.5 h-4.5 text-(--calenderText)" />
               </div>
               <div className="w-25">
-                <h3 className="text-sm font-semibold text-(--calenderText)">
-                  {" "}
-                  Date{" "}
-                </h3>
+                <h3 className="text-sm font-semibold text-(--calenderText)">{" "}Date{" "}</h3>
               </div>
               <div>
                 <h3 className="text-sm text-(--mainText) font-semibold underline">
