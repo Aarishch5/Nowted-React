@@ -112,12 +112,18 @@ const Sidebar: React.FC<SidebarPropType> = ({
           <div className="flex flex-row items-center gap-6">
             {mode ? (
               <ToggleLeft
-                onClick={() => setMode(!mode)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setMode(!mode);
+                }}
                 className="h-7 w-12 cursor-pointer text-[#FFFFFF] shrink-0 stroke-1.5"
               />
             ) : (
               <ToggleRight
-                onClick={() => setMode(!mode)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setMode(!mode);
+                }}
                 className="h-7 w-12 cursor-pointer text-black shrink-0 stroke-1.5"
               />
             )}
