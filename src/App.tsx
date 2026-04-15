@@ -30,6 +30,10 @@ const App: React.FC = () => {
 
 
 
+  const [refreshRecents, setRefreshRecents] = useState<number>(0);
+
+
+
    useEffect(() => {
     const savedTheme = localStorage.getItem("theme");
 
@@ -53,7 +57,7 @@ const App: React.FC = () => {
   
   const commonProps = { searchBtn, setSearchBtn, folderToggle, setFolderToggle, addNote, setAddNote, currFolderName, setCurrentFolderName,
     refreshNotes, setRefreshNotes, currentFolderData, setCurrentFolderData, showRestore, setShowRestore, restoreNote,
-    setRestoreNote, toggle, setToggle, noteSearchInput, setNoteSearchInput, searchedNotes, setSearchedNotes, showSearchDropdown,setShowSearchDropdown };
+    setRestoreNote, toggle, setToggle, noteSearchInput, setNoteSearchInput, searchedNotes, setSearchedNotes, showSearchDropdown,setShowSearchDropdown, refreshRecents, setRefreshRecents };
 
 
   return (

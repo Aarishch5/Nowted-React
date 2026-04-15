@@ -1,13 +1,4 @@
-import {
-  Trash,
-  CalendarDays,
-  CircleEllipsis,
-  Folder,
-  Star,
-  Archive,
-  StarOff,
-  ArchiveRestore,
-} from "lucide-react";
+import { Trash, CalendarDays, CircleEllipsis, Folder, Star, Archive, StarOff, ArchiveRestore} from "lucide-react";
 import React, { useEffect, useState, useRef } from "react";
 import SelectNote from "./SelectNote";
 import { type folderDataType } from "../components/Folders";
@@ -15,7 +6,6 @@ import type { recentData } from "./Recents";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import api from "../api/axios";
 import { toast } from "react-toastify";
-
 
 type noteDataSet = {
   id: string;
@@ -45,6 +35,8 @@ type RightPropType = {
 
   setShowRestore: React.Dispatch<React.SetStateAction<boolean>>;
   setRestoreNote: React.Dispatch<React.SetStateAction<recentData | null>>;
+
+  setRefreshRecents: React.Dispatch<React.SetStateAction<number>>;
 };
 
 const Right: React.FC<RightPropType> = ({
@@ -57,6 +49,7 @@ const Right: React.FC<RightPropType> = ({
   setCurrentFolderData,
   setShowRestore,
   setRestoreNote,
+  setRefreshRecents
 }) => {
   const { noteId, folderId } = useParams();
   const navigate = useNavigate();
@@ -104,7 +97,7 @@ const Right: React.FC<RightPropType> = ({
           setFormText("");
         }
       } catch (error) {
-        toast.error(` ${error}`);
+        console.error(error);
         setCurrNote(null);
         setTitle("");
         setFormText("");
@@ -132,6 +125,7 @@ const Right: React.FC<RightPropType> = ({
           title: trimmedTitle,
           content: trimmedContent,
         });
+        setRefreshRecents((prev) => prev + 1)
       } catch (error) {
         console.error("Error updating note:", error);
       }
@@ -140,69 +134,80 @@ const Right: React.FC<RightPropType> = ({
     return () => clearTimeout(timer);
   }, [title, formText, currNote?.id, addNote]);
 
-
   useEffect(() => {
-  if (!addNote) return;
-  if (!folderId) return;
+    if (!addNote) return;
+    if (!folderId) return;
 
-  const trimmedTitle = title.trim();
-  const trimmedContent = formText.trim();
+    const trimmedTitle = title.trim();
+    const trimmedContent = formText.trim();
 
-  
-  if (!trimmedTitle && !trimmedContent){
-    return;
-  }
-
-  if (createDebounceRef.current) {
-    clearTimeout(createDebounceRef.current);
-  }
-
-  createDebounceRef.current = setTimeout(async () => {
-    if (creatingNoteRef.current) return;
-
-    try {
-      creatingNoteRef.current = true;
-
-      const response = await api.post("/notes", {
-        title: trimmedTitle || "Untitled",
-        content: trimmedContent,
-        folderId,
-      });
-
-      const createdId = response.data?.id;
-      if (!createdId) return;
-
-      const fullNoteResponse = await api.get(`/notes/${createdId}`);
-      const createdNote = fullNoteResponse.data?.note;
-      if (!createdNote) return;
-
-      const safeCreatedNote = {
-        ...createdNote,
-        preview: createdNote.preview ?? trimmedContent.slice(0, 20),
-        folder: createdNote.folder ?? {
-          name: currFolderName ?? "Untitled Folder",
-        },
-      };
-
-      setCurrentFolderData((prev) => [safeCreatedNote, ...prev]);
-      setCurrNote(safeCreatedNote);
-      setAddNote(false);
-
-      navigate(`/folder/${safeCreatedNote.folderId}/note/${safeCreatedNote.id}`);
-    } catch (error) {
-      console.error("Error auto-creating note:", error);
-    } finally {
-      creatingNoteRef.current = false;
+    if (!trimmedTitle && !trimmedContent) {
+      return;
     }
-  }, 500);
 
-  return () => {
     if (createDebounceRef.current) {
       clearTimeout(createDebounceRef.current);
     }
-  };
-}, [addNote, title, formText, folderId, currFolderName, navigate, setAddNote, setCurrentFolderData]);
-  
+
+    createDebounceRef.current = setTimeout(async () => {
+      if (creatingNoteRef.current) return;
+
+      try {
+        creatingNoteRef.current = true;
+
+        const response = await api.post("/notes", {
+          title: trimmedTitle || "Untitled",
+          content: trimmedContent,
+          folderId,
+        });
+
+        const createdId = response.data?.id;
+        if (!createdId) return;
+
+        const fullNoteResponse = await api.get(`/notes/${createdId}`);
+        const createdNote = fullNoteResponse.data?.note;
+        if (!createdNote) return;
+
+        const safeCreatedNote = {
+          ...createdNote,
+          preview: createdNote.preview ?? trimmedContent.slice(0, 20),
+          folder: createdNote.folder ?? {
+            name: currFolderName ?? "Untitled Folder",
+          },
+        };
+
+        setCurrentFolderData((prev) => [safeCreatedNote, ...prev]);
+        setCurrNote(safeCreatedNote);
+        setAddNote(false);
+
+        setRefreshRecents((prev) => prev + 1)
+
+        navigate(
+          `/folder/${safeCreatedNote.folderId}/note/${safeCreatedNote.id}`,
+        );
+      } catch (error) {
+        console.error("Error auto-creating note:", error);
+      } finally {
+        creatingNoteRef.current = false;
+      }
+    }, 500);
+
+    return () => {
+      if (createDebounceRef.current) {
+        clearTimeout(createDebounceRef.current);
+      }
+    };
+  }, [
+    addNote,
+    title,
+    formText,
+    folderId,
+    currFolderName,
+    navigate,
+    setAddNote,
+    setCurrentFolderData,
+  ]);
+
   const handleFavouriteNote = async () => {
     if (!currNote) {
       return;
@@ -219,9 +224,9 @@ const Right: React.FC<RightPropType> = ({
 
       setRefreshNotes((prev) => prev + 1);
       setToggle(false);
-      if(updatedValue){
+      if (updatedValue) {
         toast.success("Note Added to favourites");
-      }else{
+      } else {
         toast.warning("Note Removed from favourites");
       }
     } catch (error) {
@@ -247,9 +252,9 @@ const Right: React.FC<RightPropType> = ({
       setCurrNote(updatedNote);
       setToggle(false);
       setRefreshNotes((prev) => prev + 1);
-      if(updatedValue){
+      if (updatedValue) {
         toast.warn("Note Archived!");
-      }else{
+      } else {
         toast.success("Note Unarchived!");
       }
       if (updatedNote.isArchived) {
@@ -282,7 +287,7 @@ const Right: React.FC<RightPropType> = ({
 
       navigate(`/trash`);
     } catch (error) {
-      toast.error(`Error in delet: ${error}`);
+      console.error(`Error in delet: ${error}`);
     }
   };
 
@@ -315,10 +320,18 @@ const Right: React.FC<RightPropType> = ({
 
     contentDbounceRef.current = setTimeout(() => {
       setCurrNote((prev) =>
-        prev ? { ...prev, content: newContent, preview: newContent.slice(0, 20) } : prev);
+        prev
+          ? { ...prev, content: newContent, preview: newContent.slice(0, 20) }
+          : prev,
+      );
 
       setCurrentFolderData((prev) =>
-        prev.map((note) => note.id === noteId ? { ...note, content: newContent, preview: newContent.slice(0, 20),} : note));
+        prev.map((note) =>
+          note.id === noteId
+            ? { ...note, content: newContent, preview: newContent.slice(0, 20) }
+            : note,
+        ),
+      );
     }, 500);
   };
 
@@ -327,7 +340,7 @@ const Right: React.FC<RightPropType> = ({
       if (titleDbounceRef.current) {
         clearTimeout(titleDbounceRef.current);
       }
-      if (contentDbounceRef.current){
+      if (contentDbounceRef.current) {
         clearTimeout(contentDbounceRef.current);
       }
     };

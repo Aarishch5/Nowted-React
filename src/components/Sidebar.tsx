@@ -29,7 +29,7 @@ type SidebarPropType = {
   showSearchDropdown: boolean;
   setShowSearchDropdown: React.Dispatch<React.SetStateAction<boolean>>;
 
-  
+  refreshRecents: number;
 
 };
 
@@ -47,7 +47,7 @@ const Sidebar: React.FC<SidebarPropType> = ({
   setSearchedNotes,
   showSearchDropdown,
   setShowSearchDropdown,
-
+  refreshRecents
 }) => {
   const { mode, setMode } = useContext(UserContext);
 
@@ -189,7 +189,7 @@ const Sidebar: React.FC<SidebarPropType> = ({
         )}
       </div>
 
-      <Recents/>
+      <Recents refreshRecents={refreshRecents} />
 
       <Folders
         folderToggle={folderToggle}
