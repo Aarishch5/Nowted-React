@@ -1,4 +1,5 @@
 import React, {
+  // useContext,
   useEffect,
   useRef,
   useState,
@@ -34,7 +35,7 @@ const Middle: React.FC<middleProps> = ({
   currentFolderData,
   setCurrentFolderData,
   setShowRestore,
-  setRestoreNote
+  setRestoreNote,
 }) => {
 
   const navigate = useNavigate();
@@ -211,10 +212,13 @@ const Middle: React.FC<middleProps> = ({
                   setRestoreNote(note);
                   setShowRestore(true);
                 } else if (isFavoritesPage) {
+                
                   navigate(`/favorites/note/${note.id}`);
                 } else if (isArchivedPage) {
+                  
                   navigate(`/archived/note/${note.id}`);
                 } else if (note.folderId) {
+                
                   navigate(`/folder/${note.folderId}/note/${note.id}`);
                 }
               }}
