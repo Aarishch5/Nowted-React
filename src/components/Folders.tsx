@@ -1,13 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { UserContext } from "../context/UserContext";
-import {
-  FolderPlus,
-  FolderOpen,
-  Folder,
-  FolderCheck,
-  Trash,
-  Pencil
-} from "lucide-react";
+import { FolderPlus, FolderOpen, Folder, FolderCheck, Trash, Pencil} from "lucide-react";
 import api from "../api/axios";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -31,12 +24,7 @@ type folderProps = {
   setCurrentFolderName: React.Dispatch<React.SetStateAction<string | null>>;
 };
 
-const Folders: React.FC<folderProps> = ({
-  folderToggle,
-  setFolderToggle,
-  setAddNote,
-  setCurrentFolderName,
-}) => {
+const Folders: React.FC<folderProps> = ({folderToggle,setFolderToggle,setAddNote,setCurrentFolderName}) => {
   const { setCurrSelectedFolderId, setActiveView, mode, currSelectedFolderId } =
     useContext(UserContext);
 
@@ -97,7 +85,6 @@ const Folders: React.FC<folderProps> = ({
     try {
       await api.post("/folders", { name: changeInput });
 
-      // For avoiding the delay/refresh of the window
       const response = await api.get("/folders");
 
       if (response.data) {

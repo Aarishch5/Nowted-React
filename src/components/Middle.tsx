@@ -21,7 +21,7 @@ type middleProps = {
   noteSearchInput: string;
 };
 
-const PAGE_SIZE = 5;
+const PAGE_SIZE = 6;
 
 type PaginationType = {
   scope: string;

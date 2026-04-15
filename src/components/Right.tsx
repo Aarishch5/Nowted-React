@@ -182,9 +182,7 @@ const Right: React.FC<RightPropType> = ({
 
         setRefreshRecents((prev) => prev + 1)
 
-        navigate(
-          `/folder/${safeCreatedNote.folderId}/note/${safeCreatedNote.id}`,
-        );
+        navigate(`/folder/${safeCreatedNote.folderId}/note/${safeCreatedNote.id}`);
       } catch (error) {
         console.error("Error auto-creating note:", error);
       } finally {
@@ -462,7 +460,7 @@ const Right: React.FC<RightPropType> = ({
             </div>
           </div>
 
-          <div className="w-full h-[400px] overflow-y-auto no-scrollbar scroll-smooth ">
+          <div className="w-full h-110  overflow-y-auto no-scrollbar scroll-smooth ">
             <textarea
               name={formText}
               value={formText}
