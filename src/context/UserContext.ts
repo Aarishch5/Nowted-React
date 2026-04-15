@@ -1,12 +1,8 @@
 import React, { createContext } from "react";
-// import { type recentData } from "../components/Recents";
 import type { folderDataType } from "../components/Folders";
 
 
 export type ContextType = {
-
-    // recentNotes: recentData[];
-    // setRecentNotes: React.Dispatch<React.SetStateAction<recentData[]>>;
 
     currSelectedFolderId: string | null;
     setCurrSelectedFolderId: React.Dispatch<React.SetStateAction<string | null>>;
@@ -23,9 +19,6 @@ export type ContextType = {
 
 
 export const UserContext = createContext<ContextType>({
-
-    // recentNotes: [],
-    // setRecentNotes: () => {},
 
     currSelectedFolderId: null,
     setCurrSelectedFolderId: () => {},

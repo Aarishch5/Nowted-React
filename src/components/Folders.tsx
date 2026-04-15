@@ -1,6 +1,13 @@
 import React, { useContext, useEffect, useState } from "react";
 import { UserContext } from "../context/UserContext";
-import { FolderPlus, FolderOpen, Folder, FolderCheck, Trash, Pencil} from "lucide-react";
+import {
+  FolderPlus,
+  FolderOpen,
+  Folder,
+  FolderCheck,
+  Trash,
+  Pencil,
+} from "lucide-react";
 import api from "../api/axios";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -24,7 +31,12 @@ type folderProps = {
   setCurrentFolderName: React.Dispatch<React.SetStateAction<string | null>>;
 };
 
-const Folders: React.FC<folderProps> = ({folderToggle,setFolderToggle,setAddNote,setCurrentFolderName}) => {
+const Folders: React.FC<folderProps> = ({
+  folderToggle,
+  setFolderToggle,
+  setAddNote,
+  setCurrentFolderName,
+}) => {
   const { setCurrSelectedFolderId, setActiveView, mode, currSelectedFolderId } =
     useContext(UserContext);
 
@@ -74,7 +86,15 @@ const Folders: React.FC<folderProps> = ({folderToggle,setFolderToggle,setAddNote
     if (!matchedFolder) {
       navigate(`/folder/${folderToSelect.id}`, { replace: true });
     }
-  }, [ folderId, folderData, location.pathname, navigate, setCurrSelectedFolderId, setCurrentFolderName, setActiveView]);
+  }, [
+    folderId,
+    folderData,
+    location.pathname,
+    navigate,
+    setCurrSelectedFolderId,
+    setCurrentFolderName,
+    setActiveView,
+  ]);
 
   // Folder Create
   const createFolder = async (changeInput: string) => {
@@ -123,9 +143,8 @@ const Folders: React.FC<folderProps> = ({folderToggle,setFolderToggle,setAddNote
         setCurrentFolderName(null);
         navigate("/");
       }
-      
-      toast.warning("Folder Deleted!");
 
+      toast.warning("Folder Deleted!");
     } catch (error) {
       console.error("Error deleting folder:", error);
     }
@@ -190,11 +209,11 @@ const Folders: React.FC<folderProps> = ({folderToggle,setFolderToggle,setAddNote
           <input
             onChange={(e) => setOnChangeInput(e.target.value)}
             onKeyDown={(e) => {
-            if (e.key === "Enter") {
+              if (e.key === "Enter") {
                 e.preventDefault();
                 if (!finalFolderNameInput.trim()) return;
-                  createFolder(finalFolderNameInput);
-                }
+                createFolder(finalFolderNameInput);
+              }
             }}
             className="bg-transparent outline-none text-sm h-5 w-full font-semibold
              text-(--mainText)"
@@ -202,14 +221,18 @@ const Folders: React.FC<folderProps> = ({folderToggle,setFolderToggle,setAddNote
             id="newFolderInput"
             placeholder="My New Folder"
           />
-          <FolderCheck onClick={() => {
+          <FolderCheck
+            onClick={() => {
               if (!finalFolderNameInput.trim()) return;
               createFolder(finalFolderNameInput);
-            }} className="h-5 w-5 shrink-0 cursor-pointer"/>
+            }}
+            className="h-5 w-5 shrink-0 cursor-pointer"
+          />
         </div>
 
         {folderData.map((item) => (
-          <div key={item.id}
+          <div
+            key={item.id}
             onClick={(e) => {
               e.stopPropagation();
               setActiveView("folder");
@@ -226,7 +249,8 @@ const Folders: React.FC<folderProps> = ({folderToggle,setFolderToggle,setAddNote
             )}
             <div className="flex flex-row justify-between items-center w-65 h-15">
               {editingFolderId === item.id ? (
-                <input name={editedFolderName}
+                <input
+                  name={editedFolderName}
                   value={editedFolderName}
                   onChange={(e) => setEditedFolderName(e.target.value)}
                   onClick={(e) => e.stopPropagation()}
@@ -237,7 +261,6 @@ const Folders: React.FC<folderProps> = ({folderToggle,setFolderToggle,setAddNote
                     }
                   }}
                   className="bg-transparent outline-none border-b border-[var(--mainText)] text-[var(--mainText)] w-full text-sm font-semibold"
-                  
                 />
               ) : (
                 <h3>{item.name}</h3>
