@@ -6,10 +6,11 @@ import {
   Folder,
   FolderCheck,
   Trash,
-  Pencil,
+  Pencil
 } from "lucide-react";
 import api from "../api/axios";
 import { useNavigate, useParams } from "react-router-dom";
+import { toast } from "react-toastify";
 
 export type folderDataType = {
   id: string;
@@ -85,15 +86,7 @@ const Folders: React.FC<folderProps> = ({
     if (!matchedFolder) {
       navigate(`/folder/${folderToSelect.id}`, { replace: true });
     }
-  }, [
-    folderId,
-    folderData,
-    location.pathname,
-    navigate,
-    setCurrSelectedFolderId,
-    setCurrentFolderName,
-    setActiveView,
-  ]);
+  }, [ folderId, folderData, location.pathname, navigate, setCurrSelectedFolderId, setCurrentFolderName, setActiveView]);
 
   // Folder Create
   const createFolder = async (changeInput: string) => {
@@ -113,6 +106,7 @@ const Folders: React.FC<folderProps> = ({
 
       setOnChangeInput("");
       setFolderToggle(false);
+      toast.success("Folder created successfully!");
     } catch (err) {
       console.log(err);
     }
@@ -142,6 +136,9 @@ const Folders: React.FC<folderProps> = ({
         setCurrentFolderName(null);
         navigate("/");
       }
+      
+      toast.warning("Folder Deleted!");
+
     } catch (error) {
       console.error("Error deleting folder:", error);
     }

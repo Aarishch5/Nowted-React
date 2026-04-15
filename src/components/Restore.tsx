@@ -4,6 +4,7 @@ import type { recentData } from "./Recents";
 import { UserContext } from "../context/UserContext";
 import { useNavigate } from "react-router-dom";
 import api from "../api/axios";
+import { toast } from "react-toastify";
 
 type recentProps = {
   note: recentData | null;
@@ -37,6 +38,7 @@ const Restore: React.FC<recentProps> = ({
       setCurrSelectedFolderId(note.folderId);
       setActiveView("folder");
       setRefreshNotes((prev) => prev + 1);
+      toast.success("Note restored successfully!");
       navigate(`/folder/${note.folderId}/note/${note.id}`);
     } catch (error) {
       console.error("Restore failed", error);

@@ -14,6 +14,7 @@ import { type folderDataType } from "../components/Folders";
 import type { recentData } from "./Recents";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import api from "../api/axios";
+import { toast } from "react-toastify";
 
 export type postNotesDataType = {
   title: string;
@@ -104,7 +105,7 @@ const Right: React.FC<RightPropType> = ({
           setFormText("");
         }
       } catch (error) {
-        console.error("Error is this :", error);
+        toast.error(` ${error}`);
         setCurrNote(null);
         setTitle("");
         setFormText("");
@@ -217,6 +218,11 @@ const Right: React.FC<RightPropType> = ({
 
       setRefreshNotes((prev) => prev + 1);
       setToggle(false);
+      if(updatedValue){
+        toast.success("Note Added to favourites");
+      }else{
+        toast.warning("Note Removed to favourites");
+      }
     } catch (error) {
       console.log(error);
     }
@@ -240,6 +246,11 @@ const Right: React.FC<RightPropType> = ({
       setCurrNote(updatedNote);
       setToggle(false);
       setRefreshNotes((prev) => prev + 1);
+      if(updatedValue){
+        toast.warn("Note Archived!");
+      }else{
+        toast.success("Note Unarchived!");
+      }
       if (updatedNote.isArchived) {
         navigate("/archived");
       }
@@ -269,9 +280,11 @@ const Right: React.FC<RightPropType> = ({
       setShowRestore(true);
       setCurrNote(null);
 
+      toast.warning("Note Deleted!");
+
       navigate(`/trash`);
     } catch (error) {
-      console.error("Error in delet:", error);
+      toast.error(`Error in delet: ${error}`);
     }
   };
 
