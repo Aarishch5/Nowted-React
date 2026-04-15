@@ -16,10 +16,6 @@ import { useParams, useNavigate, useLocation } from "react-router-dom";
 import api from "../api/axios";
 import { toast } from "react-toastify";
 
-export type postNotesDataType = {
-  title: string;
-  content: string;
-};
 
 type noteDataSet = {
   id: string;
@@ -75,6 +71,9 @@ const Right: React.FC<RightPropType> = ({
   const titleDbounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const contentDbounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  const createDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const creatingNoteRef = useRef(false);
+
   useEffect(() => {
     isMounted.current = false;
   }, [noteId]);
@@ -85,7 +84,7 @@ const Right: React.FC<RightPropType> = ({
       return;
     }
     const fetchNote = async () => {
-      if (!noteId || noteId === undefined) {
+      if (!noteId) {
         setCurrNote(null);
         setTitle("");
         setFormText("");
@@ -141,42 +140,41 @@ const Right: React.FC<RightPropType> = ({
     return () => clearTimeout(timer);
   }, [title, formText, currNote?.id, addNote]);
 
-  const handleFormSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
 
-    if (!title.trim() || !formText.trim()) {
-      console.error("Title or content missing");
-      return;
-    }
+  useEffect(() => {
+  if (!addNote) return;
+  if (!folderId) return;
 
-    if (!folderId) {
-      console.error("Folder ID is missing. Cannot create note.");
-      return;
-    }
+  const trimmedTitle = title.trim();
+  const trimmedContent = formText.trim();
+
+  
+  if (!trimmedTitle && !trimmedContent){
+    return;
+  }
+
+  if (createDebounceRef.current) {
+    clearTimeout(createDebounceRef.current);
+  }
+
+  createDebounceRef.current = setTimeout(async () => {
+    if (creatingNoteRef.current) return;
 
     try {
-      const trimmedTitle = title.trim();
-      const trimmedContent = formText.trim();
+      creatingNoteRef.current = true;
 
       const response = await api.post("/notes", {
-        title: trimmedTitle,
+        title: trimmedTitle || "Untitled",
         content: trimmedContent,
         folderId,
       });
-      const createdId = response.data.id;
 
-      if (!createdId) {
-        console.error("No ID :", response.data);
-        return;
-      }
+      const createdId = response.data?.id;
+      if (!createdId) return;
 
       const fullNoteResponse = await api.get(`/notes/${createdId}`);
       const createdNote = fullNoteResponse.data?.note;
-
-      if (!createdNote) {
-        console.error("Created note not found");
-        return;
-      }
+      if (!createdNote) return;
 
       const safeCreatedNote = {
         ...createdNote,
@@ -187,21 +185,24 @@ const Right: React.FC<RightPropType> = ({
       };
 
       setCurrentFolderData((prev) => [safeCreatedNote, ...prev]);
-
-      setTitle("");
-      setFormText("");
       setCurrNote(safeCreatedNote);
       setAddNote(false);
 
-      navigate(
-        `/folder/${safeCreatedNote.folderId}/note/${safeCreatedNote.id}`,
-      );
+      navigate(`/folder/${safeCreatedNote.folderId}/note/${safeCreatedNote.id}`);
     } catch (error) {
-      console.error("Error in creating note:", error);
+      console.error("Error auto-creating note:", error);
+    } finally {
+      creatingNoteRef.current = false;
+    }
+  }, 500);
+
+  return () => {
+    if (createDebounceRef.current) {
+      clearTimeout(createDebounceRef.current);
     }
   };
-
-  // Favourite notes handleing
+}, [addNote, title, formText, folderId, currFolderName, navigate, setAddNote, setCurrentFolderData]);
+  
   const handleFavouriteNote = async () => {
     if (!currNote) {
       return;
@@ -221,7 +222,7 @@ const Right: React.FC<RightPropType> = ({
       if(updatedValue){
         toast.success("Note Added to favourites");
       }else{
-        toast.warning("Note Removed to favourites");
+        toast.warning("Note Removed from favourites");
       }
     } catch (error) {
       console.log(error);
@@ -271,9 +272,6 @@ const Right: React.FC<RightPropType> = ({
       await api.delete(`/notes/${deletedNoteId}`);
 
       setRestoreNote(currNote);
-      setShowRestore(true);
-
-      setCurrNote(null);
       setToggle(false);
 
       setRefreshNotes((prev) => prev + 1);
@@ -525,10 +523,9 @@ const Right: React.FC<RightPropType> = ({
         </div>
 
         <div>
-          <form
+          <div
             onClick={(e) => e.stopPropagation()}
             className="flex flex-col gap-4 items-start"
-            onSubmit={handleFormSubmit}
           >
             <textarea
               id="contentTextarea"
@@ -537,13 +534,7 @@ const Right: React.FC<RightPropType> = ({
               className="min-h-110 w-full resize-none p-3 align-top focus:outline-none focus:ring-2 focus:ring-[#312EB5] focus:border-[#312EB5]"
               placeholder="Enter text"
             />
-            <input
-              id="formSubmit"
-              className="px-3 py-1 bg-[#312EB5] font-semibold rounded-md text-white cursor-pointer"
-              type="submit"
-              value="Submit"
-            />
-          </form>
+          </div>
         </div>
       </div>
     </>
