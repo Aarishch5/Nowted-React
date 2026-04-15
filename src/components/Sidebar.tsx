@@ -133,7 +133,7 @@ const Sidebar: React.FC<SidebarPropType> = ({
                 setSearchBtn((prev) => !prev);
                 setShowSearchDropdown(false);
               }}
-              className="h-5 w-5 cursor-pointer text-(--mainText)"
+              className="h-5 w-5 cursor-pointer text-(--mainText) hover:text-[#312eb5]"
             />
           </div>
         </div>

@@ -153,7 +153,6 @@ const Folders: React.FC<folderProps> = ({
   };
 
   //  debouncing on the folder naming inout
-
   useEffect(() => {
     const timeOut = setTimeout(() => {
       setFinalFolderNameInput(onChangeInput);
@@ -263,25 +262,23 @@ const Folders: React.FC<folderProps> = ({
                       handleFolderRename(item.id);
                     }
                   }}
-                  className="bg-transparent outline-none border-b border-[var(--mainText)] text-[var(--mainText)] w-full text-sm font-semibold"
-                />
+                  className="bg-transparent outline-none border-b border-[var(--mainText)] text-[var(--mainText)] w-full text-sm font-semibold"/>
               ) : (
                 <h3>{item.name}</h3>
               )}
 
               <div className="flex flex-row gap-4 shrink-0">
-                {/* <Pencil className="w-5 h-5" /> */}
                 <Pencil
                   onClick={(e) => {
                     e.stopPropagation();
                     setEditingFolderId(item.id);
                     setEditedFolderName(item.name ?? "");
                   }}
-                  className="w-5 h-5 cursor-pointer"
+                  className="w-5 h-5 cursor-pointer hover:text-blue-600"
                 />
                 <Trash
                   onClick={(e) => handleFolderDeletion(e, item.id)}
-                  className="w-5 h-5 cursor-pointer"
+                  className="w-5 h-5 cursor-pointer hover:text-red-500"
                 />{" "}
               </div>
             </div>
