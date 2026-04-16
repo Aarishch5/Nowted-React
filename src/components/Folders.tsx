@@ -1,15 +1,8 @@
 import React, { useContext, useEffect, useState } from "react";
 import { UserContext } from "../context/UserContext";
-import {
-  FolderPlus,
-  FolderOpen,
-  Folder,
-  FolderCheck,
-  Trash,
-  Pencil,
-} from "lucide-react";
+import { FolderPlus, FolderOpen, Folder, FolderCheck, Trash, Pencil} from "lucide-react";
 import api from "../api/axios";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useLocation  } from "react-router-dom";
 import { toast } from "react-toastify";
 
 export type folderDataType = {
@@ -51,6 +44,8 @@ const Folders: React.FC<folderProps> = ({
   const [editingFolderId, setEditingFolderId] = useState<string | null>(null);
   const [editedFolderName, setEditedFolderName] = useState("");
 
+  const location = useLocation();
+
   // Fetch folder's daata
   useEffect(() => {
     const folderFetcher = async () => {
@@ -66,6 +61,7 @@ const Folders: React.FC<folderProps> = ({
     };
     folderFetcher();
   }, []);
+  
 
   // Handling folder selection
   useEffect(() => {
@@ -76,15 +72,28 @@ const Folders: React.FC<folderProps> = ({
       return;
     }
 
+    
+    if(!folderId || folderId === "default"){
+      const firstFolder= folderData[0];
+
+      if(!firstFolder){
+        return;
+      }
+
+      setCurrSelectedFolderId(firstFolder.id);
+      setCurrentFolderName(firstFolder.name);
+      setActiveView("folder");
+
+      navigate(`/folder/${firstFolder.id}`, { replace: true });
+      return;
+    }
+
     const matchedFolder = folderData.find((item) => item.id === folderId);
-    const folderToSelect = matchedFolder || folderData[0];
 
-    setCurrSelectedFolderId(folderToSelect.id);
-    setCurrentFolderName(folderToSelect.name);
+    if (matchedFolder) {
+      setCurrSelectedFolderId(matchedFolder.id);
+    setCurrentFolderName(matchedFolder.name);
     setActiveView("folder");
-
-    if (!matchedFolder) {
-      navigate(`/folder/${folderToSelect.id}`, { replace: true });
     }
   }, [
     folderId,
@@ -95,6 +104,7 @@ const Folders: React.FC<folderProps> = ({
     setCurrentFolderName,
     setActiveView,
   ]);
+
 
   // Folder Create
   const createFolder = async (changeInput: string) => {

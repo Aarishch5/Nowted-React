@@ -40,7 +40,7 @@ const Restore: React.FC<recentProps> = ({
       setRefreshNotes((prev) => prev + 1);
       toast.success("Note restored successfully!");
       // console.log(note.id, note.folderId);
-      navigate(`/folder/${note.folderId}/note/${note.id}`);
+      navigate(`/folder/${note.folderId}`);
     } catch (error) {
       console.error("Restore failed", error);
     } finally {
