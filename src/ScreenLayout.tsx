@@ -38,8 +38,8 @@ type ScreenLayoutProps = {
 
   searchedNotes: recentData[];
     setSearchedNotes: React.Dispatch<React.SetStateAction<recentData[]>>;
-    showSearchDropdown: boolean;
-    setShowSearchDropdown: React.Dispatch<React.SetStateAction<boolean>>;
+    // showSearchDropdown: boolean;
+    // setShowSearchDropdown: React.Dispatch<React.SetStateAction<boolean>>;
 
     refreshRecents: number;
     setRefreshRecents: React.Dispatch<React.SetStateAction<number>>;
@@ -49,13 +49,13 @@ type ScreenLayoutProps = {
 
 const ScreenLayout = React.memo( ({ searchBtn, setSearchBtn, folderToggle, setFolderToggle, addNote, setAddNote, currFolderName, setCurrentFolderName, refreshNotes,
   setRefreshNotes, currentFolderData, setCurrentFolderData, showRestore, setShowRestore, restoreNote, setRestoreNote,
-  toggle, setToggle, noteSearchInput, setNoteSearchInput,searchedNotes,setSearchedNotes,showSearchDropdown, setShowSearchDropdown,refreshRecents, setRefreshRecents,isTrashPage = false}: ScreenLayoutProps) => {
+  toggle, setToggle, noteSearchInput, setNoteSearchInput,searchedNotes,setSearchedNotes, refreshRecents, setRefreshRecents,isTrashPage = false}: ScreenLayoutProps) => {
     const { noteId } = useParams();
   return (
     <>
       <Sidebar searchBtn={searchBtn} setSearchBtn={setSearchBtn} folderToggle={folderToggle} setFolderToggle={setFolderToggle}
         addNote={addNote} setAddNote={setAddNote} currFolderName={currFolderName} setCurrentFolderName={setCurrentFolderName}
-        setNoteSearchInput={setNoteSearchInput} searchedNotes={searchedNotes} setSearchedNotes={setSearchedNotes} showSearchDropdown={showSearchDropdown} setShowSearchDropdown={setShowSearchDropdown} refreshRecents={refreshRecents} />
+        setNoteSearchInput={setNoteSearchInput} searchedNotes={searchedNotes} setSearchedNotes={setSearchedNotes} refreshRecents={refreshRecents} />
 
       <Middle addNote={addNote} currFolderName={currFolderName} refreshNotes={refreshNotes} currentFolderData={currentFolderData}
        setCurrentFolderData={setCurrentFolderData} setShowRestore={setShowRestore} setRestoreNote={setRestoreNote}

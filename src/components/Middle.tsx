@@ -211,6 +211,7 @@ const Middle: React.FC<middleProps> = ({
                 if (isTrashPage) {
                   setRestoreNote(note);
                   setShowRestore(true);
+                  navigate(`/trash/note/${note.id}`);
                 } else if (isFavoritesPage) {
                 
                   navigate(`/favorites/note/${note.id}`);

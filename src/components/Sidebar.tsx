@@ -26,8 +26,6 @@ type SidebarPropType = {
 
   searchedNotes: recentData[];
   setSearchedNotes: React.Dispatch<React.SetStateAction<recentData[]>>;
-  showSearchDropdown: boolean;
-  setShowSearchDropdown: React.Dispatch<React.SetStateAction<boolean>>;
 
   refreshRecents: number;
 
@@ -45,8 +43,6 @@ const Sidebar: React.FC<SidebarPropType> = ({
   setNoteSearchInput,
   searchedNotes,
   setSearchedNotes,
-  showSearchDropdown,
-  setShowSearchDropdown,
   refreshRecents
 }) => {
   const { mode, setMode } = useContext(UserContext);
@@ -54,6 +50,8 @@ const Sidebar: React.FC<SidebarPropType> = ({
   const [inputValue, setInputValue] = useState("");
 
   const navigate = useNavigate();
+
+  const [showSearchDropdown, setShowSearchDropdown] = useState<boolean>(false);
 
   useEffect(() => {
     const timer = setTimeout(async () => {

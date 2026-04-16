@@ -283,7 +283,7 @@ const Right: React.FC<RightPropType> = ({
 
       toast.warning("Note Deleted!");
 
-      navigate(`/trash`);
+      navigate(`/trash/note/${deletedNoteId}`);
     } catch (error) {
       console.error(`Error in delet: ${error}`);
     }
@@ -305,7 +305,7 @@ const Right: React.FC<RightPropType> = ({
           note.id === noteId ? { ...note, title: newTitle } : note,
         ),
       );
-    }, 500);
+    }, 1500);
   };
 
   const handleContentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -330,7 +330,7 @@ const Right: React.FC<RightPropType> = ({
             : note,
         ),
       );
-    }, 500);
+    }, 2000);
   };
 
   useEffect(() => {

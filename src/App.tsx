@@ -26,7 +26,7 @@ const App: React.FC = () => {
   const [noteSearchInput, setNoteSearchInput] = useState("");
 
   const [searchedNotes, setSearchedNotes] = useState<recentData[]>([]);
-  const [showSearchDropdown, setShowSearchDropdown] = useState(false);
+  // const [showSearchDropdown, setShowSearchDropdown] = useState(false);
 
 
 
@@ -57,7 +57,7 @@ const App: React.FC = () => {
   
   const commonProps = { searchBtn, setSearchBtn, folderToggle, setFolderToggle, addNote, setAddNote, currFolderName, setCurrentFolderName,
     refreshNotes, setRefreshNotes, currentFolderData, setCurrentFolderData, showRestore, setShowRestore, restoreNote,
-    setRestoreNote, toggle, setToggle, noteSearchInput, setNoteSearchInput, searchedNotes, setSearchedNotes, showSearchDropdown,setShowSearchDropdown, refreshRecents, setRefreshRecents };
+    setRestoreNote, toggle, setToggle, noteSearchInput, setNoteSearchInput, searchedNotes, setSearchedNotes, refreshRecents, setRefreshRecents };
 
 
   return (
@@ -80,6 +80,7 @@ const App: React.FC = () => {
         <Route path="/archived/note/:noteId" element={<ScreenLayout {...commonProps}/>} />
 
           <Route path="/trash" element={<ScreenLayout {...commonProps} isTrashPage={true} />} />
+          <Route path="/trash/note/:noteId" element={<ScreenLayout {...commonProps} isTrashPage={true} />} /> 
       </Routes>
     </div>
   );
