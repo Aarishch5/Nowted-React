@@ -77,7 +77,12 @@ const Right: React.FC<RightPropType> = ({
   const createDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const creatingNoteRef = useRef(false);
 
-  const shouldShowSelectNote = !addNote && !currNote && !isCreatingNote && !noteId && !location.pathname.startsWith("/trash");
+  const shouldShowSelectNote =
+    !addNote &&
+    !currNote &&
+    !isCreatingNote &&
+    !noteId &&
+    !location.pathname.startsWith("/trash");
 
   useEffect(() => {
     isMounted.current = false;
@@ -121,7 +126,6 @@ const Right: React.FC<RightPropType> = ({
     fetchNote();
   }, [noteId, addNote, isCreatingNote]);
 
-
   // Auto saving of the note which is existing already
   useEffect(() => {
     if (!currNote || addNote) return;
@@ -150,7 +154,6 @@ const Right: React.FC<RightPropType> = ({
 
     return () => clearTimeout(timer);
   }, [title, formText, currNote?.id, addNote]);
-
 
   // Auto creation of the note
   useEffect(() => {
@@ -216,9 +219,16 @@ const Right: React.FC<RightPropType> = ({
         clearTimeout(createDebounceRef.current);
       }
     };
-  }, [ addNote, title, formText, folderId, currFolderName, navigate, setAddNote, setCurrentFolderData]);
-
-
+  }, [
+    addNote,
+    title,
+    formText,
+    folderId,
+    currFolderName,
+    navigate,
+    setAddNote,
+    setCurrentFolderData,
+  ]);
 
   const handleFavouriteNote = async () => {
     if (!currNote) {
@@ -239,14 +249,17 @@ const Right: React.FC<RightPropType> = ({
       if (updatedValue) {
         toast.success("Note Added to favourites");
       } else {
+        if (location.pathname.startsWith("/favorites")) {
+          navigate("/favorites");
+        } else if (currNote.folderId) {
+          navigate(`/folder/${currNote.folderId}`);
+        }
         toast.warning("Note Removed from favourites");
-        navigate(`/favorites`)
       }
     } catch (error) {
       console.log(error);
     }
   };
-
 
   // Archive notes handler
   const handleArchiveNote = async () => {
@@ -302,12 +315,12 @@ const Right: React.FC<RightPropType> = ({
       toast.warning("Note Deleted!");
 
       if (location.pathname.startsWith("/favorites")) {
-      navigate("/favorites");
-    } else if (location.pathname.startsWith("/archived")) {
-      navigate("/archived");
-    } else if (currNote.folderId) {
-      navigate(`/folder/${currNote.folderId}`);
-    }
+        navigate("/favorites");
+      } else if (location.pathname.startsWith("/archived")) {
+        navigate("/archived");
+      } else if (currNote.folderId) {
+        navigate(`/folder/${currNote.folderId}`);
+      }
     } catch (error) {
       console.error(`Error in delet: ${error}`);
     }
@@ -341,7 +354,11 @@ const Right: React.FC<RightPropType> = ({
     }
 
     contentDbounceRef.current = setTimeout(() => {
-      setCurrNote((prev) => prev ? { ...prev, content: newContent, preview: newContent.slice(0, 15) } : prev,);
+      setCurrNote((prev) =>
+        prev
+          ? { ...prev, content: newContent, preview: newContent.slice(0, 15) }
+          : prev,
+      );
 
       setCurrentFolderData((prev) =>
         prev.map((note) =>

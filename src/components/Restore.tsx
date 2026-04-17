@@ -34,7 +34,11 @@ const Restore: React.FC<recentProps> = ({note, setRefreshNotes, setShowRestore,}
       setActiveView("folder");
       setRefreshNotes((prev) => prev + 1);
       toast.success("Note restored successfully!");
-      navigate(`/folder/${note.folderId}`);
+      if(location.pathname.startsWith("/trash")){
+        navigate(`/trash`);
+      }else if(location.pathname.startsWith(`/folder/${note.folderId}`)){
+        navigate(`/folder/${note.folderId}`)
+      }
     } catch (error) {
       console.error("Restore failed", error);
     } finally {
@@ -46,11 +50,9 @@ const Restore: React.FC<recentProps> = ({note, setRefreshNotes, setShowRestore,}
     <div className="flex flex-col p-12.5 text-(--mainText) w-[calc(100%-650px)] h-screen items-center justify-center">
       <div className="flex flex-col gap-2.5 items-center justify-center">
         <History className="h-10 w-10 stroke-1" />
-
         <h3 className="text-[28px] font-semibold text-center">
           Restore “{note?.title}”
         </h3>
-
         <div className="flex flex-col gap-5 items-center">
           <div className="w-120 h-9.75">
             <h5 className="text-base font-normal text-center text-(--folderTextColor)">
