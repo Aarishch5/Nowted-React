@@ -240,6 +240,7 @@ const Right: React.FC<RightPropType> = ({
         toast.success("Note Added to favourites");
       } else {
         toast.warning("Note Removed from favourites");
+        navigate(`/favorites`)
       }
     } catch (error) {
       console.log(error);
@@ -340,11 +341,7 @@ const Right: React.FC<RightPropType> = ({
     }
 
     contentDbounceRef.current = setTimeout(() => {
-      setCurrNote((prev) =>
-        prev
-          ? { ...prev, content: newContent, preview: newContent.slice(0, 15) }
-          : prev,
-      );
+      setCurrNote((prev) => prev ? { ...prev, content: newContent, preview: newContent.slice(0, 15) } : prev,);
 
       setCurrentFolderData((prev) =>
         prev.map((note) =>
