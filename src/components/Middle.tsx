@@ -1,5 +1,4 @@
 import React, {
-  // useContext,
   useEffect,
   useRef,
   useState,
@@ -21,7 +20,7 @@ type middleProps = {
   noteSearchInput: string;
 };
 
-const PAGE_SIZE = 6;
+const PAGE_SIZE = 10;
 
 type PaginationType = {
   scope: string;
@@ -72,16 +71,13 @@ const Middle: React.FC<middleProps> = ({
 
 
       if (isTrashPage) {
-        url =
-          "https://nowted-server.remotestate.com/notes?deleted=true&limit=100";
+        url = "https://nowted-server.remotestate.com/notes?deleted=true&limit=400";
       } else if (isFavoritesPage) {
-        url =
-          "https://nowted-server.remotestate.com/notes?favorite=true&limit=100";
+        url = "https://nowted-server.remotestate.com/notes?favorite=true&limit=400";
       } else if (isArchivedPage) {
-        url =
-          "https://nowted-server.remotestate.com/notes?archived=true&limit=100";
+        url = "https://nowted-server.remotestate.com/notes?archived=true&limit=400";
       } else if (isFolderPage && folderId && folderId !== "undefined") {
-        url = `https://nowted-server.remotestate.com/notes?folderId=${folderId}&limit=100`;
+        url = `https://nowted-server.remotestate.com/notes?folderId=${folderId}&limit=400`;
       }
 
       if (!url) {
@@ -118,6 +114,12 @@ const Middle: React.FC<middleProps> = ({
     setCurrentFolderData,
   ]);
 
+  useEffect(() => {
+    if (!isTrashPage) {
+      setShowRestore(false);
+      setRestoreNote(null);
+    }
+  }, [isTrashPage, setShowRestore, setRestoreNote]);
 
   // Disconnecting the pagination when the compoonent got unMount
   useEffect(() => {
@@ -127,6 +129,17 @@ const Middle: React.FC<middleProps> = ({
       }
     };
   }, []);
+
+  useEffect(() => {
+  if (isTrashPage && noteId) {
+    const existing = currentFolderData.find(n => n.id === noteId);
+
+    if (existing) {
+      setRestoreNote(existing);
+      setShowRestore(true);
+    }
+  }
+}, [noteId, isTrashPage, currentFolderData]);
 
 
   const finalNotesToShow = currentFolderData;
@@ -179,7 +192,7 @@ const Middle: React.FC<middleProps> = ({
   );
 
   return (
-    <div onClick={(e) => e.stopPropagation()} className="flex w-87.5 h-screen flex-col px-5 pb-7.5 bg-(--middleBg) gap-7.5">
+    <div className="flex w-87.5 h-screen flex-col px-5 pb-7.5 bg-(--middleBg) gap-7.5">
       <div className="px-5 pb-5 pt-7.5 bg-(--middleBg) sticky top-0 z-10">
         <h2 className="text-[22px] font-semibold text-(--mainText)">
           {isFavoritesPage

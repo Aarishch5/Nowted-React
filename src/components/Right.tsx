@@ -77,12 +77,7 @@ const Right: React.FC<RightPropType> = ({
   const createDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const creatingNoteRef = useRef(false);
 
-  const shouldShowSelectNote =
-    !addNote &&
-    !currNote &&
-    !isCreatingNote &&
-    !noteId &&
-    !location.pathname.startsWith("/trash");
+  const shouldShowSelectNote = !addNote && !currNote && !isCreatingNote && !noteId && !location.pathname.startsWith("/trash");
 
   useEffect(() => {
     isMounted.current = false;
@@ -93,6 +88,7 @@ const Right: React.FC<RightPropType> = ({
     if (addNote) {
       return;
     }
+    if (location.pathname.startsWith("/trash")) return;
     const fetchNote = async () => {
       if (!noteId) {
         if (!isCreatingNote) {
@@ -125,6 +121,8 @@ const Right: React.FC<RightPropType> = ({
     fetchNote();
   }, [noteId, addNote, isCreatingNote]);
 
+
+  // Auto saving of the note which is existing already
   useEffect(() => {
     if (!currNote || addNote) return;
 
@@ -153,6 +151,8 @@ const Right: React.FC<RightPropType> = ({
     return () => clearTimeout(timer);
   }, [title, formText, currNote?.id, addNote]);
 
+
+  // Auto creation of the note
   useEffect(() => {
     if (!addNote) return;
     if (!folderId) return;
@@ -160,7 +160,7 @@ const Right: React.FC<RightPropType> = ({
     const trimmedTitle = title.trim();
     const trimmedContent = formText.trim();
 
-    if (!trimmedTitle && !trimmedContent) {
+    if (!trimmedTitle || !trimmedContent) {
       return;
     }
 
@@ -190,7 +190,7 @@ const Right: React.FC<RightPropType> = ({
 
         const safeCreatedNote = {
           ...createdNote,
-          preview: createdNote.preview ?? trimmedContent.slice(0, 20),
+          preview: createdNote.preview ?? trimmedContent.slice(0, 15),
           folder: createdNote.folder ?? {
             name: currFolderName ?? "Untitled Folder",
           },
@@ -209,23 +209,16 @@ const Right: React.FC<RightPropType> = ({
         creatingNoteRef.current = false;
         setIsCreatingNote(false);
       }
-    }, 2500);
+    }, 1000);
 
     return () => {
       if (createDebounceRef.current) {
         clearTimeout(createDebounceRef.current);
       }
     };
-  }, [
-    addNote,
-    title,
-    formText,
-    folderId,
-    currFolderName,
-    navigate,
-    setAddNote,
-    setCurrentFolderData,
-  ]);
+  }, [ addNote, title, formText, folderId, currFolderName, navigate, setAddNote, setCurrentFolderData]);
+
+
 
   const handleFavouriteNote = async () => {
     if (!currNote) {
@@ -252,6 +245,7 @@ const Right: React.FC<RightPropType> = ({
       console.log(error);
     }
   };
+
 
   // Archive notes handler
   const handleArchiveNote = async () => {
@@ -348,14 +342,14 @@ const Right: React.FC<RightPropType> = ({
     contentDbounceRef.current = setTimeout(() => {
       setCurrNote((prev) =>
         prev
-          ? { ...prev, content: newContent, preview: newContent.slice(0, 20) }
+          ? { ...prev, content: newContent, preview: newContent.slice(0, 15) }
           : prev,
       );
 
       setCurrentFolderData((prev) =>
         prev.map((note) =>
           note.id === noteId
-            ? { ...note, content: newContent, preview: newContent.slice(0, 20) }
+            ? { ...note, content: newContent, preview: newContent.slice(0, 15) }
             : note,
         ),
       );
