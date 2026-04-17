@@ -12,13 +12,8 @@ type recentProps = {
   setRefreshNotes: React.Dispatch<React.SetStateAction<number>>;
 };
 
-const Restore: React.FC<recentProps> = ({
-  note,
-  setRefreshNotes,
-  setShowRestore,
-}) => {
-  const { setActiveView, setCurrSelectedFolderId, setFolderData } =
-    useContext(UserContext);
+const Restore: React.FC<recentProps> = ({note, setRefreshNotes, setShowRestore,}) => {
+  const { setActiveView, setCurrSelectedFolderId, setFolderData } = useContext(UserContext);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
 
@@ -39,7 +34,6 @@ const Restore: React.FC<recentProps> = ({
       setActiveView("folder");
       setRefreshNotes((prev) => prev + 1);
       toast.success("Note restored successfully!");
-      // console.log(note.id, note.folderId);
       navigate(`/folder/${note.folderId}`);
     } catch (error) {
       console.error("Restore failed", error);

@@ -48,6 +48,7 @@ const Middle: React.FC<middleProps> = ({
   const isFolderPage = location.pathname.startsWith("/folder");
 
   const paginationScope = `${folderId ?? "none"}-${isFavoritesPage}-${isArchivedPage}-${isTrashPage}-${refreshNotes}`;
+  
 
   const [pagination, setPagination] = useState<PaginationType>({
     scope: paginationScope,
@@ -56,7 +57,7 @@ const Middle: React.FC<middleProps> = ({
 
   const observerRef = useRef<IntersectionObserver | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
-  const isFetchingNextRef = useRef(false);
+  const isFetchingNextRef = useRef(false);  
 
   const [isLoadingMore, setIsLoadingMore] = useState(false);
 

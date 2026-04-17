@@ -1,8 +1,15 @@
 import React, { useContext, useEffect, useState } from "react";
 import { UserContext } from "../context/UserContext";
-import { FolderPlus, FolderOpen, Folder, FolderCheck, Trash, Pencil} from "lucide-react";
+import {
+  FolderPlus,
+  FolderOpen,
+  Folder,
+  FolderCheck,
+  Trash,
+  Pencil,
+} from "lucide-react";
 import api from "../api/axios";
-import { useNavigate, useParams, useLocation  } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
 
 export type folderDataType = {
@@ -61,7 +68,6 @@ const Folders: React.FC<folderProps> = ({
     };
     folderFetcher();
   }, []);
-  
 
   // Handling folder selection
   useEffect(() => {
@@ -72,11 +78,10 @@ const Folders: React.FC<folderProps> = ({
       return;
     }
 
-    
-    if(!folderId || folderId === "default"){
-      const firstFolder= folderData[0];
+    if (!folderId || folderId === "default") {
+      const firstFolder = folderData[0];
 
-      if(!firstFolder){
+      if (!firstFolder) {
         return;
       }
 
@@ -92,8 +97,8 @@ const Folders: React.FC<folderProps> = ({
 
     if (matchedFolder) {
       setCurrSelectedFolderId(matchedFolder.id);
-    setCurrentFolderName(matchedFolder.name);
-    setActiveView("folder");
+      setCurrentFolderName(matchedFolder.name);
+      setActiveView("folder");
     }
   }, [
     folderId,
@@ -104,7 +109,6 @@ const Folders: React.FC<folderProps> = ({
     setCurrentFolderName,
     setActiveView,
   ]);
-
 
   // Folder Create
   const createFolder = async (changeInput: string) => {
@@ -123,42 +127,11 @@ const Folders: React.FC<folderProps> = ({
 
       setOnChangeInput("");
       setFinalFolderNameInput("");
-      
+
       setFolderToggle(false);
       toast.success("Folder created successfully!");
     } catch (err) {
       console.log(err);
-    }
-  };
-
-  // Handling selected folder deletion
-  const handleFolderDeletion = async (
-    e: React.MouseEvent,
-    folderIdToDelete: string,
-  ) => {
-    e.stopPropagation();
-    if (!folderId) {
-      return;
-    }
-
-    try {
-      await api.delete(`/folders/${folderIdToDelete}`);
-
-      // Fetching folders again
-      const response = await api.get("/folders");
-      if (response.data?.folders) {
-        setFolderData(response.data.folders);
-      }
-
-      if (currSelectedFolderId === folderIdToDelete) {
-        setCurrSelectedFolderId(null);
-        setCurrentFolderName(null);
-        navigate("/");
-      }
-
-      toast.warning("Folder Deleted!");
-    } catch (error) {
-      console.error("Error deleting folder:", error);
     }
   };
 
@@ -170,6 +143,43 @@ const Folders: React.FC<folderProps> = ({
 
     return () => clearTimeout(timeOut);
   }, [onChangeInput]);
+
+  // Handling selected folder deletion
+  const handleFolderDeletion = async (
+    e: React.MouseEvent,
+    folderIdToDelete: string,
+  ) => {
+    e.stopPropagation();
+
+    try {
+      await api.delete(`/folders/${folderIdToDelete}`);
+
+      // Fetching folders
+      const response = await api.get("/folders");
+      const updatedFolders = response.data?.folders || [];
+      setFolderData(updatedFolders);
+
+      if (currSelectedFolderId === folderIdToDelete) {
+        const nextFolder = updatedFolders[0] ?? null;
+
+        if (nextFolder) {
+          setCurrSelectedFolderId(nextFolder.id);
+          setCurrentFolderName(nextFolder.name);
+          setActiveView("folder");
+          navigate(`/folder/${nextFolder.id}`, { replace: true });
+        } else {
+          setCurrSelectedFolderId(null);
+          setCurrentFolderName(null);
+          setActiveView("trash");
+          navigate("/trash", { replace: true });
+        }
+      }
+
+      toast.warning("Folder Deleted!");
+    } catch (error) {
+      console.error("Error deleting folder:", error);
+    }
+  };
 
   //  Handling the folder renaminng
 
@@ -210,7 +220,7 @@ const Folders: React.FC<folderProps> = ({
         />
       </div>
 
-      <div className="flex flex-col gap-1.5 w-full max-h-35 overflow-y-auto no-scrollbar scroll-smooth">
+      <div className="flex flex-col gap-2 w-full max-h-35 overflow-y-auto no-scrollbar scroll-smooth">
         <div
           onClick={(e) => e.stopPropagation()}
           className={`hover:bg-(--folderHoverBg) text-(--folderTextColor) hover:text-(--hoverTextColor) h-10 shrink-0 w-full flex flex-row gap-3.75 items-center px-5 
@@ -272,7 +282,8 @@ const Folders: React.FC<folderProps> = ({
                       handleFolderRename(item.id);
                     }
                   }}
-                  className="bg-transparent outline-none border-b border-[var(--mainText)] text-[var(--mainText)] w-full text-sm font-semibold"/>
+                  className="bg-transparent outline-none border-b border-[var(--mainText)] text-[var(--mainText)] w-full text-sm font-semibold"
+                />
               ) : (
                 <h3>{item.name}</h3>
               )}

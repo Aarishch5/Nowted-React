@@ -9,29 +9,22 @@ const App: React.FC = () => {
   const [searchBtn, setSearchBtn] = useState<boolean>(true);
 
   const [folderToggle, setFolderToggle] = useState<boolean>(false);
-
   const [addNote, setAddNote] = useState<boolean>(false);
 
   const [currFolderName, setCurrentFolderName] = useState<string | null>(null);
-
   const [refreshNotes, setRefreshNotes] = useState<number>(0);
 
   const [currentFolderData, setCurrentFolderData] = useState<recentData[]>([]);
   const [showRestore, setShowRestore] = useState(false);
 
   const [restoreNote, setRestoreNote] = useState<recentData | null>(null);
-
   const { mode, setMode } = useContext(UserContext);
 
   const [noteSearchInput, setNoteSearchInput] = useState("");
 
   const [searchedNotes, setSearchedNotes] = useState<recentData[]>([]);
-  // const [showSearchDropdown, setShowSearchDropdown] = useState(false);
-
-
 
   const [refreshRecents, setRefreshRecents] = useState<number>(0);
-
 
 
    useEffect(() => {
@@ -67,6 +60,7 @@ const App: React.FC = () => {
         if (folderToggle) setFolderToggle(false);
         if(addNote) setAddNote(false);
       }}  className={`flex flex-row bg-(--background)`}>
+
       <Routes>
         <Route path="/" element={<Navigate to="/folder/default" replace />} /> 
 

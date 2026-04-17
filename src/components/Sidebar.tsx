@@ -83,7 +83,7 @@ const Sidebar: React.FC<SidebarPropType> = ({
         setSearchedNotes([]);
         setShowSearchDropdown(false);
       }
-    }, 500);
+    }, 1000);
 
     return () => clearTimeout(timer);
   }, [inputValue, setNoteSearchInput, setSearchedNotes, setShowSearchDropdown]);
@@ -131,7 +131,7 @@ const Sidebar: React.FC<SidebarPropType> = ({
                 setSearchBtn((prev) => !prev);
                 setShowSearchDropdown(false);
               }}
-              className="h-5 w-5 cursor-pointer text-(--mainText) hover:text-[#312eb5]"
+              className="h-5 w-5 cursor-pointer text-(--mainText) hover:text-[#e0e0ff]"
             />
           </div>
         </div>

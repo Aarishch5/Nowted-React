@@ -1,4 +1,13 @@
-import { Trash, CalendarDays, CircleEllipsis, Folder, Star, Archive, StarOff, ArchiveRestore} from "lucide-react";
+import {
+  Trash,
+  CalendarDays,
+  CircleEllipsis,
+  Folder,
+  Star,
+  Archive,
+  StarOff,
+  ArchiveRestore,
+} from "lucide-react";
 import React, { useEffect, useState, useRef } from "react";
 import SelectNote from "./SelectNote";
 import { type folderDataType } from "../components/Folders";
@@ -49,7 +58,7 @@ const Right: React.FC<RightPropType> = ({
   setCurrentFolderData,
   setShowRestore,
   setRestoreNote,
-  setRefreshRecents
+  setRefreshRecents,
 }) => {
   const { noteId, folderId } = useParams();
   const navigate = useNavigate();
@@ -58,6 +67,7 @@ const Right: React.FC<RightPropType> = ({
   const [currNote, setCurrNote] = useState<noteDataSet | null>(null);
   const [formText, setFormText] = useState<string>("");
   const [title, setTitle] = useState<string>("");
+  const [isCreatingNote, setIsCreatingNote] = useState(false);
 
   const isMounted = useRef(false);
 
@@ -66,6 +76,13 @@ const Right: React.FC<RightPropType> = ({
 
   const createDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const creatingNoteRef = useRef(false);
+
+  const shouldShowSelectNote =
+    !addNote &&
+    !currNote &&
+    !isCreatingNote &&
+    !noteId &&
+    !location.pathname.startsWith("/trash");
 
   useEffect(() => {
     isMounted.current = false;
@@ -78,10 +95,12 @@ const Right: React.FC<RightPropType> = ({
     }
     const fetchNote = async () => {
       if (!noteId) {
-        setCurrNote(null);
-        setTitle("");
-        setFormText("");
-        return;
+        if (!isCreatingNote) {
+          setCurrNote(null);
+          setTitle("");
+          setFormText("");
+          return;
+        }
       }
 
       try {
@@ -104,7 +123,7 @@ const Right: React.FC<RightPropType> = ({
       }
     };
     fetchNote();
-  }, [noteId, addNote]);
+  }, [noteId, addNote, isCreatingNote]);
 
   useEffect(() => {
     if (!currNote || addNote) return;
@@ -125,11 +144,11 @@ const Right: React.FC<RightPropType> = ({
           title: trimmedTitle,
           content: trimmedContent,
         });
-        setRefreshRecents((prev) => prev + 1)
+        setRefreshRecents((prev) => prev + 1);
       } catch (error) {
         console.error("Error updating note:", error);
       }
-    }, 500);
+    }, 200);
 
     return () => clearTimeout(timer);
   }, [title, formText, currNote?.id, addNote]);
@@ -154,6 +173,7 @@ const Right: React.FC<RightPropType> = ({
 
       try {
         creatingNoteRef.current = true;
+        setIsCreatingNote(true);
 
         const response = await api.post("/notes", {
           title: trimmedTitle || "Untitled",
@@ -176,19 +196,20 @@ const Right: React.FC<RightPropType> = ({
           },
         };
 
-        setCurrentFolderData((prev) => [safeCreatedNote, ...prev]);
         setCurrNote(safeCreatedNote);
+        navigate(
+          `/folder/${safeCreatedNote.folderId}/note/${safeCreatedNote.id}`,
+        );
+        setCurrentFolderData((prev) => [safeCreatedNote, ...prev]);
+        setRefreshRecents((prev) => prev + 1);
         setAddNote(false);
-
-        setRefreshRecents((prev) => prev + 1)
-
-        navigate(`/folder/${safeCreatedNote.folderId}/note/${safeCreatedNote.id}`);
       } catch (error) {
         console.error("Error auto-creating note:", error);
       } finally {
         creatingNoteRef.current = false;
+        setIsCreatingNote(false);
       }
-    }, 500);
+    }, 1000);
 
     return () => {
       if (createDebounceRef.current) {
@@ -330,7 +351,7 @@ const Right: React.FC<RightPropType> = ({
             : note,
         ),
       );
-    }, 2000);
+    }, 1000);
   };
 
   useEffect(() => {
@@ -343,6 +364,13 @@ const Right: React.FC<RightPropType> = ({
       }
     };
   }, []);
+
+  const handleEnterPress = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      console.log("Enter pressed");
+    }
+  };
 
   return (
     <>
@@ -408,8 +436,10 @@ const Right: React.FC<RightPropType> = ({
 
                 <hr className="h-px bg-[#FFFFFF1A] border-0" />
 
-                <div onClick={handleDeleteNote}
-                  className="text-(--mainText) hover:bg-(--favoriteNoteHowerBg)  flex flex-row gap-3.75 items-center cursor-pointer p-0.75">
+                <div
+                  onClick={handleDeleteNote}
+                  className="text-(--mainText) hover:bg-(--favoriteNoteHowerBg)  flex flex-row gap-3.75 items-center cursor-pointer p-0.75"
+                >
                   <Trash className="w-5 h-5" />
                   <h3 className="font-normal font-base text-base">Delete</h3>
                 </div>
@@ -423,7 +453,10 @@ const Right: React.FC<RightPropType> = ({
                 <CalendarDays className="w-4.5 h-4.5 text-(--calenderText)" />
               </div>
               <div className="w-25">
-                <h3 className="text-sm font-semibold text-(--calenderText)">{" "}Date{" "}</h3>
+                <h3 className="text-sm font-semibold text-(--calenderText)">
+                  {" "}
+                  Date{" "}
+                </h3>
               </div>
               <div>
                 <h3 className="text-sm text-(--mainText) font-semibold underline">
@@ -460,13 +493,14 @@ const Right: React.FC<RightPropType> = ({
               name={formText}
               value={formText}
               onChange={handleContentChange}
+              onKeyDown={handleEnterPress}
               placeholder="Enter the text"
               className="w-full h-full resize-none bg-transparent text-justify text-base font-normal outline-none no-scrollbar"
             />
           </div>
         </div>
       ) : (
-        !addNote && location.pathname !== "/trash" && <SelectNote />
+        shouldShowSelectNote && <SelectNote />
       )}
 
       <div

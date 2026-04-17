@@ -21,16 +21,12 @@ type recentsProps = {
   refreshRecents: number;
 }
 
-
-
 const Recents: React.FC<recentsProps> = ({refreshRecents}) => {
 
   const [recentNotes, setRecentNotes] = useState<recentData[]>([]);
   
   const navigate = useNavigate();
   const { noteId } = useParams();
-  
-
   
   useEffect(() => {
     const dataFetcher = async () => {
