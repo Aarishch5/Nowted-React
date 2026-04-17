@@ -118,12 +118,6 @@ const Middle: React.FC<middleProps> = ({
     setCurrentFolderData,
   ]);
 
-  useEffect(() => {
-    if (!isTrashPage) {
-      setShowRestore(false);
-      setRestoreNote(null);
-    }
-  }, [isTrashPage, setShowRestore, setRestoreNote]);
 
   // Disconnecting the pagination when the compoonent got unMount
   useEffect(() => {
@@ -185,7 +179,7 @@ const Middle: React.FC<middleProps> = ({
   );
 
   return (
-    <div className="flex w-87.5 h-screen flex-col px-5 pb-7.5 bg-(--middleBg) gap-7.5">
+    <div onClick={(e) => e.stopPropagation()} className="flex w-87.5 h-screen flex-col px-5 pb-7.5 bg-(--middleBg) gap-7.5">
       <div className="px-5 pb-5 pt-7.5 bg-(--middleBg) sticky top-0 z-10">
         <h2 className="text-[22px] font-semibold text-(--mainText)">
           {isFavoritesPage

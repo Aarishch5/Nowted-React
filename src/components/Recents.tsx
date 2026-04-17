@@ -21,7 +21,7 @@ type recentsProps = {
   refreshRecents: number;
 }
 
-const Recents: React.FC<recentsProps> = ({refreshRecents}) => {
+const Recents: React.FC<recentsProps> = () => {
 
   const [recentNotes, setRecentNotes] = useState<recentData[]>([]);
   
@@ -45,7 +45,7 @@ const Recents: React.FC<recentsProps> = ({refreshRecents}) => {
     };
 
     dataFetcher();
-  }, [refreshRecents]);
+  }, []);
 
   return (
     <div className="flex flex-col gap-2 w-75">

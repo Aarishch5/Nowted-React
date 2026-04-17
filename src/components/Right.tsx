@@ -209,7 +209,7 @@ const Right: React.FC<RightPropType> = ({
         creatingNoteRef.current = false;
         setIsCreatingNote(false);
       }
-    }, 1000);
+    }, 2500);
 
     return () => {
       if (createDebounceRef.current) {
@@ -277,7 +277,9 @@ const Right: React.FC<RightPropType> = ({
         toast.success("Note Unarchived!");
       }
       if (updatedNote.isArchived) {
-        navigate("/archived");
+        navigate(`/folder/${updatedNote.folderId}`);
+      } else if (!updatedNote.isArchived) {
+        navigate(`/archived`);
       }
     } catch (error) {
       console.error("Error archiving note:", error);
@@ -304,7 +306,13 @@ const Right: React.FC<RightPropType> = ({
 
       toast.warning("Note Deleted!");
 
-      navigate(`/trash/note/${deletedNoteId}`);
+      if (location.pathname.startsWith("/favorites")) {
+      navigate("/favorites");
+    } else if (location.pathname.startsWith("/archived")) {
+      navigate("/archived");
+    } else if (currNote.folderId) {
+      navigate(`/folder/${currNote.folderId}`);
+    }
     } catch (error) {
       console.error(`Error in delet: ${error}`);
     }
@@ -326,7 +334,7 @@ const Right: React.FC<RightPropType> = ({
           note.id === noteId ? { ...note, title: newTitle } : note,
         ),
       );
-    }, 1500);
+    }, 500);
   };
 
   const handleContentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -351,7 +359,7 @@ const Right: React.FC<RightPropType> = ({
             : note,
         ),
       );
-    }, 1000);
+    }, 500);
   };
 
   useEffect(() => {
