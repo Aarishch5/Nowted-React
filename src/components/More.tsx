@@ -16,6 +16,7 @@ const More: React.FC = () => {
     setActiveView(view);
     navigate(`/${view}`);
   };
+  
 
   // Checkin if the route is active or not
   const isActive = (path: string) => location.pathname === path;

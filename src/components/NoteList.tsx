@@ -27,7 +27,7 @@ type PaginationType = {
   page: number;
 };
 
-const Middle: React.FC<middleProps> = ({
+const NoteList: React.FC<middleProps> = ({
   addNote,
   currFolderName,
   refreshNotes,
@@ -267,4 +267,4 @@ const Middle: React.FC<middleProps> = ({
   );
 };
 
-export default Middle;
+export default NoteList;

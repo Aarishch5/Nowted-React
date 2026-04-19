@@ -48,7 +48,7 @@ type RightPropType = {
   setRefreshRecents: React.Dispatch<React.SetStateAction<number>>;
 };
 
-const Right: React.FC<RightPropType> = ({
+const NoteDescription: React.FC<RightPropType> = ({
   toggle,
   setToggle,
   addNote,
@@ -76,6 +76,17 @@ const Right: React.FC<RightPropType> = ({
 
   const createDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const creatingNoteRef = useRef(false);
+
+
+  useEffect(() => {
+  const isNoteRoute = location.pathname.includes("/note/");
+
+  if (!isNoteRoute) {
+    setCurrNote(null);
+    setTitle("");
+    setFormText("");
+  }
+}, [location.pathname]);
 
   const shouldShowSelectNote =
     !addNote &&
@@ -597,4 +608,4 @@ const Right: React.FC<RightPropType> = ({
   );
 };
 
-export default Right;
+export default NoteDescription;
