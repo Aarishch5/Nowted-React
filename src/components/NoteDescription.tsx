@@ -206,7 +206,7 @@ const NoteDescription: React.FC<RightPropType> = ({ toggle, setToggle, addNote, 
     };
   }, [addNote,title,formText,folderId,currFolderName,navigate,setAddNote,setCurrentFolderData]);
 
-  const handleFavouriteNote = async () => {
+  const handleFavouriteNote = useCallback(async () => {
     if (!currNote) {
       return;
     }
@@ -235,10 +235,10 @@ const NoteDescription: React.FC<RightPropType> = ({ toggle, setToggle, addNote, 
     } catch (error) {
       console.log(error);
     }
-  };
+  }, []);
 
   // Archive notes handler
-  const handleArchiveNote = async () => {
+  const handleArchiveNote = useCallback(async () => {
     if (!currNote) {
       return;
     }
@@ -268,10 +268,10 @@ const NoteDescription: React.FC<RightPropType> = ({ toggle, setToggle, addNote, 
     } catch (error) {
       console.error("Error archiving note:", error);
     }
-  };
+  }, []);
 
   // Handling the Trashing of the Notes
-  const handleDeleteNote = async () => {
+  const handleDeleteNote = useCallback(async () => {
     if (!currNote) {
       return;
     }
@@ -300,9 +300,9 @@ const NoteDescription: React.FC<RightPropType> = ({ toggle, setToggle, addNote, 
     } catch (error) {
       console.error(`Error in delet: ${error}`);
     }
-  };
+  }, []);
 
-  const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleTitleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const newTitle = e.target.value;
     setTitle(newTitle);
 
@@ -319,9 +319,9 @@ const NoteDescription: React.FC<RightPropType> = ({ toggle, setToggle, addNote, 
         ),
       );
     }, 500);
-  };
+  },[]);
 
-  const handleContentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+  const handleContentChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const newContent = e.target.value;
     setFormText(newContent);
 
@@ -344,7 +344,7 @@ const NoteDescription: React.FC<RightPropType> = ({ toggle, setToggle, addNote, 
         ),
       );
     }, 500);
-  };
+  },[]);
 
   useEffect(() => {
     return () => {
