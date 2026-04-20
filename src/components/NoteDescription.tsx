@@ -204,7 +204,7 @@ const NoteDescription: React.FC<RightPropType> = ({ toggle, setToggle, addNote, 
 
   // Favorite note handler
 
-  const handleFavouriteNote = useCallback(async () => {
+  const handleFavouriteNote = async () => {
     if (!currNote) {
       return;
     }
@@ -233,10 +233,10 @@ const NoteDescription: React.FC<RightPropType> = ({ toggle, setToggle, addNote, 
     } catch (error) {
       console.log(error);
     }
-  }, []);
+  };
 
   // Archive notes handler
-  const handleArchiveNote = useCallback(async () => {
+  const handleArchiveNote = async () => {
     if (!currNote) {
       return;
     }
@@ -266,10 +266,10 @@ const NoteDescription: React.FC<RightPropType> = ({ toggle, setToggle, addNote, 
     } catch (error) {
       console.error("Error archiving note:", error);
     }
-  }, []);
+  };
 
   // Handling the Trashing of the Notes
-  const handleDeleteNote = useCallback(async () => {
+  const handleDeleteNote = async () => {
     if (!currNote) {
       return;
     }
@@ -298,9 +298,9 @@ const NoteDescription: React.FC<RightPropType> = ({ toggle, setToggle, addNote, 
     } catch (error) {
       console.error(`Error in delet: ${error}`);
     }
-  }, []);
+  };
 
-  const handleTitleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newTitle = e.target.value;
     setTitle(newTitle);
 
@@ -317,9 +317,9 @@ const NoteDescription: React.FC<RightPropType> = ({ toggle, setToggle, addNote, 
         ),
       );
     }, 500);
-  },[]);
+  };
 
-  const handleContentChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
+  const handleContentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const newContent = e.target.value;
     setFormText(newContent);
 
@@ -342,7 +342,7 @@ const NoteDescription: React.FC<RightPropType> = ({ toggle, setToggle, addNote, 
         ),
       );
     }, 500);
-  },[]);
+  };
 
   useEffect(() => {
     return () => {
