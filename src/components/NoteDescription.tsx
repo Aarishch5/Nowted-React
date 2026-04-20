@@ -1,13 +1,4 @@
-import {
-  Trash,
-  CalendarDays,
-  CircleEllipsis,
-  Folder,
-  Star,
-  Archive,
-  StarOff,
-  ArchiveRestore,
-} from "lucide-react";
+import {Trash, CalendarDays, CircleEllipsis, Folder, Star, Archive, StarOff, ArchiveRestore} from "lucide-react";
 import React, { useEffect, useState, useRef } from "react";
 import SelectNote from "./SelectNote";
 import { type noteDataSet } from "../types/types"
@@ -37,17 +28,11 @@ type RightPropType = {
   setRefreshRecents: React.Dispatch<React.SetStateAction<number>>;
 };
 
-const NoteDescription: React.FC<RightPropType> = ({
-  toggle,
-  setToggle,
-  addNote,
-  setAddNote,
-  currFolderName,
+const NoteDescription: React.FC<RightPropType> = ({ toggle, setToggle, addNote, setAddNote, currFolderName,
   setRefreshNotes,
   setCurrentFolderData,
   setShowRestore,
-  setRestoreNote,
-  setRefreshRecents,
+  setRestoreNote,  setRefreshRecents,
 }) => {
   const { noteId, folderId } = useParams();
   const navigate = useNavigate();
@@ -429,9 +414,7 @@ const NoteDescription: React.FC<RightPropType> = ({
                       <Star className="w-5 h-5" />
                     )}
                     <h3 className="font-normal text-base">
-                      {currNote?.isFavorite
-                        ? "Remove from favorite"
-                        : "Add to favorite"}
+                      {currNote?.isFavorite ? "Remove from favorite" : "Add to favorite"}
                     </h3>
                   </div>
                   <div
@@ -444,8 +427,7 @@ const NoteDescription: React.FC<RightPropType> = ({
                       <ArchiveRestore className="w-5 h-5" />
                     )}
                     <h3 className="font-normal font-base text-base">
-                      {" "}
-                      {!currNote?.isArchived ? "Archived" : "UnArchived"}{" "}
+                      {" "}{!currNote?.isArchived ? "Archived" : "UnArchived"}{" "}
                     </h3>
                   </div>
                 </div>

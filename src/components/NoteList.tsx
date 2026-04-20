@@ -3,16 +3,7 @@ import React, { useEffect, useRef, useState, useCallback} from "react";
 import { type recentData } from "../types/types"
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import api from "../api/axios";
-
-type middleProps = {
-  addNote: boolean;
-  currFolderName: string | null;
-  refreshNotes: number;
-  currentFolderData: recentData[];
-  setCurrentFolderData: React.Dispatch<React.SetStateAction<recentData[]>>;
-  setShowRestore: React.Dispatch<React.SetStateAction<boolean>>;
-  setRestoreNote: React.Dispatch<React.SetStateAction<recentData | null>>;
-};
+import {type middleProps} from "../types/types"
 
 const LIMIT = 10;
 
@@ -34,6 +25,7 @@ const NoteList: React.FC<middleProps> = ({
   const isArchivedPage = location.pathname.startsWith("/archived");
   const isTrashPage = location.pathname.startsWith("/trash");
   const isFolderPage = location.pathname.startsWith("/folder");
+  
 
   const observerRef = useRef<HTMLDivElement | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -124,10 +116,10 @@ const NoteList: React.FC<middleProps> = ({
 
   useEffect(() => {
   if (isTrashPage && noteId) {
-    const existing = currentFolderData.find(n => n.id === noteId);
+    const restoreNoteData = currentFolderData.find(n => n.id === noteId);
 
-    if (existing) {
-      setRestoreNote(existing);
+    if (restoreNoteData) {
+      setRestoreNote(restoreNoteData);
       setShowRestore(true);
     }
   }

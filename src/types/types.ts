@@ -48,3 +48,12 @@ export type recentData = {
   folder: folderDataType;
 };
 
+export type middleProps = {
+  addNote: boolean;
+  currFolderName: string | null;
+  refreshNotes: number;
+  currentFolderData: recentData[];
+  setCurrentFolderData: React.Dispatch<React.SetStateAction<recentData[]>>;
+  setShowRestore: React.Dispatch<React.SetStateAction<boolean>>;
+  setRestoreNote: React.Dispatch<React.SetStateAction<recentData | null>>;
+};
