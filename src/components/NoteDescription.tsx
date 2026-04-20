@@ -62,12 +62,7 @@ const NoteDescription: React.FC<RightPropType> = ({ toggle, setToggle, addNote, 
   }
 }, [location.pathname]);
 
-  const shouldShowSelectNote =
-    !addNote &&
-    !currNote &&
-    !isCreatingNote &&
-    !noteId &&
-    !location.pathname.startsWith("/trash");
+  const shouldShowSelectNote = !addNote && !currNote && !isCreatingNote && !noteId && !location.pathname.startsWith("/trash");
 
   useEffect(() => {
     isMounted.current = false;
@@ -205,6 +200,9 @@ const NoteDescription: React.FC<RightPropType> = ({ toggle, setToggle, addNote, 
       }
     };
   }, [addNote,title,formText,folderId,currFolderName,navigate,setAddNote,setCurrentFolderData]);
+
+
+  // Favorite note handler
 
   const handleFavouriteNote = useCallback(async () => {
     if (!currNote) {
