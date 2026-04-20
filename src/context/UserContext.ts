@@ -1,5 +1,5 @@
 import React, { createContext } from "react";
-import type { folderDataType } from "../components/Folders";
+import type { folderDataType } from "../types/types"
 
 
 export type ContextType = {

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { UserContext } from "./UserContext";
-import type { folderDataType } from "../components/Folders";
+import type { folderDataType } from "../types/types"
 
 type Props = {
     children: React.ReactNode;
