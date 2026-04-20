@@ -225,9 +225,7 @@ const NoteDescription: React.FC<RightPropType> = ({ toggle, setToggle, addNote, 
       } else {
         if (location.pathname.startsWith("/favorites")) {
           navigate("/favorites");
-        } else if (currNote.folderId) {
-          navigate(`/folder/${currNote.folderId}`);
-        }
+        } 
         toast.warning("Note Removed from favourites");
       }
     } catch (error) {
