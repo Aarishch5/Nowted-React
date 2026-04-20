@@ -387,7 +387,7 @@ const NoteDescription: React.FC<RightPropType> = ({ toggle, setToggle, addNote, 
               className={`absolute top-25.25 right-12.75 rounded-md z-50 ${toggle ? "block" : "hidden"}`}
             >
               <div
-                className={`flex flex-col w-50.5 gap-5 p-5 overflow-hidden rounded-md border bg-(--rightToggleBg) border-(--boderBg)`}
+                className="flex flex-col w-50.5 gap-5 p-5 overflow-hidden rounded-md border bg-(--rightToggleBg) border-(--boderBg)"
               >
                 <div className="flex flex-col gap-3.75">
                   <div
@@ -453,10 +453,10 @@ const NoteDescription: React.FC<RightPropType> = ({ toggle, setToggle, addNote, 
 
             <div className="flex flex-row gap-2 items-start">
               <div className="w-7.5 flex items-start">
-                <Folder className={`w-4.5 h-4.5 text-(--rightText)`} />
+                <Folder className="w-4.5 h-4.5 text-(--calenderText)" />
               </div>
               <div className="w-25">
-                <h3 className={`text-sm text-(--rightText) font-semibold`}>
+                <h3 className="text-sm text-(--calenderText) font-semibold">
                   {" "}
                   Folder
                 </h3>
