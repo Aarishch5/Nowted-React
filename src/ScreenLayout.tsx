@@ -3,7 +3,7 @@ import Sidebar from "./components/Sidebar";
 import NoteList from "./components/NoteList";
 import NoteDescription from "./components/NoteDescription";
 import Restore from "./components/Restore";
-import type { recentData } from "./components/Recents";
+import type { recentData } from "./types/types"
 
 
 type ScreenLayoutProps = {
@@ -46,7 +46,7 @@ type ScreenLayoutProps = {
 
 const ScreenLayout = React.memo( ({ searchBtn, setSearchBtn, folderToggle, setFolderToggle, addNote, setAddNote, currFolderName, setCurrentFolderName, refreshNotes,
   setRefreshNotes, currentFolderData, setCurrentFolderData, showRestore, setShowRestore, restoreNote, setRestoreNote,
-  toggle, setToggle, noteSearchInput, setNoteSearchInput,searchedNotes,setSearchedNotes, refreshRecents, setRefreshRecents}: ScreenLayoutProps) => {
+  toggle, setToggle, setNoteSearchInput,searchedNotes,setSearchedNotes, refreshRecents, setRefreshRecents}: ScreenLayoutProps) => {
   return (
     <>
       <Sidebar searchBtn={searchBtn} setSearchBtn={setSearchBtn} folderToggle={folderToggle} setFolderToggle={setFolderToggle}
@@ -55,7 +55,7 @@ const ScreenLayout = React.memo( ({ searchBtn, setSearchBtn, folderToggle, setFo
 
       <NoteList addNote={addNote} currFolderName={currFolderName} refreshNotes={refreshNotes} currentFolderData={currentFolderData}
        setCurrentFolderData={setCurrentFolderData} setShowRestore={setShowRestore} setRestoreNote={setRestoreNote}
-        noteSearchInput={noteSearchInput}/>
+        />
 
       {showRestore ? (
         <Restore note={restoreNote} setShowRestore={setShowRestore} setRefreshNotes={setRefreshNotes}/>

@@ -1,30 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { FileText } from "lucide-react";
-import { type folderDataType } from "../components/Folders";
+import { type recentData } from "../types/types"
+import { type recentsProps } from "../types/types"
 import { useNavigate, useParams } from "react-router-dom";
 import api from "../api/axios";
 
-export type recentData = {
-  id: string;
-  folderId: string;
-  title: string;
-  isFavorite: boolean;
-  isArchived: boolean;
-  createdAt: string;
-  updatedAt: string;
-  deletedAt: string | null;
-  preview: string;
-  folder: folderDataType;
-};
-
-type recentsProps = {
-  refreshRecents: number;
-}
 
 const Recents: React.FC<recentsProps> = () => {
 
   const [recentNotes, setRecentNotes] = useState<recentData[]>([]);
-  
   const navigate = useNavigate();
   const { noteId } = useParams();
   

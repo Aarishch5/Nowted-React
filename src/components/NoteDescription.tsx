@@ -10,25 +10,14 @@ import {
 } from "lucide-react";
 import React, { useEffect, useState, useRef } from "react";
 import SelectNote from "./SelectNote";
-import { type folderDataType } from "../components/Folders";
-import type { recentData } from "./Recents";
+import { type noteDataSet } from "../types/types"
+import type { recentData } from "../types/types"
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import api from "../api/axios";
 import { toast } from "react-toastify";
 
-type noteDataSet = {
-  id: string;
-  folderId: string;
-  title: string;
-  content: string;
-  isFavorite: boolean;
-  isArchived: boolean;
-  createdAt: string;
-  updatedAt: string;
-  deletedAt: string | null;
-  preview: string;
-  folder: folderDataType;
-};
+
+
 
 type RightPropType = {
   toggle: boolean;

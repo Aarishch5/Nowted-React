@@ -1,6 +1,6 @@
 import { History } from "lucide-react";
 import React, { useContext, useState } from "react";
-import type { recentData } from "./Recents";
+import type { recentData } from "../types/types"
 import { UserContext } from "../context/UserContext";
 import { useNavigate } from "react-router-dom";
 import api from "../api/axios";

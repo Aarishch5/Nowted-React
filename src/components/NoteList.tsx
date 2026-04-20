@@ -1,13 +1,8 @@
-import React, {
-  useEffect,
-  useRef,
-  useState,
-  useCallback,
-} from "react";
+import React, { useEffect, useRef, useState, useCallback} from "react";
 
-import { type recentData } from "./Recents";
-import axios from "axios";
+import { type recentData } from "../types/types"
 import { useNavigate, useParams, useLocation } from "react-router-dom";
+import api from "../api/axios";
 
 type middleProps = {
   addNote: boolean;
@@ -17,15 +12,9 @@ type middleProps = {
   setCurrentFolderData: React.Dispatch<React.SetStateAction<recentData[]>>;
   setShowRestore: React.Dispatch<React.SetStateAction<boolean>>;
   setRestoreNote: React.Dispatch<React.SetStateAction<recentData | null>>;
-  noteSearchInput: string;
 };
 
-const PAGE_SIZE = 10;
-
-type PaginationType = {
-  scope: string;
-  page: number;
-};
+const LIMIT = 10;
 
 const NoteList: React.FC<middleProps> = ({
   addNote,
@@ -46,56 +35,71 @@ const NoteList: React.FC<middleProps> = ({
   const isTrashPage = location.pathname.startsWith("/trash");
   const isFolderPage = location.pathname.startsWith("/folder");
 
-  const paginationScope = `${folderId ?? "none"}-${isFavoritesPage}-${isArchivedPage}-${isTrashPage}-${refreshNotes}`;
-  
-
-  const [pagination, setPagination] = useState<PaginationType>({
-    scope: paginationScope,
-    page: 0,
-  });
-
-  const observerRef = useRef<IntersectionObserver | null>(null);
+  const observerRef = useRef<HTMLDivElement | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
-  const isFetchingNextRef = useRef(false);  
 
-  const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
 
-  const currentPage =
-    pagination.scope === paginationScope ? pagination.page : 0;
+
+  const getNotesUrl = useCallback(
+    (pageNumber: number) => {
+      if (isTrashPage) {
+      return `/notes?deleted=true&page=${pageNumber}&limit=${LIMIT}`;
+    } else if (isFavoritesPage) {
+      return `/notes?favorite=true&page=${pageNumber}&limit=${LIMIT}`;
+    } else if (isArchivedPage) {
+      return `/notes?archived=true&page=${pageNumber}&limit=${LIMIT}`;
+    } else if (isFolderPage && folderId && folderId !== "undefined") {
+      return `/notes?folderId=${folderId}&page=${pageNumber}&limit=${LIMIT}`;
+    }
+
+      return "";
+    },
+    [isTrashPage, isFavoritesPage, isArchivedPage, isFolderPage, folderId],
+  );
+  
 
   useEffect(() => {
     let isActive = true;
 
     const fetchNotes = async () => {
-      let url = "";
+      const url =  getNotesUrl(1);
 
-
-      if (isTrashPage) {
-        url = "https://nowted-server.remotestate.com/notes?deleted=true&limit=400";
-      } else if (isFavoritesPage) {
-        url = "https://nowted-server.remotestate.com/notes?favorite=true&limit=400";
-      } else if (isArchivedPage) {
-        url = "https://nowted-server.remotestate.com/notes?archived=true&limit=400";
-      } else if (isFolderPage && folderId && folderId !== "undefined") {
-        url = `https://nowted-server.remotestate.com/notes?folderId=${folderId}&limit=400`;
-      }
 
       if (!url) {
-        if (isActive) setCurrentFolderData([]);
+        if (isActive) {
+          setCurrentFolderData([]);
+          setLoading(false);
+          setHasMore(false);
+        }
         return;
       }
 
       try {
-        const response = await axios.get(url);
+        setLoading(true);
+        setPage(1);
+        setHasMore(true);
+
+        const response = await api.get(url);
         const notes: recentData[] = response.data.notes || [];
 
         if (isActive) {
           setCurrentFolderData(notes);
+          setHasMore(notes.length === LIMIT);
         }
       } catch (error) {
         console.error("Error is this :", error);
         if (isActive) {
           setCurrentFolderData([]);
+          setHasMore(false);
+        }
+      }
+      finally {
+        if (isActive) {
+          setLoading(false);
         }
       }
     };
@@ -105,11 +109,7 @@ const NoteList: React.FC<middleProps> = ({
       isActive = false;
     };
   }, [
-    folderId,
-    isFavoritesPage,
-    isArchivedPage,
-    isTrashPage,
-    isFolderPage,
+    getNotesUrl,
     refreshNotes,
     setCurrentFolderData,
   ]);
@@ -121,14 +121,6 @@ const NoteList: React.FC<middleProps> = ({
     }
   }, [isTrashPage, setShowRestore, setRestoreNote]);
 
-  // Disconnecting the pagination when the compoonent got unMount
-  useEffect(() => {
-    return () => {
-      if (observerRef.current) {
-        observerRef.current.disconnect();
-      }
-    };
-  }, []);
 
   useEffect(() => {
   if (isTrashPage && noteId) {
@@ -139,57 +131,54 @@ const NoteList: React.FC<middleProps> = ({
       setShowRestore(true);
     }
   }
-}, [noteId, isTrashPage, currentFolderData]);
+}, [noteId, isTrashPage, currentFolderData, setRestoreNote, setShowRestore]);
 
+    useEffect(() => {
+    if (loading) return;
+    if (!hasMore) return;
+    if (loadingMore) return;
 
-  const finalNotesToShow = currentFolderData;
+    const currentObserverTarget = observerRef.current;
+    const currentRoot = containerRef.current;
 
-  const endIndex = (currentPage + 1) * PAGE_SIZE;
-  const visibleNotes = finalNotesToShow.slice(0, endIndex);
-  const hasNextPage = endIndex < finalNotesToShow.length;
+    if (!currentObserverTarget || !currentRoot) return;
 
-  useEffect(() => {
-    isFetchingNextRef.current = false;
-  }, [visibleNotes.length]);
+    const observer = new IntersectionObserver(
+      async ([entry]) => {
+        if (!entry.isIntersecting || loadingMore || !hasMore) return;
 
-  const lastElementRef = useCallback(
-    (node: HTMLDivElement | null) => {
-      if (observerRef.current) {
-        observerRef.current.disconnect();
-      }
+        try {
+          setLoadingMore(true);
 
-      if (!node || !hasNextPage) {
-        return;
-      }
+          const nextPage = page + 1;
+          const url = getNotesUrl(nextPage);
 
-      observerRef.current = new IntersectionObserver(
-        (entries) => {
-          if (entries[0].isIntersecting && !isFetchingNextRef.current) {
-            isFetchingNextRef.current = true;
-            setIsLoadingMore(true);
+          if (!url) return;
 
-            setTimeout(() => {
-              setPagination((prev) => {
-                const safePage = prev.scope === paginationScope ? prev.page : 0;
+          const response = await api.get(url);
+          const newNotes: recentData[] = response.data.notes || [];
 
-                return {
-                  scope: paginationScope,
-                  page: safePage + 1,
-                };
-              });
-              setIsLoadingMore(false);
-            }, 500);
-          }
-        },
-        {
-          root: containerRef.current,
-          threshold: 0.5,
-        },
-      );
-      observerRef.current.observe(node);
-    },
-    [hasNextPage, paginationScope],
-  );
+          setCurrentFolderData((prev) => [...prev, ...newNotes]);
+          setPage(nextPage);
+          setHasMore(newNotes.length === LIMIT);
+        } catch (error) {
+          console.error("Error loading more notes:", error);
+        } finally {
+          setLoadingMore(false);
+        }
+      },
+      {
+        root: currentRoot,
+        rootMargin: "200px",
+        threshold: 0,
+      },
+    );
+
+    observer.observe(currentObserverTarget);
+
+    return () => observer.disconnect();
+  }, [page, loading, loadingMore, hasMore, getNotesUrl, setCurrentFolderData]);
+
 
   return (
     <div className="flex w-87.5 h-screen flex-col px-5 pb-7.5 bg-(--middleBg) gap-7.5">
@@ -205,14 +194,19 @@ const NoteList: React.FC<middleProps> = ({
         </h2>
       </div>
 
-      <div ref={containerRef} className="flex flex-col gap-5 overflow-y-auto">
-        {visibleNotes.map((note, index) => {
-          const isLastVisible = index === visibleNotes.length - 1;
-
-          return (
+      <div ref={containerRef} className="flex-1 overflow-y-auto flex flex-col gap-5">
+        {loading ? (
+          <div className="text-center text-sm font-medium py-2 text-(--middleText)">
+            Loading...
+          </div>
+        ) : currentFolderData.length === 0 ? (
+          <div className="text-center text-sm font-medium py-2 text-(--middleText)">
+            No notes available
+          </div>
+        ) : (
+          currentFolderData.map((note) => (
             <div
               key={`${note.id}`}
-              ref={isLastVisible ? lastElementRef : null}
               onClick={() => {
                 if (!note?.id) return;
 
@@ -246,22 +240,23 @@ const NoteList: React.FC<middleProps> = ({
                 <h3>{note.preview?.slice(0, 20)}...</h3>
               </div>
             </div>
-          );
-        })}
+          ))
+        )}
 
-        {isLoadingMore && hasNextPage && (
+        {loadingMore && hasMore && (
           <div className="text-center text-sm font-medium py-2 text-(--middleText)">
             {" "}
             Loading...
           </div>
         )}
 
-        {!hasNextPage && currentFolderData.length > 0 && (
+        {!hasMore && currentFolderData.length > 0 && !loading && (
           <div className="text-center text-sm font-medium py-2 text-(--middleText)">
             {" "}
             No more notes available
           </div>
         )}
+        <div ref={observerRef} className="h-5 w-full shrink-0" />
       </div>
     </div>
   );

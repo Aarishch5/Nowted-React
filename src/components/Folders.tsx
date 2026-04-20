@@ -11,25 +11,9 @@ import {
 import api from "../api/axios";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
+import {type folderProps} from "../types/types"
 
-export type folderDataType = {
-  id: string;
-  name: string | null;
-  createdAt: string;
-  updatedAt: string;
-  deletedAt: string | null;
-};
 
-type folderProps = {
-  folderToggle: boolean;
-  setFolderToggle: React.Dispatch<React.SetStateAction<boolean>>;
-
-  addNote: boolean;
-  setAddNote: React.Dispatch<React.SetStateAction<boolean>>;
-
-  currFolderName: string | null;
-  setCurrentFolderName: React.Dispatch<React.SetStateAction<string | null>>;
-};
 
 const Folders: React.FC<folderProps> = ({
   folderToggle,

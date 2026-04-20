@@ -5,7 +5,7 @@ import Folders from "./Folders";
 import More from "./More";
 import Recents from "./Recents";
 import { UserContext } from "../context/UserContext";
-import { type recentData } from "./Recents";
+import { type recentData } from "../types/types"
 import api from "../api/axios";
 import { useNavigate } from "react-router-dom";
 

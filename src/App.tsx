@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react"
 import { Routes, Route, Navigate } from "react-router-dom";
-import type { recentData } from "./components/Recents"
+import type { recentData } from "./types/types"
 import { UserContext } from "./context/UserContext";
 import ScreenLayout from "./ScreenLayout";
 
