@@ -173,16 +173,10 @@ const NoteList: React.FC<middleProps> = ({
 
 
   return (
-    <div className="flex w-87.5 h-screen flex-col px-5 pb-7.5 bg-(--middleBg) gap-7.5">
+    <div onClick={(e) => e.stopPropagation()} className="flex w-87.5 h-screen flex-col px-5 pb-7.5 bg-(--middleBg) gap-7.5">
       <div className="px-5 pb-5 pt-7.5 bg-(--middleBg) sticky top-0 z-10">
         <h2 className="text-[22px] font-semibold text-(--mainText)">
-          {isFavoritesPage
-            ? "Favorites"
-            : isArchivedPage
-              ? "Archived"
-              : isTrashPage
-                ? "Trash"
-                : currFolderName || "Folder"}
+          {isFavoritesPage ? "Favorites" : isArchivedPage ? "Archived" : isTrashPage ? "Trash" : currFolderName || "Folder"}
         </h2>
       </div>
 
@@ -201,7 +195,7 @@ const NoteList: React.FC<middleProps> = ({
               key={`${note.id}`}
               onClick={() => {
                 if (!note?.id) return;
-
+                setShowRestore(false);
                 if (isTrashPage) {
                   setRestoreNote(note);
                   setShowRestore(true);
@@ -218,11 +212,8 @@ const NoteList: React.FC<middleProps> = ({
                 }
               }}
               className={`flex ${
-                note.id === noteId && !addNote
-                  ? `bg-(--folderBg)`
-                  : `bg-(--middleBg2)`
-              } cursor-pointer p-5 min-h-24.5 max-h-24.5 flex-col hover:bg-(--folderBg) overflow-hidden`}
-            >
+                note.id === noteId && !addNote ? `bg-(--folderBg)` : `bg-(--middleBg2)`
+              } cursor-pointer p-5 min-h-24.5 max-h-24.5 flex-col hover:bg-(--folderBg) overflow-hidden`}>
               <h3 className="text-lg font-semibold text-(--mainText)">
                 {note.title}{" "}
               </h3>
@@ -237,15 +228,13 @@ const NoteList: React.FC<middleProps> = ({
 
         {loadingMore && hasMore && (
           <div className="text-center text-sm font-medium py-2 text-(--middleText)">
-            {" "}
-            Loading...
+            {" "} Loading...
           </div>
         )}
 
         {!hasMore && currentFolderData.length > 0 && !loading && (
           <div className="text-center text-sm font-medium py-2 text-(--middleText)">
-            {" "}
-            No more notes available
+            {" "} No more notes available
           </div>
         )}
         <div ref={observerRef} className="h-5 w-full shrink-0" />

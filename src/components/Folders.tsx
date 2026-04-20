@@ -20,6 +20,7 @@ const Folders: React.FC<folderProps> = ({
   setFolderToggle,
   setAddNote,
   setCurrentFolderName,
+  setShowRestore,
 }) => {
   const { setCurrSelectedFolderId, setActiveView, mode, currSelectedFolderId } =
     useContext(UserContext);
@@ -34,6 +35,8 @@ const Folders: React.FC<folderProps> = ({
 
   const [editingFolderId, setEditingFolderId] = useState<string | null>(null);
   const [editedFolderName, setEditedFolderName] = useState("");
+
+  
 
   const location = useLocation();
 
@@ -242,7 +245,9 @@ const Folders: React.FC<folderProps> = ({
             onClick={(e) => {
               e.stopPropagation();
               setActiveView("folder");
+              setShowRestore(false)
               navigate(`/folder/${item.id}`);
+              
             }}
             className={`h-10 shrink-0 w-full flex flex-row gap-3.75 items-center px-5 text-base cursor-pointer
             ${item.id === folderId ? `text-(--mainText) bg-(--folderBg)` : `text-(--folderTextColor)`} 

@@ -1,3 +1,5 @@
+import type React from "react";
+
 export type folderDataType = {
   id: string;
   name: string | null;
@@ -14,6 +16,7 @@ export type folderProps = {
   setAddNote: React.Dispatch<React.SetStateAction<boolean>>;
   currFolderName: string | null;
   setCurrentFolderName: React.Dispatch<React.SetStateAction<string | null>>;
+  setShowRestore: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 export type noteDataSet = {

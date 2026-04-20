@@ -29,6 +29,8 @@ type SidebarPropType = {
 
   refreshRecents: number;
 
+  setShowRestore: React.Dispatch<React.SetStateAction<boolean>>;
+
 };
 
 const Sidebar: React.FC<SidebarPropType> = ({
@@ -43,7 +45,8 @@ const Sidebar: React.FC<SidebarPropType> = ({
   setNoteSearchInput,
   searchedNotes,
   setSearchedNotes,
-  refreshRecents
+  refreshRecents,
+  setShowRestore,
 }) => {
   const { mode, setMode } = useContext(UserContext);
 
@@ -202,6 +205,7 @@ const Sidebar: React.FC<SidebarPropType> = ({
         setAddNote={setAddNote}
         currFolderName={currFolderName}
         setCurrentFolderName={setCurrentFolderName}
+        setShowRestore={setShowRestore}
       />
 
       <More />
