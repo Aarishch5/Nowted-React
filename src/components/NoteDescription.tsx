@@ -1,5 +1,5 @@
 import {Trash, CalendarDays, CircleEllipsis, Folder, Star, Archive, StarOff, ArchiveRestore} from "lucide-react";
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import SelectNote from "./SelectNote";
 import { type noteDataSet } from "../types/types"
 import type { recentData } from "../types/types"
@@ -204,16 +204,7 @@ const NoteDescription: React.FC<RightPropType> = ({ toggle, setToggle, addNote, 
         clearTimeout(createDebounceRef.current);
       }
     };
-  }, [
-    addNote,
-    title,
-    formText,
-    folderId,
-    currFolderName,
-    navigate,
-    setAddNote,
-    setCurrentFolderData,
-  ]);
+  }, [addNote,title,formText,folderId,currFolderName,navigate,setAddNote,setCurrentFolderData]);
 
   const handleFavouriteNote = async () => {
     if (!currNote) {
@@ -366,12 +357,12 @@ const NoteDescription: React.FC<RightPropType> = ({ toggle, setToggle, addNote, 
     };
   }, []);
 
-  const handleEnterPress = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+  const handleEnterPress = useCallback((e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter") {
       e.preventDefault();
       console.log("Enter pressed");
     }
-  };
+  }, []);
 
   return (
     <>
@@ -436,8 +427,7 @@ const NoteDescription: React.FC<RightPropType> = ({ toggle, setToggle, addNote, 
 
                 <div
                   onClick={handleDeleteNote}
-                  className="text-(--mainText) hover:bg-(--favoriteNoteHowerBg)  flex flex-row gap-3.75 items-center cursor-pointer p-0.75"
-                >
+                  className="text-(--mainText) hover:bg-(--favoriteNoteHowerBg)  flex flex-row gap-3.75 items-center cursor-pointer p-0.75">
                   <Trash className="w-5 h-5" />
                   <h3 className="font-normal font-base text-base">Delete</h3>
                 </div>

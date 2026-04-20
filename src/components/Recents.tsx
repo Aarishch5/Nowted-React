@@ -6,7 +6,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import api from "../api/axios";
 
 
-const Recents: React.FC<recentsProps> = () => {
+const Recents: React.FC<recentsProps> = ({refreshRecents}) => {
 
   const [recentNotes, setRecentNotes] = useState<recentData[]>([]);
   const navigate = useNavigate();
@@ -29,7 +29,7 @@ const Recents: React.FC<recentsProps> = () => {
     };
 
     dataFetcher();
-  }, []);
+  }, [refreshRecents]);
 
   return (
     <div className="flex flex-col gap-2 w-75">

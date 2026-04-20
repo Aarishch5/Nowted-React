@@ -245,9 +245,8 @@ const Folders: React.FC<folderProps> = ({
               navigate(`/folder/${item.id}`);
             }}
             className={`h-10 shrink-0 w-full flex flex-row gap-3.75 items-center px-5 text-base cursor-pointer
-            ${item.id === folderId ? "text-[var(--mainText)] bg-[var(--folderBg)]" : "text-[var(--folderTextColor)]"} 
-            hover:bg-[var(--folderHoverBg2)] hover:text-[var(--mainText)]`}
-          >
+            ${item.id === folderId ? `text-(--mainText) bg-(--folderBg)` : `text-(--folderTextColor)`} 
+            hover:bg-(--folderHoverBg2) hover:text-(--mainText)`}>
             {item.id === folderId ? (
               <FolderOpen className="h-5 w-5 shrink-0" />
             ) : (
@@ -266,7 +265,7 @@ const Folders: React.FC<folderProps> = ({
                       handleFolderRename(item.id);
                     }
                   }}
-                  className="bg-transparent outline-none border-b border-[var(--mainText)] text-[var(--mainText)] w-full text-sm font-semibold"
+                  className="bg-transparent outline-none border-b border-(--mainText)  text-(--mainText) w-full text-sm font-semibold"
                 />
               ) : (
                 <h3>{item.name}</h3>

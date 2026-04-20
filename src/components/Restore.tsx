@@ -1,5 +1,5 @@
 import { History } from "lucide-react";
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useCallback } from "react";
 import type { recentData } from "../types/types"
 import { UserContext } from "../context/UserContext";
 import { useNavigate } from "react-router-dom";
@@ -18,7 +18,7 @@ const Restore: React.FC<recentProps> = ({note, setRefreshNotes, setShowRestore,}
   const [loading, setLoading] = useState(false);
 
   // Restore functionality if the Trash is Opened
-  const handleRestore = async () => {
+  const handleRestore = useCallback(async () => {
     if (!note || loading) {
       return;
     }
@@ -44,7 +44,7 @@ const Restore: React.FC<recentProps> = ({note, setRefreshNotes, setShowRestore,}
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   return (
     <div className="flex flex-col p-12.5 text-(--mainText) w-[calc(100%-650px)] h-screen items-center justify-center">
@@ -63,7 +63,7 @@ const Restore: React.FC<recentProps> = ({note, setRefreshNotes, setShowRestore,}
           <button
             onClick={handleRestore}
             disabled={loading}
-            className={`w-27.75 h-10.5 rounded-md text-base font-normal cursor-pointer ${loading ? "bg-gray-400 cursor-not-allowed" : "bg-[#312EB5] hover:opacity-90"}`}
+            className={`w-27.75 h-10.5 rounded-md text-base font-normal cursor-pointer ${loading ? "bg-gray-400 cursor-not-allowed" : "bg-[#312EB5] hover:opacity-90 text-white"}`}
           >
             {loading ? "Restoring..." : "Restore"}
           </button>
