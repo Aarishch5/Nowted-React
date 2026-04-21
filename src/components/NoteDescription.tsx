@@ -26,8 +26,8 @@ const NoteDescription: React.FC<RightPropType> = ({ toggle, setToggle, addNote, 
 
   const isMounted = useRef(false);
 
-  const titleDbounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const contentDbounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const titleDbounceRef = useRef<number | null>(null);
+  const contentDbounceRef = useRef<number | null>(null);
 
   const createDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const creatingNoteRef = useRef(false);
