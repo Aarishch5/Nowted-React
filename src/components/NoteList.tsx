@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState, useCallback} from "react";
-
 import { type recentData } from "../types/types"
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import api from "../api/axios";
@@ -7,15 +6,9 @@ import {type middleProps} from "../types/types"
 
 const LIMIT = 10;
 
-const NoteList: React.FC<middleProps> = ({
-  addNote,
-  currFolderName,
-  refreshNotes,
-  currentFolderData,
-  setCurrentFolderData,
-  setShowRestore,
-  setRestoreNote,
-}) => {
+const NoteList: React.FC<middleProps> = ({ 
+  addNote, currFolderName, refreshNotes, currentFolderData, setCurrentFolderData, setShowRestore, setRestoreNote}) => {
+
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -121,7 +114,7 @@ const NoteList: React.FC<middleProps> = ({
     if (restoreNoteData) {
       setRestoreNote(restoreNoteData);
       setShowRestore(true);
-    }
+    }  
   }
 }, [noteId, isTrashPage, currentFolderData, setRestoreNote, setShowRestore]);
 

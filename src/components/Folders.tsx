@@ -283,12 +283,8 @@ const Folders: React.FC<folderProps> = ({
                     setEditingFolderId(item.id);
                     setEditedFolderName(item.name ?? "");
                   }}
-                  className="w-5 h-5 cursor-pointer hover:text-blue-600"
-                />
-                <Trash
-                  onClick={(e) => handleFolderDeletion(e, item.id)}
-                  className="w-5 h-5 cursor-pointer hover:text-red-500"
-                />{" "}
+                  className="w-5 h-5 cursor-pointer hover:text-blue-600" />
+                <Trash onClick={(e) => handleFolderDeletion(e, item.id)} className="w-5 h-5 cursor-pointer hover:text-red-500" />{" "}
               </div>
             </div>
           </div>

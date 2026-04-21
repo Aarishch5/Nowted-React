@@ -2,31 +2,12 @@ import {Trash, CalendarDays, CircleEllipsis, Folder, Star, Archive, StarOff, Arc
 import React, { useEffect, useState, useRef, useCallback } from "react";
 import SelectNote from "./SelectNote";
 import { type noteDataSet } from "../types/types"
-import type { recentData } from "../types/types"
+import type { RightPropType } from "../types/types"
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import api from "../api/axios";
 import { toast } from "react-toastify";
 
 
-
-
-type RightPropType = {
-  toggle: boolean;
-  setToggle: React.Dispatch<React.SetStateAction<boolean>>;
-
-  addNote: boolean;
-  setAddNote: React.Dispatch<React.SetStateAction<boolean>>;
-
-  currFolderName: string | null;
-
-  setRefreshNotes: React.Dispatch<React.SetStateAction<number>>;
-  setCurrentFolderData: React.Dispatch<React.SetStateAction<recentData[]>>;
-
-  setShowRestore: React.Dispatch<React.SetStateAction<boolean>>;
-  setRestoreNote: React.Dispatch<React.SetStateAction<recentData | null>>;
-
-  setRefreshRecents: React.Dispatch<React.SetStateAction<number>>;
-};
 
 const NoteDescription: React.FC<RightPropType> = ({ toggle, setToggle, addNote, setAddNote, currFolderName,
   setRefreshNotes,
@@ -51,7 +32,7 @@ const NoteDescription: React.FC<RightPropType> = ({ toggle, setToggle, addNote, 
   const createDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const creatingNoteRef = useRef(false);
 
-
+  // refresh new note inputs
   useEffect(() => {
   const isNoteRoute = location.pathname.includes("/note/");
 
@@ -64,6 +45,7 @@ const NoteDescription: React.FC<RightPropType> = ({ toggle, setToggle, addNote, 
 
   const shouldShowSelectNote = !addNote && !currNote && !isCreatingNote && !noteId && !location.pathname.startsWith("/trash");
 
+  // prevennting auto save on the first render, auto save only if user edits
   useEffect(() => {
     isMounted.current = false;
   }, [noteId]);
@@ -74,6 +56,7 @@ const NoteDescription: React.FC<RightPropType> = ({ toggle, setToggle, addNote, 
       return;
     }
     if (location.pathname.startsWith("/trash")) return;
+
     const fetchNote = async () => {
       if (!noteId) {
         if (!isCreatingNote) {
@@ -105,6 +88,7 @@ const NoteDescription: React.FC<RightPropType> = ({ toggle, setToggle, addNote, 
     };
     fetchNote();
   }, [noteId, addNote, isCreatingNote]);
+  
 
   // Auto saving of the note which is existing already
   useEffect(() => {
@@ -134,6 +118,8 @@ const NoteDescription: React.FC<RightPropType> = ({ toggle, setToggle, addNote, 
 
     return () => clearTimeout(timer);
   }, [title, formText, currNote?.id, addNote]);
+
+
 
   // Auto creation of the note
   useEffect(() => {
@@ -307,6 +293,7 @@ const NoteDescription: React.FC<RightPropType> = ({ toggle, setToggle, addNote, 
     }
 
     titleDbounceRef.current = setTimeout(() => {
+      // update the local state
       setCurrNote((prev) => (prev ? { ...prev, title: newTitle } : prev));
 
       setCurrentFolderData((prev) =>

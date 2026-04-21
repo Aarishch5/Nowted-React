@@ -60,3 +60,21 @@ export type middleProps = {
   setShowRestore: React.Dispatch<React.SetStateAction<boolean>>;
   setRestoreNote: React.Dispatch<React.SetStateAction<recentData | null>>;
 };
+
+export type RightPropType = {
+  toggle: boolean;
+  setToggle: React.Dispatch<React.SetStateAction<boolean>>;
+
+  addNote: boolean;
+  setAddNote: React.Dispatch<React.SetStateAction<boolean>>;
+
+  currFolderName: string | null;
+
+  setRefreshNotes: React.Dispatch<React.SetStateAction<number>>;
+  setCurrentFolderData: React.Dispatch<React.SetStateAction<recentData[]>>;
+
+  setShowRestore: React.Dispatch<React.SetStateAction<boolean>>;
+  setRestoreNote: React.Dispatch<React.SetStateAction<recentData | null>>;
+
+  setRefreshRecents: React.Dispatch<React.SetStateAction<number>>;
+};
