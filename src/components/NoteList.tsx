@@ -98,6 +98,7 @@ const NoteList: React.FC<middleProps> = ({
     refreshNotes,
     setCurrentFolderData,
   ]);
+  
 
   useEffect(() => {
     if (!isTrashPage) {

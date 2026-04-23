@@ -8,30 +8,8 @@ import { UserContext } from "../context/UserContext";
 import { type recentData } from "../types/types"
 import api from "../api/axios";
 import { useNavigate } from "react-router-dom";
+import { type SidebarPropType } from "../types/types";
 
-type SidebarPropType = {
-  searchBtn: boolean;
-  setSearchBtn: React.Dispatch<React.SetStateAction<boolean>>;
-
-  folderToggle: boolean;
-  setFolderToggle: React.Dispatch<React.SetStateAction<boolean>>;
-
-  addNote: boolean;
-  setAddNote: React.Dispatch<React.SetStateAction<boolean>>;
-
-  currFolderName: string | null;
-  setCurrentFolderName: React.Dispatch<React.SetStateAction<string | null>>;
-
-  setNoteSearchInput: React.Dispatch<React.SetStateAction<string>>;
-
-  searchedNotes: recentData[];
-  setSearchedNotes: React.Dispatch<React.SetStateAction<recentData[]>>;
-
-  refreshRecents: number;
-
-  setShowRestore: React.Dispatch<React.SetStateAction<boolean>>;
-
-};
 
 const Sidebar: React.FC<SidebarPropType> = ({
   searchBtn,
@@ -68,7 +46,7 @@ const Sidebar: React.FC<SidebarPropType> = ({
       }
 
       try {
-        const response = await api.get("/notes?limit=200");
+        const response = await api.get("/notes?limit=400");
 
         const allNotes: recentData[] = response.data.notes || [];
 

@@ -9,16 +9,6 @@ export type folderDataType = {
 };
 
 
-export type folderProps = {
-  folderToggle: boolean;
-  setFolderToggle: React.Dispatch<React.SetStateAction<boolean>>;
-  addNote: boolean;
-  setAddNote: React.Dispatch<React.SetStateAction<boolean>>;
-  currFolderName: string | null;
-  setCurrentFolderName: React.Dispatch<React.SetStateAction<string | null>>;
-  setShowRestore: React.Dispatch<React.SetStateAction<boolean>>;
-};
-
 export type noteDataSet = {
   id: string;
   folderId: string;
@@ -51,15 +41,6 @@ export type recentData = {
   folder: folderDataType;
 };
 
-export type middleProps = {
-  addNote: boolean;
-  currFolderName: string | null;
-  refreshNotes: number;
-  currentFolderData: recentData[];
-  setCurrentFolderData: React.Dispatch<React.SetStateAction<recentData[]>>;
-  setShowRestore: React.Dispatch<React.SetStateAction<boolean>>;
-  setRestoreNote: React.Dispatch<React.SetStateAction<recentData | null>>;
-};
 
 export type RightPropType = {
   toggle: boolean;
@@ -77,4 +58,51 @@ export type RightPropType = {
   setRestoreNote: React.Dispatch<React.SetStateAction<recentData | null>>;
 
   setRefreshRecents: React.Dispatch<React.SetStateAction<number>>;
+};
+
+export type folderProps = {
+  folderToggle: boolean;
+  setFolderToggle: React.Dispatch<React.SetStateAction<boolean>>;
+  addNote: boolean;
+  setAddNote: React.Dispatch<React.SetStateAction<boolean>>;
+  currFolderName: string | null;
+  setCurrentFolderName: React.Dispatch<React.SetStateAction<string | null>>;
+  setShowRestore: React.Dispatch<React.SetStateAction<boolean>>;
+};
+
+
+
+export type middleProps = {
+  addNote: boolean;
+  currFolderName: string | null;
+  refreshNotes: number;
+  currentFolderData: recentData[];
+  setCurrentFolderData: React.Dispatch<React.SetStateAction<recentData[]>>;
+  setShowRestore: React.Dispatch<React.SetStateAction<boolean>>;
+  setRestoreNote: React.Dispatch<React.SetStateAction<recentData | null>>;
+};
+
+
+export type SidebarPropType = {
+  searchBtn: boolean;
+  setSearchBtn: React.Dispatch<React.SetStateAction<boolean>>;
+
+  folderToggle: boolean;
+  setFolderToggle: React.Dispatch<React.SetStateAction<boolean>>;
+
+  addNote: boolean;
+  setAddNote: React.Dispatch<React.SetStateAction<boolean>>;
+
+  currFolderName: string | null;
+  setCurrentFolderName: React.Dispatch<React.SetStateAction<string | null>>;
+
+  setNoteSearchInput: React.Dispatch<React.SetStateAction<string>>;
+
+  searchedNotes: recentData[];
+  setSearchedNotes: React.Dispatch<React.SetStateAction<recentData[]>>;
+
+  refreshRecents: number;
+
+  setShowRestore: React.Dispatch<React.SetStateAction<boolean>>;
+
 };

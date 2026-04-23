@@ -16,7 +16,7 @@ const NoteDescription: React.FC<RightPropType> = ({ toggle, setToggle, addNote, 
   setRestoreNote,  setRefreshRecents,
 }) => {
   const { noteId, folderId } = useParams();
-  const navigate = useNavigate();
+  const navigate = useNavigate();  
   const location = useLocation();
 
   const [currNote, setCurrNote] = useState<noteDataSet | null>(null);
@@ -24,19 +24,18 @@ const NoteDescription: React.FC<RightPropType> = ({ toggle, setToggle, addNote, 
   const [title, setTitle] = useState<string>("");
   const [isCreatingNote, setIsCreatingNote] = useState(false);
 
-  const isMounted = useRef(false);
+  const isMounted = useRef(false);  // Prevets the auto save on first render
 
   const titleDbounceRef = useRef<number | null>(null);
   const contentDbounceRef = useRef<number | null>(null);
 
-  const createDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const creatingNoteRef = useRef(false);
+  const createDebounceRef = useRef<number | null>(null);
+  const creatingNoteRef = useRef(false);   // Prevent duplicate creation of the note
 
-  // refresh new note inputs
+  // refresh new note inputs when the user leaves
   useEffect(() => {
-  const isNoteRoute = location.pathname.includes("/note/");
 
-  if (!isNoteRoute) {
+  if (!location.pathname.includes("/note/")) {
     setCurrNote(null);
     setTitle("");
     setFormText("");
@@ -87,13 +86,14 @@ const NoteDescription: React.FC<RightPropType> = ({ toggle, setToggle, addNote, 
       }
     };
     fetchNote();
-  }, [noteId, addNote, isCreatingNote]);
+  }, [noteId, addNote, isCreatingNote, location.pathname]);  
   
 
   // Auto saving of the note which is existing already
   useEffect(() => {
     if (!currNote || addNote) return;
 
+    // skkip the first render
     if (!isMounted.current) {
       isMounted.current = true;
       return;
@@ -117,7 +117,7 @@ const NoteDescription: React.FC<RightPropType> = ({ toggle, setToggle, addNote, 
     }, 200);
 
     return () => clearTimeout(timer);
-  }, [title, formText, currNote?.id, addNote]);
+  }, [title, formText, currNote?.id, addNote, currNote, setRefreshRecents]);
 
 
 
@@ -185,7 +185,7 @@ const NoteDescription: React.FC<RightPropType> = ({ toggle, setToggle, addNote, 
         clearTimeout(createDebounceRef.current);
       }
     };
-  }, [addNote,title,formText,folderId,currFolderName,navigate,setAddNote,setCurrentFolderData]);
+  }, [addNote,title,formText,folderId,currFolderName,navigate,setAddNote,setCurrentFolderData, setRefreshRecents]);
 
 
   // Favorite note handler
